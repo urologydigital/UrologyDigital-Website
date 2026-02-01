@@ -1,0 +1,773 @@
+<!--
+==========================================================================
+  UROLOGY CLINICAL TOOLS — WEBSITE TEMPLATE
+  =========================================================================
+  
+  HOW THIS FILE WORKS:
+  ─────────────────────
+  • This is ONE file that contains your entire website.
+  • Open it in a web browser to see it (double-click on Mac).
+  • Open it in a text editor to edit it (see instructions below).
+  • Search for the word EDIT — every place you need to change
+    something is marked clearly.
+  
+  HOW TO OPEN FOR EDITING (on Mac):
+  ─────────────────────────────────
+  1. Right-click the file
+  2. Choose "Open With"
+  3. Pick "TextEdit" (or "Visual Studio Code" if you have it)
+  
+  FIND AND EDIT:
+  ──────────────
+  Press Cmd + F (on Mac) to open Find.
+  Search for the word: EDIT
+  This will jump you to every place you can change something.
+==========================================================================
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- ================================================================
+       EDIT WEBSITE TITLE — This shows in the browser tab
+       Change "Urology Clinical Tools" to whatever you want.
+       ================================================================ -->
+  <title>Urology Clinical Tools</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ================================================================
+       COLOURS — You can change the look of the whole site here.
+       
+       --clr-accent      = the main highlight colour (currently dark green)
+       --clr-accent-soft = a lighter version used for backgrounds
+       --clr-text        = main text colour
+       --clr-text-mid    = slightly lighter text (descriptions)
+       --clr-text-light  = the lightest text (small labels)
+       --clr-surface     = white card backgrounds
+       --clr-bg          = the page background (off-white)
+       --clr-border      = thin lines between sections
+
+       To change a colour, replace the hex code (e.g. #2d5016).
+       ================================================================ */
+    :root {
+      --clr-accent:       #2d5016;
+      --clr-accent-soft:  #eaf2e3;
+      --clr-accent-hover: #3d6b22;
+      --clr-text:         #1e1e1e;
+      --clr-text-mid:     #4a4a4a;
+      --clr-text-light:   #7a7a7a;
+      --clr-surface:      #ffffff;
+      --clr-bg:           #f6f4f0;
+      --clr-border:       #e0dcd6;
+      --clr-pro-dark:     #1e1e1e;
+      --radius:           14px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Outfit', system-ui, sans-serif;
+      background: var(--clr-bg);
+      color: var(--clr-text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HEADER ─────────────────────────────────────────────────── */
+    header {
+      background: var(--clr-surface);
+      border-bottom: 1px solid var(--clr-border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .header-row {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 28px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .site-logo {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 40px; height: 40px;
+      background: var(--clr-accent);
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 22px; height: 22px; }
+
+    .logo-words { line-height: 1.15; }
+
+    .logo-words .name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--clr-text);
+    }
+    .logo-words .sub {
+      font-size: 0.7rem;
+      color: var(--clr-text-light);
+      font-weight: 400;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-links { display: flex; gap: 4px; }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--clr-text-mid);
+      padding: 7px 15px;
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .nav-links a:hover { background: var(--clr-accent-soft); }
+
+    /* ── HERO ───────────────────────────────────────────────────── */
+    .hero {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 68px 28px 52px;
+      text-align: center;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: var(--clr-accent-soft);
+      color: var(--clr-accent);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 5px 15px;
+      border-radius: 30px;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.2rem, 5vw, 3rem);
+      font-weight: 600;
+      line-height: 1.15;
+      color: var(--clr-text);
+      max-width: 640px;
+      margin: 0 auto 18px;
+    }
+
+    .hero p {
+      color: var(--clr-text-mid);
+      font-size: 1rem;
+      font-weight: 300;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    /* ── SECTION WRAPPER ────────────────────────────────────────── */
+    .section {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 28px 68px;
+    }
+
+    /* ── SECTION DIVIDER LABEL ──────────────────────────────────── */
+    .divider-label {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .divider-label .line { flex: 1; height: 1px; background: var(--clr-border); }
+    .divider-label .label-text {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: var(--clr-text-light);
+      white-space: nowrap;
+    }
+
+    /* ── CARD GRID ──────────────────────────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 18px;
+    }
+
+    .tool-card {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius);
+      padding: 26px 22px 22px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      overflow: hidden;
+    }
+
+    .tool-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--clr-accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 32px rgba(0,0,0,0.08);
+    }
+    .tool-card:hover::after { transform: scaleX(1); }
+
+    .card-icon-wrap {
+      width: 46px; height: 46px;
+      background: var(--clr-accent-soft);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-icon-wrap svg { width: 22px; height: 22px; color: var(--clr-accent); }
+
+    .tool-card h3 {
+      font-size: 1.02rem;
+      font-weight: 600;
+      color: var(--clr-text);
+    }
+
+    .tool-card p {
+      font-size: 0.8rem;
+      color: var(--clr-text-light);
+      line-height: 1.55;
+      flex: 1;
+    }
+
+    .card-cta {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--clr-accent);
+      margin-top: 4px;
+    }
+
+    /* ── PROFESSIONAL LOCK BANNER ───────────────────────────────── */
+    .lock-banner {
+      background: var(--clr-surface);
+      border: 1px solid var(--clr-border);
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .lock-banner-icon {
+      width: 42px; height: 42px; min-width: 42px;
+      background: var(--clr-pro-dark);
+      border-radius: 11px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .lock-banner-icon svg { width: 18px; height: 18px; color: #fff; }
+
+    .lock-banner-text { flex: 1; min-width: 200px; }
+    .lock-banner-text p { font-size: 0.8rem; color: var(--clr-text-mid); }
+    .lock-banner-text strong { color: var(--clr-text); }
+
+    .unlock-btn {
+      background: var(--clr-pro-dark);
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 9px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s;
+      white-space: nowrap;
+    }
+    .unlock-btn:hover { background: #333; }
+
+    /* ── PROFESSIONAL CARDS — blur when locked ──────────────────── */
+    .pro-wrap { position: relative; }
+    .pro-wrap.locked .card-grid {
+      filter: blur(3px);
+      opacity: 0.3;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    /* ── MODAL (password popup) ─────────────────────────────────── */
+    .modal-bg {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.42);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-bg.open { display: flex; }
+
+    .modal-box {
+      background: var(--clr-surface);
+      border-radius: 18px;
+      padding: 42px 38px 36px;
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+      box-shadow: 0 28px 56px rgba(0,0,0,0.14);
+    }
+
+    .modal-close {
+      position: absolute; top: 18px; right: 20px;
+      background: none; border: none;
+      font-size: 1.5rem; color: var(--clr-text-light);
+      cursor: pointer; line-height: 1;
+    }
+
+    .modal-box h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.55rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .modal-box > p {
+      font-size: 0.8rem;
+      color: var(--clr-text-light);
+      margin-bottom: 26px;
+    }
+
+    .modal-box label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--clr-text-mid);
+      letter-spacing: 0.4px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .modal-box input[type="password"] {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--clr-border);
+      border-radius: 9px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .modal-box input[type="password"]:focus { border-color: var(--clr-accent); }
+
+    .modal-error {
+      min-height: 18px;
+      font-size: 0.75rem;
+      color: #c0392b;
+      margin-top: 8px;
+    }
+
+    .modal-btn {
+      width: 100%;
+      margin-top: 22px;
+      background: var(--clr-accent);
+      color: #fff;
+      border: none;
+      padding: 13px;
+      border-radius: 9px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .modal-btn:hover { background: var(--clr-accent-hover); }
+
+    /* ── FOOTER ─────────────────────────────────────────────────── */
+    footer {
+      background: var(--clr-surface);
+      border-top: 1px solid var(--clr-border);
+      padding: 44px 28px;
+    }
+    .footer-row {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 28px;
+    }
+    .footer-disclaimer {
+      max-width: 500px;
+      font-size: 0.7rem;
+      color: var(--clr-text-light);
+      line-height: 1.65;
+    }
+    .footer-disclaimer strong { color: var(--clr-text-mid); }
+    .footer-links a {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--clr-text-light);
+      text-decoration: none;
+      margin-bottom: 7px;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--clr-accent); }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────────── */
+    @media (max-width: 580px) {
+      .header-row { justify-content: center; }
+      .nav-links { display: none; }
+      .hero { padding: 52px 20px 40px; }
+      .card-grid { grid-template-columns: 1fr; }
+      .lock-banner { flex-direction: column; text-align: center; }
+      .unlock-btn { width: 100%; }
+      .modal-box { padding: 34px 24px 28px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ================================================================
+     HEADER
+     ================================================================ -->
+<header>
+  <div class="header-row">
+    <a href="#" class="site-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
+        </svg>
+      </div>
+      <div class="logo-words">
+        <!-- ============================================================
+             EDIT SITE NAME (top-left corner)
+             ============================================================ -->
+        <div class="name">Urology Tools</div>
+        <div class="sub">Clinical Decision Support</div>
+      </div>
+    </a>
+    <nav class="nav-links">
+      <a href="#patients">Patients</a>
+      <a href="#professionals">Professionals</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================================================================
+     HERO — The big heading at the top of the page
+     
+     EDIT the <h1> text (the main heading).
+     EDIT the <p> text (the description underneath).
+     ================================================================ -->
+<div class="hero">
+  <div class="hero-tag">Evidence-Based Clinical Resources</div>
+  <h1>Urology tools built for clarity and confidence</h1>
+  <p>Interactive assessment tools, patient information, and clinical decision support — aligned with NICE, EAU, and GIRFT guidelines.</p>
+</div>
+
+<!-- ================================================================
+     ██████████████████████████████████████████████████████████████
+     ██                                                          ██
+     ██          PATIENT SECTION — PUBLIC ACCESS                  ██
+     ██                                                          ██
+     ██  Everything here is visible to everyone.                 ██
+     ██  No password is needed.                                  ██
+     ██                                                          ██
+     ██  TO ADD A NEW CARD:                                      ██
+     ██   1. Copy one of the card blocks below                  ██
+     ██      (from <a class="tool-card" to </a>)               ██
+     ██   2. Paste it after the last card                        ██
+     ██   3. Change the title inside <h3>                        ██
+     ██   4. Change the description inside <p>                   ██
+     ██   5. Replace LINK_HERE with your tool's URL              ██
+     ██                                                          ██
+     ██  TO REMOVE A CARD:                                       ██
+     ██   Delete everything from <a class="tool-card"           ██
+     ██   to the matching </a>                                  ██
+     ██                                                          ██
+     ██████████████████████████████████████████████████████████████
+     ================================================================ -->
+<section class="section" id="patients">
+  <div class="divider-label">
+    <div class="line"></div>
+    <span class="label-text">For Patients</span>
+    <div class="line"></div>
+  </div>
+
+  <div class="card-grid">
+
+    <!-- ============================================================
+         PATIENT CARD 1
+         • Change the <h3> text = card title
+         • Change the <p> text = card description
+         • Change href="LINK_HERE" = the URL your tool opens
+           Use "#" if you don't have a link yet.
+         ============================================================ -->
+    <a href="LINK_HERE" class="tool-card">
+      <div class="card-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+        </svg>
+      </div>
+      <h3>IPSS Questionnaire</h3>
+      <p>Assess your lower urinary tract symptoms using the validated International Prostate Symptom Score. A quick, self-reported tool.</p>
+      <span class="card-cta">Start questionnaire →</span>
+    </a>
+
+    <!-- ============================================================
+         PATIENT CARD 2
+         ============================================================ -->
+    <a href="LINK_HERE" class="tool-card">
+      <div class="card-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+        </svg>
+      </div>
+      <h3>Understanding Prostate Cancer</h3>
+      <p>Plain-English information about prostate cancer — what it is, how it is diagnosed, and what your treatment options may be.</p>
+      <span class="card-cta">Read guide →</span>
+    </a>
+
+    <!-- ============================================================
+         PATIENT CARD 3
+         ============================================================ -->
+    <a href="LINK_HERE" class="tool-card">
+      <div class="card-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+      </div>
+      <h3>Bladder Cancer Information</h3>
+      <p>A clear guide to bladder cancer — covering stages, what treatment involves, and what to expect at each step of your care.</p>
+      <span class="card-cta">Read guide →</span>
+    </a>
+
+    <!-- ============================================================
+         PATIENT CARD 4
+         ============================================================ -->
+    <a href="LINK_HERE" class="tool-card">
+      <div class="card-icon-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+      </div>
+      <h3>Contact the Team</h3>
+      <p>Have a question about your appointment, referral, or treatment? Get in touch with the urology team.</p>
+      <span class="card-cta">Get in touch →</span>
+    </a>
+
+  </div>
+</section>
+
+<!-- ================================================================
+     ██████████████████████████████████████████████████████████████
+     ██                                                          ██
+     ██     PROFESSIONAL SECTION — PASSWORD PROTECTED            ██
+     ██                                                          ██
+     ██  Everything here is hidden behind a password.            ██
+     ██  Only people with the correct code can see it.           ██
+     ██                                                          ██
+     ██  TO CHANGE THE PASSWORD: Scroll to the very bottom       ██
+     ██  of this file. Find the line:                            ██
+     ██      const ACCESS_CODE = "ChangeThisPassword123";        ██
+     ██  Replace ChangeThisPassword123 with your own password.   ██
+     ██                                                          ██
+     ██  TO ADD / REMOVE CARDS: Same method as patients above.  ██
+     ██                                                          ██
+     ██████████████████████████████████████████████████████████████
+     ================================================================ -->
+<section class="section" id="professionals">
+  <div class="divider-label">
+    <div class="line"></div>
+    <span class="label-text">For Healthcare Professionals</span>
+    <div class="line"></div>
+  </div>
+
+  <div class="lock-banner">
+    <div class="lock-banner-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+    </div>
+    <div class="lock-banner-text">
+      <p><strong>Professional access required.</strong> These tools include treatment protocols, medication dosing, and detailed clinical pathways. Enter your access code to continue.</p>
+    </div>
+    <button class="unlock-btn" onclick="openModal()">Enter Access Code</button>
+  </div>
+
+  <div class="pro-wrap locked" id="proWrap">
+    <div class="card-grid">
+
+      <!-- ============================================================
+           PROFESSIONAL CARD 1
+           ============================================================ -->
+      <a href="LINK_HERE" class="tool-card">
+        <div class="card-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <h3>Prostate Cancer Pathway</h3>
+        <p>Full clinical pathway with Cambridge Prognostic Groups, automatic risk stratification, treatment recommendations, and MDT template generation.</p>
+        <span class="card-cta">Open pathway →</span>
+      </a>
+
+      <!-- ============================================================
+           PROFESSIONAL CARD 2
+           ============================================================ -->
+      <a href="LINK_HERE" class="tool-card">
+        <div class="card-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/>
+          </svg>
+        </div>
+        <h3>Male LUTS Decision Support</h3>
+        <p>Validated questionnaire scoring, pharmacological treatments with specific dosages, and surgical options with detailed risk assessments.</p>
+        <span class="card-cta">Open tool →</span>
+      </a>
+
+      <!-- ============================================================
+           PROFESSIONAL CARD 3
+           ============================================================ -->
+      <a href="LINK_HERE" class="tool-card">
+        <div class="card-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        </div>
+        <h3>MDT Referral Form</h3>
+        <p>Streamlined NHS Urology MDT referral form with pre-populated fields, auto-formatting, and instant download for submission.</p>
+        <span class="card-cta">Open form →</span>
+      </a>
+
+      <!-- ============================================================
+           PROFESSIONAL CARD 4
+           ============================================================ -->
+      <a href="LINK_HERE" class="tool-card">
+        <div class="card-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h3>Bladger Cancer Tutorials</h3>
+        <p>Comprehensive clinical tutorials — staging, TURBT, BCG protocols, and surveillance pathways with decision trees.</p>
+        <span class="card-cta">Open tutorials →</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================
+     PASSWORD MODAL — You do not need to edit anything here.
+     ================================================================ -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <h2>Professional Access</h2>
+    <p>Enter your access code to view clinical tools, dosing information, and treatment protocols.</p>
+    <label for="pwInput">Access Code</label>
+    <input type="password" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter') checkCode()" />
+    <div class="modal-error" id="errMsg"></div>
+    <button class="modal-btn" onclick="checkCode()">Unlock</button>
+  </div>
+</div>
+
+<!-- ================================================================
+     FOOTER
+     ================================================================ -->
+<footer>
+  <div class="footer-row">
+    <div class="footer-disclaimer">
+      <strong>Disclaimer:</strong> These tools are intended to support — not replace — clinical judgement. All information is for educational and professional reference only. Treatment decisions should be made in discussion with the patient and the wider clinical team. This website is not affiliated with or endorsed by the NHS.
+    </div>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ================================================================
+     ██████████████████████████████████████████████████████████████
+     ██                                                          ██
+     ██              EDIT PASSWORD HERE                           ██
+     ██                                                          ██
+     ██  Find the line below:                                    ██
+     ██      const ACCESS_CODE = "ChangeThisPassword123";        ██
+     ██                                                          ██
+     ██  Replace ChangeThisPassword123 with your own password.   ██
+     ██  Keep the quotes (" ") around it.                        ██
+     ██                                                          ██
+     ██  Example:                                                ██
+     ██      const ACCESS_CODE = "MySecret2025!";                ██
+     ██                                                          ██
+     ██  Do NOT change anything else in this section.            ██
+     ██                                                          ██
+     ██████████████████████████████████████████████████████████████
+     ================================================================ -->
+<script>
+  const ACCESS_CODE = "ChangeThisPassword123";
+
+  function openModal() {
+    document.getElementById('modalBg').classList.add('open');
+    document.getElementById('pwInput').value = '';
+    document.getElementById('errMsg').textContent = '';
+    setTimeout(() => document.getElementById('pwInput').focus(), 80);
+  }
+
+  function closeModal() {
+    document.getElementById('modalBg').classList.remove('open');
+  }
+
+  function checkCode() {
+    const val = document.getElementById('pwInput').value;
+    if (val === ACCESS_CODE) {
+      document.getElementById('proWrap').classList.remove('locked');
+      sessionStorage.setItem('proUnlocked', 'true');
+      closeModal();
+    } else {
+      document.getElementById('errMsg').textContent = 'Incorrect code. Please try again.';
+      document.getElementById('pwInput').value = '';
+      document.getElementById('pwInput').focus();
+    }
+  }
+
+  if (sessionStorage.getItem('proUnlocked') === 'true') {
+    document.getElementById('proWrap').classList.remove('locked');
+  }
+
+  document.getElementById('modalBg').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+</script>
+
+</body>
+</html>
