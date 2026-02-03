@@ -1,453 +1,557 @@
-<!--
-==========================================================================
-  UROLOGY CLINICAL TOOLS — WEBSITE TEMPLATE
-  =========================================================================
-  
-  HOW THIS FILE WORKS:
-  ─────────────────────
-  • This is ONE file that contains your entire website.
-  • Open it in a web browser to see it (double-click on Mac).
-  • Open it in a text editor to edit it (see instructions below).
-  • Search for the word EDIT — every place you need to change
-    something is marked clearly.
-  
-  HOW TO OPEN FOR EDITING (on Mac):
-  ─────────────────────────────────
-  1. Right-click the file
-  2. Choose "Open With"
-  3. Pick "TextEdit" (or "Visual Studio Code" if you have it)
-  
-  FIND AND EDIT:
-  ──────────────
-  Press Cmd + F (on Mac) to open Find.
-  Search for the word: EDIT
-  This will jump you to every place you can change something.
-==========================================================================
--->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- ================================================================
-       EDIT WEBSITE TITLE — This shows in the browser tab
-       Change "Urology Clinical Tools" to whatever you want.
-       ================================================================ -->
-  <title>Urology Clinical Tools</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Urology Digital — Clinical Decision Tools</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  
   <style>
     /* ================================================================
-       COLOURS — You can change the look of the whole site here.
-       
-       --clr-accent      = the main highlight colour (currently dark green)
-       --clr-accent-soft = a lighter version used for backgrounds
-       --clr-text        = main text colour
-       --clr-text-mid    = slightly lighter text (descriptions)
-       --clr-text-light  = the lightest text (small labels)
-       --clr-surface     = white card backgrounds
-       --clr-bg          = the page background (off-white)
-       --clr-border      = thin lines between sections
-
-       To change a colour, replace the hex code (e.g. #2d5016).
+       MODERN DESIGN SYSTEM
        ================================================================ */
+    
     :root {
-      --clr-accent:       #2d5016;
-      --clr-accent-soft:  #eaf2e3;
-      --clr-accent-hover: #3d6b22;
-      --clr-text:         #1e1e1e;
-      --clr-text-mid:     #4a4a4a;
-      --clr-text-light:   #7a7a7a;
-      --clr-surface:      #ffffff;
-      --clr-bg:           #f6f4f0;
-      --clr-border:       #e0dcd6;
-      --clr-pro-dark:     #1e1e1e;
-      --radius:           14px;
+      /* Colors — Modern Medical Blue/Teal Palette */
+      --primary: #0066CC;        /* Deep medical blue */
+      --primary-light: #3399FF;  /* Lighter blue for hovers */
+      --accent: #00B8A9;         /* Teal accent */
+      --accent-light: #00D9C8;   /* Light teal */
+      --dark: #1A1D29;           /* Almost black for text */
+      --gray-900: #2D3142;
+      --gray-700: #4F5D75;
+      --gray-500: #8B93A8;
+      --gray-300: #BFC0C0;
+      --gray-100: #E8E9F3;
+      --white: #FFFFFF;
+      --bg: #F8F9FD;             /* Very light blue background */
+      
+      /* Typography */
+      --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-headings: 'DM Sans', sans-serif;
+      
+      /* Spacing scale */
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 1.5rem;
+      --space-lg: 2.5rem;
+      --space-xl: 4rem;
+      
+      /* Shadows */
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.12);
+      
+      /* Border radius */
+      --radius-sm: 6px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
     }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
+    
+    /* ── Reset & Base ──────────────────────────────────────────────── */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
-      font-family: 'Outfit', system-ui, sans-serif;
-      background: var(--clr-bg);
-      color: var(--clr-text);
+      font-family: var(--font-primary);
+      background: var(--bg);
+      color: var(--dark);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
-
-    /* ── HEADER ─────────────────────────────────────────────────── */
-    header {
-      background: var(--clr-surface);
-      border-bottom: 1px solid var(--clr-border);
+    
+    /* ── Header ────────────────────────────────────────────────────── */
+    .header {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-100);
+      padding: var(--space-md) 0;
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
     }
-
-    .header-row {
-      max-width: 1080px;
+    
+    .header-inner {
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 0 28px;
-      height: 68px;
+      padding: 0 var(--space-md);
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-
-    .site-logo {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      text-decoration: none;
-    }
-
-    .logo-icon {
-      width: 40px; height: 40px;
-      background: var(--clr-accent);
-      border-radius: 11px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .logo-icon svg { width: 22px; height: 22px; }
-
-    .logo-words { line-height: 1.15; }
-
-    .logo-words .name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.25rem;
+    
+    .logo {
+      font-family: var(--font-headings);
+      font-size: 1.5rem;
       font-weight: 700;
-      color: var(--clr-text);
+      color: var(--primary);
+      text-decoration: none;
+      letter-spacing: -0.02em;
     }
-    .logo-words .sub {
-      font-size: 0.7rem;
-      color: var(--clr-text-light);
+    
+    .logo-subtitle {
+      font-size: 0.75rem;
       font-weight: 400;
-      letter-spacing: 0.5px;
+      color: var(--gray-500);
+      display: block;
+      margin-top: 2px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
-
-    .nav-links { display: flex; gap: 4px; }
-    .nav-links a {
+    
+    .nav {
+      display: flex;
+      gap: var(--space-lg);
+    }
+    
+    .nav a {
+      color: var(--gray-700);
       text-decoration: none;
-      font-size: 0.82rem;
       font-weight: 500;
-      color: var(--clr-text-mid);
-      padding: 7px 15px;
-      border-radius: 8px;
-      transition: background 0.2s;
-    }
-    .nav-links a:hover { background: var(--clr-accent-soft); }
-
-    /* ── HERO ───────────────────────────────────────────────────── */
-    .hero {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 68px 28px 52px;
-      text-align: center;
-    }
-
-    .hero-tag {
-      display: inline-block;
-      background: var(--clr-accent-soft);
-      color: var(--clr-accent);
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
-      padding: 5px 15px;
-      border-radius: 30px;
-      margin-bottom: 22px;
-    }
-
-    .hero h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.2rem, 5vw, 3rem);
-      font-weight: 600;
-      line-height: 1.15;
-      color: var(--clr-text);
-      max-width: 640px;
-      margin: 0 auto 18px;
-    }
-
-    .hero p {
-      color: var(--clr-text-mid);
-      font-size: 1rem;
-      font-weight: 300;
-      max-width: 540px;
-      margin: 0 auto;
-    }
-
-    /* ── SECTION WRAPPER ────────────────────────────────────────── */
-    .section {
-      max-width: 1080px;
-      margin: 0 auto;
-      padding: 0 28px 68px;
-    }
-
-    /* ── SECTION DIVIDER LABEL ──────────────────────────────────── */
-    .divider-label {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 32px;
-    }
-    .divider-label .line { flex: 1; height: 1px; background: var(--clr-border); }
-    .divider-label .label-text {
-      font-size: 0.68rem;
-      font-weight: 600;
-      letter-spacing: 1.4px;
-      text-transform: uppercase;
-      color: var(--clr-text-light);
-      white-space: nowrap;
-    }
-
-    /* ── CARD GRID ──────────────────────────────────────────────── */
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 18px;
-    }
-
-    .tool-card {
-      background: var(--clr-surface);
-      border: 1px solid var(--clr-border);
-      border-radius: var(--radius);
-      padding: 26px 22px 22px;
-      text-decoration: none;
-      color: inherit;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      font-size: 0.95rem;
+      transition: color 0.2s;
       position: relative;
-      transition: transform 0.22s ease, box-shadow 0.22s ease;
-      overflow: hidden;
     }
-
-    .tool-card::after {
+    
+    .nav a:hover {
+      color: var(--primary);
+    }
+    
+    .nav a::after {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: var(--clr-accent);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s ease;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--primary);
+      transition: width 0.2s;
     }
-
-    .tool-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 32px rgba(0,0,0,0.08);
+    
+    .nav a:hover::after {
+      width: 100%;
     }
-    .tool-card:hover::after { transform: scaleX(1); }
-
-    .card-icon-wrap {
-      width: 46px; height: 46px;
-      background: var(--clr-accent-soft);
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
+    
+    /* ── Container ─────────────────────────────────────────────────── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-xl) var(--space-md);
     }
-    .card-icon-wrap svg { width: 22px; height: 22px; color: var(--clr-accent); }
-
-    .tool-card h3 {
-      font-size: 1.02rem;
-      font-weight: 600;
-      color: var(--clr-text);
+    
+    /* ── Section Headers ───────────────────────────────────────────── */
+    .section {
+      margin-bottom: var(--space-xl);
     }
-
-    .tool-card p {
-      font-size: 0.8rem;
-      color: var(--clr-text-light);
-      line-height: 1.55;
-      flex: 1;
+    
+    .section-header {
+      margin-bottom: var(--space-lg);
     }
-
-    .card-cta {
-      font-size: 0.76rem;
-      font-weight: 600;
-      color: var(--clr-accent);
-      margin-top: 4px;
+    
+    .section-title {
+      font-family: var(--font-headings);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: var(--space-xs);
+      letter-spacing: -0.02em;
     }
-
-    /* ── PROFESSIONAL LOCK BANNER ───────────────────────────────── */
-    .lock-banner {
-      background: var(--clr-surface);
-      border: 1px solid var(--clr-border);
-      border-radius: var(--radius);
-      padding: 18px 22px;
+    
+    .section-description {
+      font-size: 1.05rem;
+      color: var(--gray-700);
+      max-width: 600px;
+    }
+    
+    /* ── TABS (Patient Section) ────────────────────────────────────── */
+    .tabs {
+      display: flex;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-lg);
+      border-bottom: 2px solid var(--gray-100);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    .tab {
+      padding: var(--space-sm) var(--space-md);
+      background: none;
+      border: none;
+      color: var(--gray-500);
+      font-family: var(--font-primary);
+      font-size: 0.95rem;
+      font-weight: 500;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+    }
+    
+    .tab:hover {
+      color: var(--gray-700);
+    }
+    
+    .tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: grid;
+    }
+    
+    /* ── Cards Grid ────────────────────────────────────────────────── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--space-md);
+    }
+    
+    .card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: var(--space-lg);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid var(--gray-100);
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--primary);
+      transform: scaleY(0);
+      transition: transform 0.3s;
+    }
+    
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--gray-200);
+    }
+    
+    .card:hover::before {
+      transform: scaleY(1);
+    }
+    
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+      border-radius: var(--radius-md);
       display: flex;
       align-items: center;
-      gap: 16px;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: var(--space-md);
     }
-
-    .lock-banner-icon {
-      width: 42px; height: 42px; min-width: 42px;
-      background: var(--clr-pro-dark);
-      border-radius: 11px;
-      display: flex; align-items: center; justify-content: center;
+    
+    .card-icon svg {
+      width: 24px;
+      height: 24px;
+      stroke: var(--white);
     }
-    .lock-banner-icon svg { width: 18px; height: 18px; color: #fff; }
-
-    .lock-banner-text { flex: 1; min-width: 200px; }
-    .lock-banner-text p { font-size: 0.8rem; color: var(--clr-text-mid); }
-    .lock-banner-text strong { color: var(--clr-text); }
-
-    .unlock-btn {
-      background: var(--clr-pro-dark);
-      color: #fff;
-      border: none;
-      padding: 10px 24px;
-      border-radius: 9px;
-      font-size: 0.8rem;
+    
+    .card h3 {
+      font-family: var(--font-headings);
+      font-size: 1.25rem;
       font-weight: 600;
-      font-family: inherit;
+      color: var(--dark);
+      margin-bottom: var(--space-xs);
+      letter-spacing: -0.01em;
+    }
+    
+    .card p {
+      font-size: 0.95rem;
+      color: var(--gray-700);
+      line-height: 1.6;
+      margin-bottom: var(--space-md);
+    }
+    
+    .card-arrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--primary);
+      transition: gap 0.2s;
+    }
+    
+    .card:hover .card-arrow {
+      gap: 0.75rem;
+    }
+    
+    /* ── Professional Section Lock ─────────────────────────────────── */
+    .lock-banner {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: var(--white);
+      padding: var(--space-lg);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--space-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .lock-banner.hidden {
+      display: none;
+    }
+    
+    .lock-content {
+      flex: 1;
+    }
+    
+    .lock-content h3 {
+      font-family: var(--font-headings);
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    
+    .lock-content p {
+      opacity: 0.9;
+      font-size: 0.95rem;
+    }
+    
+    .unlock-btn {
+      background: var(--white);
+      color: var(--primary);
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-primary);
+      font-size: 0.95rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s;
       white-space: nowrap;
     }
-    .unlock-btn:hover { background: #333; }
-
-    /* ── PROFESSIONAL CARDS — blur when locked ──────────────────── */
-    .pro-wrap { position: relative; }
-    .pro-wrap.locked .card-grid {
-      filter: blur(3px);
-      opacity: 0.3;
+    
+    .unlock-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    
+    .professional-content.locked .cards-grid {
+      filter: blur(8px);
       pointer-events: none;
       user-select: none;
     }
-
-    /* ── MODAL (password popup) ─────────────────────────────────── */
-    .modal-bg {
+    
+    /* ── Password Modal ────────────────────────────────────────────── */
+    .modal-overlay {
       display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.42);
-      z-index: 200;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(26, 29, 41, 0.8);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
       align-items: center;
       justify-content: center;
-      padding: 24px;
     }
-    .modal-bg.open { display: flex; }
-
-    .modal-box {
-      background: var(--clr-surface);
-      border-radius: 18px;
-      padding: 42px 38px 36px;
-      width: 100%;
-      max-width: 400px;
+    
+    .modal-overlay.active {
+      display: flex;
+    }
+    
+    .modal {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      max-width: 440px;
+      width: 90%;
+      box-shadow: var(--shadow-xl);
       position: relative;
-      box-shadow: 0 28px 56px rgba(0,0,0,0.14);
     }
-
+    
     .modal-close {
-      position: absolute; top: 18px; right: 20px;
-      background: none; border: none;
-      font-size: 1.5rem; color: var(--clr-text-light);
-      cursor: pointer; line-height: 1;
+      position: absolute;
+      top: var(--space-md);
+      right: var(--space-md);
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--gray-500);
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s;
     }
-
-    .modal-box h2 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.55rem;
-      font-weight: 600;
-      margin-bottom: 6px;
+    
+    .modal-close:hover {
+      background: var(--gray-100);
+      color: var(--dark);
     }
-
-    .modal-box > p {
-      font-size: 0.8rem;
-      color: var(--clr-text-light);
-      margin-bottom: 26px;
+    
+    .modal h2 {
+      font-family: var(--font-headings);
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: var(--space-xs);
     }
-
-    .modal-box label {
-      font-size: 0.72rem;
-      font-weight: 600;
-      color: var(--clr-text-mid);
-      letter-spacing: 0.4px;
+    
+    .modal-description {
+      color: var(--gray-700);
+      margin-bottom: var(--space-lg);
+      font-size: 0.95rem;
+    }
+    
+    .form-group {
+      margin-bottom: var(--space-md);
+    }
+    
+    .form-label {
       display: block;
-      margin-bottom: 8px;
-    }
-
-    .modal-box input[type="password"] {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1.5px solid var(--clr-border);
-      border-radius: 9px;
+      font-weight: 500;
+      color: var(--dark);
+      margin-bottom: var(--space-xs);
       font-size: 0.9rem;
-      font-family: inherit;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--gray-100);
+      border-radius: var(--radius-sm);
+      font-family: var(--font-primary);
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+    
+    .form-input:focus {
       outline: none;
-      transition: border-color 0.2s;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
     }
-    .modal-box input[type="password"]:focus { border-color: var(--clr-accent); }
-
-    .modal-error {
-      min-height: 18px;
-      font-size: 0.75rem;
-      color: #c0392b;
-      margin-top: 8px;
+    
+    .form-error {
+      color: #EF4444;
+      font-size: 0.85rem;
+      margin-top: var(--space-xs);
+      display: none;
     }
-
+    
+    .form-error.active {
+      display: block;
+    }
+    
     .modal-btn {
       width: 100%;
-      margin-top: 22px;
-      background: var(--clr-accent);
-      color: #fff;
+      padding: 0.875rem;
+      background: var(--primary);
+      color: var(--white);
       border: none;
-      padding: 13px;
-      border-radius: 9px;
-      font-size: 0.86rem;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-primary);
+      font-size: 1rem;
       font-weight: 600;
-      font-family: inherit;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s;
     }
-    .modal-btn:hover { background: var(--clr-accent-hover); }
-
-    /* ── FOOTER ─────────────────────────────────────────────────── */
-    footer {
-      background: var(--clr-surface);
-      border-top: 1px solid var(--clr-border);
-      padding: 44px 28px;
+    
+    .modal-btn:hover {
+      background: var(--primary-light);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
     }
-    .footer-row {
-      max-width: 1080px;
+    
+    /* ── Footer ────────────────────────────────────────────────────── */
+    .footer {
+      background: var(--white);
+      border-top: 1px solid var(--gray-100);
+      padding: var(--space-lg) 0;
+      margin-top: var(--space-xl);
+    }
+    
+    .footer-content {
+      max-width: 1200px;
       margin: 0 auto;
+      padding: 0 var(--space-md);
+      text-align: center;
+      color: var(--gray-500);
+      font-size: 0.9rem;
+    }
+    
+    .footer-content p {
+      margin-bottom: var(--space-xs);
+    }
+    
+    .footer-links {
       display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      gap: 28px;
+      gap: var(--space-md);
+      justify-content: center;
+      margin-top: var(--space-sm);
     }
-    .footer-disclaimer {
-      max-width: 500px;
-      font-size: 0.7rem;
-      color: var(--clr-text-light);
-      line-height: 1.65;
-    }
-    .footer-disclaimer strong { color: var(--clr-text-mid); }
+    
     .footer-links a {
-      display: block;
-      font-size: 0.76rem;
-      color: var(--clr-text-light);
+      color: var(--gray-500);
       text-decoration: none;
-      margin-bottom: 7px;
       transition: color 0.2s;
     }
-    .footer-links a:hover { color: var(--clr-accent); }
-
-    /* ── RESPONSIVE ─────────────────────────────────────────────── */
-    @media (max-width: 580px) {
-      .header-row { justify-content: center; }
-      .nav-links { display: none; }
-      .hero { padding: 52px 20px 40px; }
-      .card-grid { grid-template-columns: 1fr; }
-      .lock-banner { flex-direction: column; text-align: center; }
-      .unlock-btn { width: 100%; }
-      .modal-box { padding: 34px 24px 28px; }
+    
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+    
+    /* ── Responsive ────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav {
+        display: none;
+      }
+      
+      .section-title {
+        font-size: 1.5rem;
+      }
+      
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .lock-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .tabs {
+        gap: 0;
+      }
+      
+      .tab {
+        font-size: 0.85rem;
+        padding: var(--space-sm) var(--space-xs);
+      }
     }
   </style>
 </head>
@@ -456,325 +560,283 @@
 <!-- ================================================================
      HEADER
      ================================================================ -->
-<header>
-  <div class="header-row">
-    <a href="#" class="site-logo">
-      <div class="logo-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>
-        </svg>
-      </div>
-      <div class="logo-words">
-        <!-- ============================================================
-             EDIT SITE NAME (top-left corner)
-             ============================================================ -->
-        <div class="name">Urology Tools</div>
-        <div class="sub">Clinical Decision Support</div>
-      </div>
+<header class="header">
+  <div class="header-inner">
+    <a href="#" class="logo">
+      Urology Digital
+      <span class="logo-subtitle">Clinical Decision Tools</span>
     </a>
-    <nav class="nav-links">
-      <a href="#patients">Patients</a>
-      <a href="#professionals">Professionals</a>
+    <nav class="nav">
+      <a href="#patients">For Patients</a>
+      <a href="#professionals">For Professionals</a>
     </nav>
   </div>
 </header>
 
 <!-- ================================================================
-     HERO — The big heading at the top of the page
-     
-     EDIT the <h1> text (the main heading).
-     EDIT the <p> text (the description underneath).
+     MAIN CONTENT
      ================================================================ -->
-<div class="hero">
-  <div class="hero-tag">Evidence-Based Clinical Resources</div>
-  <h1>Urology tools built for clarity and confidence</h1>
-  <p>Interactive assessment tools, patient information, and clinical decision support — aligned with NICE, EAU, and GIRFT guidelines.</p>
-</div>
+<main class="container">
 
-<!-- ================================================================
-     ██████████████████████████████████████████████████████████████
-     ██                                                          ██
-     ██          PATIENT SECTION — PUBLIC ACCESS                  ██
-     ██                                                          ██
-     ██  Everything here is visible to everyone.                 ██
-     ██  No password is needed.                                  ██
-     ██                                                          ██
-     ██  TO ADD A NEW CARD:                                      ██
-     ██   1. Copy one of the card blocks below                  ██
-     ██      (from <a class="tool-card" to </a>)               ██
-     ██   2. Paste it after the last card                        ██
-     ██   3. Change the title inside <h3>                        ██
-     ██   4. Change the description inside <p>                   ██
-     ██   5. Replace LINK_HERE with your tool's URL              ██
-     ██                                                          ██
-     ██  TO REMOVE A CARD:                                       ██
-     ██   Delete everything from <a class="tool-card"           ██
-     ██   to the matching </a>                                  ██
-     ██                                                          ██
-     ██████████████████████████████████████████████████████████████
-     ================================================================ -->
-<section class="section" id="patients">
-  <div class="divider-label">
-    <div class="line"></div>
-    <span class="label-text">For Patients</span>
-    <div class="line"></div>
-  </div>
-
-  <div class="card-grid">
-
-    <!-- ============================================================
-         PATIENT CARD 1 — LUTS Questionnaire
-         ============================================================ -->
-    <a href="https://urologydigital.github.io/Male-Low-Urinary-tract-Symptoms-Questionnaire/" class="tool-card">
-      <div class="card-icon-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-        </svg>
-      </div>
-      <h3>Lower Urinary Tract Symptoms Questionnaire</h3>
-      <p>Answer questions about your bladder and urinary symptoms. The tool scores your answers and helps your doctor understand how they affect your daily life.</p>
-      <span class="card-cta">Start questionnaire →</span>
-    </a>
-
-    <!-- ============================================================
-         PATIENT CARD 3 — Post-Surgery Survey
-         ============================================================ -->
-    <a href="https://urologydigital.github.io/QEHKL-Post-Prostate-Benign-Surgery-Patient-Survey/" class="tool-card">
-      <div class="card-icon-wrap">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-        </svg>
-      </div>
-      <h3>Post-Surgery Patient Survey</h3>
-      <p>Completed benign prostate surgery? This short survey helps us monitor your recovery and improve care for future patients.</p>
-      <span class="card-cta">Complete survey →</span>
-    </a>
-
-  </div>
-</section>
-
-<!-- ================================================================
-     ██████████████████████████████████████████████████████████████
-     ██                                                          ██
-     ██     PROFESSIONAL SECTION — PASSWORD PROTECTED            ██
-     ██                                                          ██
-     ██  Everything here is hidden behind a password.            ██
-     ██  Only people with the correct code can see it.           ██
-     ██                                                          ██
-     ██  TO CHANGE THE PASSWORD: Scroll to the very bottom       ██
-     ██  of this file. Find the line:                            ██
-     ██      const ACCESS_CODE = "Sofia2036!";        ██
-     ██  Replace UroDigital2025! with your own password.   ██
-     ██                                                          ██
-     ██  TO ADD / REMOVE CARDS: Same method as patients above.  ██
-     ██                                                          ██
-     ██████████████████████████████████████████████████████████████
-     ================================================================ -->
-<section class="section" id="professionals">
-  <div class="divider-label">
-    <div class="line"></div>
-    <span class="label-text">For Healthcare Professionals</span>
-    <div class="line"></div>
-  </div>
-
-  <div class="lock-banner">
-    <div class="lock-banner-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-      </svg>
+  <!-- ── PATIENT SECTION (WITH TABS) ──────────────────────────────── -->
+  <section class="section" id="patients">
+    <div class="section-header">
+      <h1 class="section-title">Patient Resources</h1>
+      <p class="section-description">
+        Access questionnaires, information guides, and post-treatment surveys to support your care.
+      </p>
     </div>
-    <div class="lock-banner-text">
-      <p><strong>Professional access required.</strong> These tools include treatment protocols, medication dosing, and detailed clinical pathways. Enter your access code to continue.</p>
+    
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab(event, 'questionnaires')">Questionnaires</button>
+      <button class="tab" onclick="switchTab(event, 'information')">Information</button>
+      <button class="tab" onclick="switchTab(event, 'surveys')">Surveys & Feedback</button>
     </div>
-    <button class="unlock-btn" onclick="openModal()">Enter Access Code</button>
-  </div>
-
-  <div class="pro-wrap locked" id="proWrap">
-    <div class="card-grid">
-
-      <!-- ============================================================
-           PROFESSIONAL CARD 1 — Prostate Cancer Full Pathway
-           ============================================================ -->
-      <a href="https://urologydigital.github.io/Prostate-Cancer-Diagnostic-Prediction-and-Management-Tool/" class="tool-card">
-        <div class="card-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-          </svg>
-        </div>
-        <h3>Prostate Cancer Diagnostic, Prediction & Management</h3>
-        <p>Full clinical pathway — Cambridge Prognostic Groups, automatic risk stratification, treatment recommendations, and MDT template generation.</p>
-        <span class="card-cta">Open pathway →</span>
-      </a>
-
-      <!-- ============================================================
-           PROFESSIONAL CARD 2 — BPH Treatment Decision
-           ============================================================ -->
-      <a href="https://urologydigital.github.io/BPH-Treatment-Decision-Tool/" class="tool-card">
-        <div class="card-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/>
-          </svg>
-        </div>
-        <h3>BPH Treatment Decision Tool</h3>
-        <p>Benign Prostatic Hyperplasia decision support — pharmacological options with dosages, surgical pathways, and risk-benefit analysis.</p>
-        <span class="card-cta">Open tool →</span>
-      </a>
-
-      <!-- ============================================================
-           PROFESSIONAL CARD 3 — LUTS Clinical (full clinical version)
-           ============================================================ -->
-      <a href="https://urologydigital.github.io/Male-Low-Urinary-tract-Symptoms-Questionnaire/" class="tool-card">
-        <div class="card-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    
+    <!-- Tab 1: Questionnaires -->
+    <div id="questionnaires" class="tab-content active cards-grid">
+      <a href="https://urologydigital.github.io/Male-Low-Urinary-tract-Symptoms-Questionnaire/" class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
           </svg>
         </div>
-        <h3>Male LUTS — Clinical Scoring & Management</h3>
-        <p>Validated questionnaire scoring with clinical interpretation, pharmacological treatments with specific dosages, and surgical options with detailed risk assessments.</p>
-        <span class="card-cta">Open tool →</span>
+        <h3>Lower Urinary Tract Symptoms</h3>
+        <p>Complete a validated questionnaire about your bladder and urinary symptoms. Helps your doctor understand how they affect your daily life.</p>
+        <span class="card-arrow">Start questionnaire →</span>
       </a>
-
-      <!-- ============================================================
-           PROFESSIONAL CARD 4 — Sexual Health Clinical
-           ============================================================ -->
-      <a href="https://urologydigital.github.io/Male-Sexual-Health-Clinical-Assessment/" class="tool-card">
-        <div class="card-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
-          </svg>
-        </div>
-        <h3>Male Sexual Health — Clinical Assessment</h3>
-        <p>Full clinical scoring tool for erectile dysfunction and sexual health. Includes validated questionnaire interpretation and treatment pathways with dosing.</p>
-        <span class="card-cta">Open tool →</span>
-      </a>
-
-      <!-- ============================================================
-           PROFESSIONAL CARD 5 — Male Infertility Clinical
-           ============================================================ -->
-      <a href="https://urologydigital.github.io/Male-Infertility-Tool/" class="tool-card">
-        <div class="card-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
-          </svg>
-        </div>
-        <h3>Male Infertility — Clinical Decision Tool</h3>
-        <p>Diagnostic workup pathways, semen analysis interpretation, and treatment options including medical and surgical interventions.</p>
-        <span class="card-cta">Open tool →</span>
-      </a>
-
-      <!-- ============================================================
-           PROFESSIONAL CARD 6 — STD Assessment
-           ============================================================ -->
-      <a href="https://urologydigital.github.io/STD-Assessment-Tool/" class="tool-card">
-        <div class="card-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-          </svg>
-        </div>
-        <h3>STD Assessment Tool</h3>
-        <p>Sexually transmitted disease screening and clinical assessment — symptom evaluation, diagnostic pathways, and treatment protocols.</p>
-        <span class="card-cta">Open tool →</span>
-      </a>
-
-      <!-- ============================================================
-           PROFESSIONAL CARD 7 — Recurrent UTI
-           ============================================================ -->
-      <a href="https://urologydigital.github.io/Recurrent-UTI-Tool/" class="tool-card">
-        <div class="card-icon-wrap">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-        </div>
-        <h3>Recurrent UTI — Clinical Decision Tool</h3>
-        <p>Recurrent urinary tract infection management — risk factor assessment, investigation pathways, prophylaxis options, and referral criteria.</p>
-        <span class="card-cta">Open tool →</span>
-      </a>
-
     </div>
-  </div>
-</section>
+    
+    <!-- Tab 2: Information (empty for now - you can add patient info resources) -->
+    <div id="information" class="tab-content cards-grid">
+      <div class="card" style="pointer-events: none; opacity: 0.6;">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+        </div>
+        <h3>Patient Information Guides</h3>
+        <p>Coming soon — educational resources about urological conditions and treatments.</p>
+        <span class="card-arrow">Coming soon</span>
+      </div>
+    </div>
+    
+    <!-- Tab 3: Surveys -->
+    <div id="surveys" class="tab-content cards-grid">
+      <a href="https://urologydigital.github.io/QEHKL-Post-Prostate-Benign-Surgery-Patient-Survey/" class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+          </svg>
+        </div>
+        <h3>Post-Surgery Patient Survey</h3>
+        <p>Completed benign prostate surgery? This survey helps us monitor your recovery and improve care for future patients.</p>
+        <span class="card-arrow">Complete survey →</span>
+      </a>
+    </div>
+  </section>
 
-<!-- ================================================================
-     PASSWORD MODAL — You do not need to edit anything here.
-     ================================================================ -->
-<div class="modal-bg" id="modalBg">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()">&times;</button>
-    <h2>Professional Access</h2>
-    <p>Enter your access code to view clinical tools, dosing information, and treatment protocols.</p>
-    <label for="pwInput">Access Code</label>
-    <input type="password" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter') checkCode()" />
-    <div class="modal-error" id="errMsg"></div>
-    <button class="modal-btn" onclick="checkCode()">Unlock</button>
-  </div>
-</div>
+  <!-- ── PROFESSIONAL SECTION (PASSWORD PROTECTED) ─────────────────── -->
+  <section class="section" id="professionals">
+    <div class="section-header">
+      <h1 class="section-title">Professional Tools</h1>
+      <p class="section-description">
+        Evidence-based clinical decision support tools with treatment pathways, dosing information, and MDT templates.
+      </p>
+    </div>
+    
+    <div class="lock-banner" id="lockBanner">
+      <div class="lock-content">
+        <h3>🔒 Clinical Tools Access</h3>
+        <p>Professional access required. Enter your credentials to unlock dosing information and clinical protocols.</p>
+      </div>
+      <button class="unlock-btn" onclick="openModal()">Enter Access Code</button>
+    </div>
+    
+    <div class="professional-content locked" id="professionalContent">
+      <div class="cards-grid">
+        
+        <a href="https://urologydigital.github.io/Prostate-Cancer-Diagnostic-Prediction-and-Managenment-Tool/" class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <h3>Prostate Cancer Pathway</h3>
+          <p>Full diagnostic and management pathway with Cambridge Prognostic Groups, automatic risk stratification, and MDT templates.</p>
+          <span class="card-arrow">Open tool →</span>
+        </a>
+        
+        <a href="https://urologydigital.github.io/BPH-Treatment-Decision-Tool/" class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4"/>
+            </svg>
+          </div>
+          <h3>BPH Treatment Decision</h3>
+          <p>Benign prostatic hyperplasia management — pharmacological options with dosages, surgical pathways, and risk-benefit analysis.</p>
+          <span class="card-arrow">Open tool →</span>
+        </a>
+        
+        <a href="https://urologydigital.github.io/Male-Low-Urinary-tract-Symptoms-Questionnaire/" class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+            </svg>
+          </div>
+          <h3>Male LUTS — Clinical Tool</h3>
+          <p>Validated questionnaire with clinical scoring, pharmacological treatments, specific dosages, and detailed surgical risk assessments.</p>
+          <span class="card-arrow">Open tool →</span>
+        </a>
+        
+        <a href="https://urologydigital.github.io/Male-Sexual-Health-Clinical-Assessment/" class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+          <h3>Sexual Health — Clinical Assessment</h3>
+          <p>Full clinical scoring for erectile dysfunction. Validated questionnaire interpretation with treatment pathways and specific dosing.</p>
+          <span class="card-arrow">Open tool →</span>
+        </a>
+        
+        <a href="https://urologydigital.github.io/Male-Infertility-Tool/" class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+            </svg>
+          </div>
+          <h3>Male Infertility — Clinical Tool</h3>
+          <p>Diagnostic workup pathways, semen analysis interpretation, and treatment options including medical and surgical interventions.</p>
+          <span class="card-arrow">Open tool →</span>
+        </a>
+        
+        <a href="https://urologydigital.github.io/STD-Assessment-Tool/" class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+            </svg>
+          </div>
+          <h3>STD Assessment Tool</h3>
+          <p>Sexually transmitted disease screening and clinical assessment — symptom evaluation, diagnostic pathways, and treatment protocols.</p>
+          <span class="card-arrow">Open tool →</span>
+        </a>
+        
+        <a href="https://urologydigital.github.io/Recurrent-UTI-Tool/" class="card">
+          <div class="card-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+          </div>
+          <h3>Recurrent UTI — Clinical Tool</h3>
+          <p>Recurrent urinary tract infection management — risk factors, investigation pathways, prophylaxis options, and referral criteria.</p>
+          <span class="card-arrow">Open tool →</span>
+        </a>
+        
+      </div>
+    </div>
+  </section>
+
+</main>
 
 <!-- ================================================================
      FOOTER
      ================================================================ -->
-<footer>
-  <div class="footer-row">
-    <div class="footer-disclaimer">
-      <strong>Disclaimer:</strong> These tools are intended to support — not replace — clinical judgement. All information is for educational and professional reference only. Treatment decisions should be made in discussion with the patient and the wider clinical team. This website is not affiliated with or endorsed by the NHS.
-    </div>
-    <div class="footer-links">
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Use</a>
-      <a href="#">Contact</a>
-    </div>
+<footer class="footer">
+  <div class="footer-content">
+    <p><strong>Urology Digital</strong> — Evidence-based clinical decision support</p>
+    <p style="font-size: 0.8rem; color: var(--gray-500); margin-top: 0.5rem;">
+      These tools are for clinical decision support only and do not replace professional medical judgment. 
+      Always follow local protocols and guidelines.
+    </p>
   </div>
 </footer>
 
 <!-- ================================================================
-     ██████████████████████████████████████████████████████████████
-     ██                                                          ██
-     ██              EDIT PASSWORD HERE                           ██
-     ██                                                          ██
-     ██  Find the line below:                                    ██
-     ██      const ACCESS_CODE = "Sofia2036!";        ██
-     ██                                                          ██
-     ██  Replace UroDigital2025! with your own password.   ██
-     ██  Keep the quotes (" ") around it.                        ██
-     ██                                                          ██
-     ██  Example:                                                ██
-     ██      const ACCESS_CODE = "MySecret2025!";                ██
-     ██                                                          ██
-     ██  Do NOT change anything else in this section.            ██
-     ██                                                          ██
-     ██████████████████████████████████████████████████████████████
+     PASSWORD MODAL
+     ================================================================ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <h2>Professional Access</h2>
+    <p class="modal-description">
+      Enter your access code to view clinical tools with dosing information and treatment protocols.
+    </p>
+    
+    <div class="form-group">
+      <label for="passwordInput" class="form-label">Access Code</label>
+      <input 
+        type="password" 
+        id="passwordInput" 
+        class="form-input"
+        placeholder="Enter access code"
+        onkeydown="if(event.key==='Enter') checkPassword()"
+      />
+      <div class="form-error" id="errorMsg">Incorrect access code. Please try again.</div>
+    </div>
+    
+    <button class="modal-btn" onclick="checkPassword()">Unlock Professional Tools</button>
+  </div>
+</div>
+
+<!-- ================================================================
+     JAVASCRIPT
      ================================================================ -->
 <script>
-  const ACCESS_CODE = "Sofia2036!";
-
+  // Password
+  const ACCESS_CODE = "UroDigital2025!";
+  
+  // Tab switching
+  function switchTab(event, tabId) {
+    // Remove active class from all tabs and contents
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    
+    // Add active class to clicked tab and corresponding content
+    event.target.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+  }
+  
+  // Modal functions
   function openModal() {
-    document.getElementById('modalBg').classList.add('open');
-    document.getElementById('pwInput').value = '';
-    document.getElementById('errMsg').textContent = '';
-    setTimeout(() => document.getElementById('pwInput').focus(), 80);
+    document.getElementById('modalOverlay').classList.add('active');
+    document.getElementById('passwordInput').focus();
   }
-
+  
   function closeModal() {
-    document.getElementById('modalBg').classList.remove('open');
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.getElementById('errorMsg').classList.remove('active');
+    document.getElementById('passwordInput').value = '';
   }
-
-  function checkCode() {
-    const val = document.getElementById('pwInput').value;
-    if (val === ACCESS_CODE) {
-      document.getElementById('proWrap').classList.remove('locked');
-      sessionStorage.setItem('proUnlocked', 'true');
+  
+  function checkPassword() {
+    const input = document.getElementById('passwordInput').value;
+    const error = document.getElementById('errorMsg');
+    
+    if (input === ACCESS_CODE) {
+      // Unlock professional section
+      document.getElementById('lockBanner').classList.add('hidden');
+      document.getElementById('professionalContent').classList.remove('locked');
+      
+      // Store unlock state
+      sessionStorage.setItem('professional_unlocked', 'true');
+      
       closeModal();
     } else {
-      document.getElementById('errMsg').textContent = 'Incorrect code. Please try again.';
-      document.getElementById('pwInput').value = '';
-      document.getElementById('pwInput').focus();
+      error.classList.add('active');
+      document.getElementById('passwordInput').value = '';
+      document.getElementById('passwordInput').focus();
     }
   }
-
-  if (sessionStorage.getItem('proUnlocked') === 'true') {
-    document.getElementById('proWrap').classList.remove('locked');
+  
+  // Check if already unlocked on page load
+  if (sessionStorage.getItem('professional_unlocked') === 'true') {
+    document.getElementById('lockBanner').classList.add('hidden');
+    document.getElementById('professionalContent').classList.remove('locked');
   }
-
-  document.getElementById('modalBg').addEventListener('click', function(e) {
+  
+  // Close modal on overlay click
+  document.getElementById('modalOverlay').addEventListener('click', function(e) {
     if (e.target === this) closeModal();
   });
 </script>
