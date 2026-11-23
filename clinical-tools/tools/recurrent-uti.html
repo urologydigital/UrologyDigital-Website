@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recurrent UTI Clinical Decision Support Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #005EB8;
+            --primary-dark: #003F7F;
+            --secondary: #41B6E6;
+            --accent: #ED8B00;
+            --success: #00A499;
+            --warning: #FFB81C;
+            --danger: #DA291C;
+            --neutral-50: #F9FAFB;
+            --neutral-100: #F3F4F6;
+            --neutral-200: #E5E7EB;
+            --neutral-300: #D1D5DB;
+            --neutral-700: #374151;
+            --neutral-800: #1F2937;
+            --neutral-900: #111827;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #F0F4F8 0%, #E8EEF4 100%);
+            color: var(--neutral-800);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 24px rgba(0, 94, 184, 0.2);
+        }
+
+        h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .guidelines-badge {
+            display: inline-flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--neutral-200);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--neutral-100);
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.75rem;
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        h3 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin: 1.5rem 0 1rem;
+            font-weight: 600;
+        }
+
+        .section {
+            margin-bottom: 2rem;
+        }
+
+        .definition-box {
+            background: linear-gradient(135deg, #FFF8F0 0%, #FFF4E8 100%);
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .definition-box strong {
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        .alert-box {
+            background: linear-gradient(135deg, #FFF4F4 0%, #FFEBEB 100%);
+            border-left: 4px solid var(--danger);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .alert-box strong {
+            color: var(--danger);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #F0FFF4 0%, #E8F9ED 100%);
+            border-left: 4px solid var(--success);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E8F4FF 100%);
+            border-left: 4px solid var(--primary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .list-item {
+            background: var(--neutral-50);
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            border-left: 3px solid var(--secondary);
+            transition: all 0.2s ease;
+        }
+
+        .list-item:hover {
+            background: white;
+            border-left-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .list-item strong {
+            color: var(--primary);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .pathway-step {
+            background: white;
+            border: 2px solid var(--neutral-200);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .pathway-step:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 94, 184, 0.15);
+        }
+
+        .pathway-step::before {
+            content: '';
+            position: absolute;
+            left: -2px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--primary);
+            border-radius: 10px 0 0 10px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: 700;
+            margin-right: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--neutral-200);
+        }
+
+        tr:hover {
+            background: var(--neutral-50);
+        }
+
+        .antibiotic-card {
+            background: linear-gradient(135deg, #FAFBFF 0%, #F5F7FF 100%);
+            border: 1px solid var(--secondary);
+            border-radius: 10px;
+            padding: 1.2rem;
+            margin: 0.8rem 0;
+        }
+
+        .antibiotic-card h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .dosage {
+            background: var(--primary);
+            color: white;
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--neutral-200);
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            background: transparent;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--neutral-700);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+            background: var(--neutral-50);
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .interactive-form {
+            background: var(--neutral-50);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: var(--neutral-700);
+            margin-bottom: 0.5rem;
+        }
+
+        select, input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--neutral-300);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 94, 184, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 94, 184, 0.3);
+        }
+
+        .result-panel {
+            background: white;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .result-panel.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .referral-indicator {
+            font-size: 1.3rem;
+            font-weight: 700;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .referral-community {
+            background: linear-gradient(135deg, #F0FFF4, #E8F9ED);
+            color: var(--success);
+            border: 2px solid var(--success);
+        }
+
+        .referral-specialist {
+            background: linear-gradient(135deg, #FFF4F4, #FFEBEB);
+            color: var(--danger);
+            border: 2px solid var(--danger);
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            text-align: center;
+            color: var(--neutral-700);
+            font-size: 0.9rem;
+        }
+
+        .disclaimer {
+            background: var(--neutral-100);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                text-align: left;
+            }
+        }
+
+        .print-button {
+            background: var(--success);
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0, 164, 153, 0.3);
+            z-index: 1000;
+        }
+
+        @media print {
+            .print-button, .tabs, button {
+                display: none;
+            }
+            
+            .tab-content {
+                display: block !important;
+            }
+            
+            body {
+                background: white;
+            }
+            
+            .card {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="ud-update" style="margin:12px auto;max-width:1100px;padding:10px 14px;border-left:4px solid #0a7;background:#effaf6;font:13px/1.45 system-ui,sans-serif;color:#124"><strong>Updated 23 Nov 2026 – what changed</strong><ul style="margin:6px 0 0 18px;padding:0"><li>Guideline basis updated to EAU 2026 and NICE NG112 (Dec 2024/May 2025)</li><li>D-mannose downgraded (MERIT 2024 negative) and removed from the recommended strategy step</li><li>Methenamine/oestrogen/gepotidacin/cefalexin wording not yet re-edited in-text – clinician to review these blocks against NG112 and EAU 2026</li></ul><em>Decision support only; verify against current local and national guidance.</em></div>
+    <div class="container">
+        <header>
+            <h1>Recurrent UTI Clinical Decision Support Tool</h1>
+            <p class="subtitle">Evidence-based management pathway for recurrent urinary tract infections</p>
+            <div class="guidelines-badge">
+                <span class="badge">EAU Guidelines 2024</span>
+                <span class="badge">EAU 2026</span><span class="badge">NICE NG112 (2024/25)</span>
+                <span class="badge">GIRFT 2024</span>
+                <span class="badge">BNF</span>
+                <span class="badge">PHE Guidance</span>
+            </div>
+        </header>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('definition')">Definition & Diagnosis</button>
+            <button class="tab" onclick="showTab('initial')">Initial Assessment</button>
+            <button class="tab" onclick="showTab('investigations')">Investigations</button>
+            <button class="tab" onclick="showTab('management')">Management</button>
+            <button class="tab" onclick="showTab('prophylaxis')">Antibiotic Prophylaxis</button>
+            <button class="tab" onclick="showTab('lifestyle')">Lifestyle & Herbal</button>
+            <button class="tab" onclick="showTab('pathway')">Referral Pathway</button>
+            <button class="tab" onclick="showTab('calculator')">Decision Calculator</button>
+        </div>
+
+        <!-- Definition & Diagnosis Tab -->
+        <div id="definition" class="tab-content active">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📋</div>
+                    <h2>Definition of Recurrent UTI</h2>
+                </div>
+
+                <div class="definition-box">
+                    <strong>Recurrent UTI (rUTI) Definition:</strong>
+                    <p>≥2 infections in 6 months OR ≥3 infections in 12 months</p>
+                </div>
+
+                <h3>Classification</h3>
+                <div class="grid-2">
+                    <div class="list-item">
+                        <strong>Reinfection (90-95%)</strong>
+                        New infection with different organism or same organism after complete eradication
+                    </div>
+                    <div class="list-item">
+                        <strong>Relapse (5-10%)</strong>
+                        Same organism within 2 weeks of treatment completion, suggests persistent focus
+                    </div>
+                </div>
+
+                <h3>Clinical Presentation</h3>
+                <div class="section">
+                    <p><strong>Typical symptoms include:</strong></p>
+                    <ul style="margin-left: 2rem; margin-top: 1rem;">
+                        <li>Dysuria (painful urination)</li>
+                        <li>Frequency and urgency</li>
+                        <li>Suprapubic pain or discomfort</li>
+                        <li>Haematuria (visible or non-visible)</li>
+                        <li>New onset or worsening urinary incontinence</li>
+                        <li>Cloudy or foul-smelling urine</li>
+                    </ul>
+                </div>
+
+                <div class="alert-box">
+                    <strong>⚠️ Red Flag Symptoms (Require Urgent Assessment):</strong>
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li>Fever >38°C with rigors (suggests pyelonephritis)</li>
+                        <li>Loin pain or tenderness</li>
+                        <li>Sepsis or systemic unwellness</li>
+                        <li>Visible haematuria in older patients (>50 years)</li>
+                        <li>Acute urinary retention</li>
+                        <li>New neurological symptoms</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Initial Assessment Tab -->
+        <div id="initial" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔍</div>
+                    <h2>Initial Assessment</h2>
+                </div>
+
+                <h3>History Taking</h3>
+                <div class="section">
+                    <div class="list-item">
+                        <strong>Infection Pattern</strong>
+                        Frequency, temporal relationship to activities (sexual activity, menstruation), previous treatments and responses
+                    </div>
+                    <div class="list-item">
+                        <strong>Urological History</strong>
+                        Previous urinary tract surgery, stones, catheterization, voiding dysfunction, incontinence
+                    </div>
+                    <div class="list-item">
+                        <strong>Gynaecological History</strong>
+                        Menopausal status, vaginal atrophy symptoms, use of spermicides/diaphragm, vaginal discharge
+                    </div>
+                    <div class="list-item">
+                        <strong>Medical Comorbidities</strong>
+                        Diabetes, immunosuppression, neurological conditions, renal disease, previous pelvic radiation
+                    </div>
+                    <div class="list-item">
+                        <strong>Medication Review</strong>
+                        Antibiotic history, resistance patterns, immunosuppressants, anticholinergics
+                    </div>
+                    <div class="list-item">
+                        <strong>Fluid and Hygiene Habits</strong>
+                        Daily fluid intake, voiding frequency, bowel habits, personal hygiene practices
+                    </div>
+                </div>
+
+                <h3>Physical Examination</h3>
+                <div class="grid-2">
+                    <div class="info-box">
+                        <strong>General Examination</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>Temperature and vital signs</li>
+                            <li>Abdominal examination (suprapubic tenderness, palpable bladder)</li>
+                            <li>Loin tenderness (renal angle)</li>
+                            <li>Peripheral oedema</li>
+                        </ul>
+                    </div>
+                    <div class="info-box">
+                        <strong>Female-Specific</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>External genitalia inspection</li>
+                            <li>Vaginal examination (atrophy, prolapse)</li>
+                            <li>Pelvic organ prolapse assessment</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong>Male-Specific Examination:</strong>
+                    <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                        <li>Digital rectal examination (prostate assessment)</li>
+                        <li>External genitalia examination (phimosis, meatal stenosis)</li>
+                        <li>Testicular examination if scrotal symptoms</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Investigations Tab -->
+        <div id="investigations" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🔬</div>
+                    <h2>Diagnostic Investigations</h2>
+                </div>
+
+                <h3>First-Line Investigations (Primary Care)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Investigation</th>
+                            <th>Indication</th>
+                            <th>Interpretation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Urine Dipstick</strong></td>
+                            <td>Initial assessment during symptomatic episode</td>
+                            <td>Positive nitrites/leucocytes suggests UTI. Negative dipstick in symptomatic patient does not exclude UTI</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Urine MC&S</strong></td>
+                            <td>All rUTI patients; send before starting antibiotics if possible</td>
+                            <td>Confirms diagnosis, identifies organism and sensitivities. Consider significant if ≥10³ CFU/mL in symptomatic patient</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Post-void Residual (PVR)</strong></td>
+                            <td>All patients with rUTI</td>
+                            <td>Bladder scan or catheterization. >100mL abnormal, >200mL significant. Suggests incomplete bladder emptying</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Renal Function (U&E)</strong></td>
+                            <td>Baseline assessment, elderly, diabetics, suspected complications</td>
+                            <td>Assess renal function, guide antibiotic choice and dosing</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HbA1c / Blood Glucose</strong></td>
+                            <td>If diabetes suspected or risk factors present</td>
+                            <td>Uncontrolled diabetes increases UTI risk</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>Specialist Investigations (Secondary Care)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Investigation</th>
+                            <th>Indication</th>
+                            <th>Key Findings</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Renal Tract Ultrasound</strong></td>
+                            <td>First-line imaging for rUTI, haematuria, suspected obstruction</td>
+                            <td>Hydronephrosis, stones, bladder abnormalities, PVR confirmation, renal masses</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Flexible Cystoscopy</strong></td>
+                            <td>Persistent haematuria, >50yrs with rUTI, suspected bladder pathology</td>
+                            <td>Bladder tumours, stones, foreign bodies, urethral stricture, interstitial cystitis</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Flow Rate & Voiding Study</strong></td>
+                            <td>Suspected voiding dysfunction, high PVR</td>
+                            <td>Qmax <15 mL/s abnormal, obstructive pattern, flow curve analysis</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CT Urogram (CTU)</strong></td>
+                            <td>Unexplained haematuria >50yrs, suspected stones, complex anatomy</td>
+                            <td>Detailed upper tract imaging, stone disease, structural abnormalities, masses</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Urodynamic Studies</strong></td>
+                            <td>Neurogenic bladder, complex voiding dysfunction, pre-surgery assessment</td>
+                            <td>Detrusor overactivity, bladder compliance, voiding pressure, obstruction</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MRI Pelvis</strong></td>
+                            <td>Suspected fistula, complex pelvic anatomy, soft tissue assessment</td>
+                            <td>Vesicovaginal/rectovesical fistula, pelvic floor dysfunction</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="alert-box">
+                    <strong>⚠️ Mandatory Investigations Before Referral:</strong>
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li>At least 2 MSU cultures with sensitivities during symptomatic episodes</li>
+                        <li>Post-void residual measurement</li>
+                        <li>Renal function (U&E)</li>
+                        <li>Renal tract ultrasound (can be arranged in primary care or by urology)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Management Tab -->
+        <div id="management" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">💊</div>
+                    <h2>Acute Management of rUTI Episodes</h2>
+                </div>
+
+                <h3>Treatment Principles</h3>
+                <div class="success-box">
+                    <strong>✓ Key Management Principles:</strong>
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li>Send MSU for culture BEFORE starting antibiotics when possible</li>
+                        <li>Use culture-directed therapy based on previous sensitivities</li>
+                        <li>Avoid unnecessary antibiotic exposure to reduce resistance</li>
+                        <li>Consider delayed prescribing for mild symptoms in low-risk patients</li>
+                        <li>Shorter courses (3 days) as effective as longer courses for uncomplicated lower UTI</li>
+                        <li>Review and adjust antibiotics based on culture results</li>
+                    </ul>
+                </div>
+
+                <h3>First-Line Antibiotic Treatment (Community)</h3>
+                <p><em>Based on PHE/NICE guidance and local antimicrobial guidelines - always check local formulary</em></p>
+
+                <div class="antibiotic-card">
+                    <h4>1. Nitrofurantoin (if eGFR >45 mL/min)</h4>
+                    <div class="dosage">100mg modified-release BD for 3 days</div>
+                    <p><strong>Advantages:</strong> Low resistance rates, minimal effect on gut flora, good bladder concentration</p>
+                    <p><strong>Contraindications:</strong> eGFR <45, G6PD deficiency, third trimester pregnancy, avoid in pyelonephritis</p>
+                </div>
+
+                <div class="antibiotic-card">
+                    <h4>2. Trimethoprim (if low resistance risk)</h4>
+                    <div class="dosage">200mg BD for 3 days</div>
+                    <p><strong>Advantages:</strong> Well-tolerated, inexpensive</p>
+                    <p><strong>Resistance concerns:</strong> Increasing resistance (30-40% in some areas) - check local data</p>
+                </div>
+
+                <div class="antibiotic-card">
+                    <h4>3. Pivmecillinam</h4>
+                    <div class="dosage">400mg initial dose, then 200mg TDS for 3 days</div>
+                    <p><strong>Advantages:</strong> Low resistance, good alternative when others contraindicated</p>
+                    <p><strong>Note:</strong> Take with food, may cause GI upset</p>
+                </div>
+
+                <h3>Second-Line Options (If First-Line Unsuitable)</h3>
+
+                <div class="antibiotic-card">
+                    <h4>Fosfomycin</h4>
+                    <div class="dosage">3g single dose (sachet dissolved in water)</div>
+                    <p><strong>Indication:</strong> Uncomplicated lower UTI, resistant organisms, patient preference for single dose</p>
+                    <p><strong>Advantages:</strong> Single-dose treatment, broad spectrum, low resistance</p>
+                    <p><strong>Cost:</strong> More expensive, reserve for appropriate cases</p>
+                </div>
+
+                <div class="antibiotic-card">
+                    <h4>Cefalexin</h4>
+                    <div class="dosage">500mg BD/TDS for 3-5 days</div>
+                    <p><strong>Indication:</strong> When first-line unsuitable, pregnancy (caution with other options)</p>
+                    <p><strong>Note:</strong> Broader spectrum, consider resistance development</p>
+                </div>
+
+                <h3>Pyelonephritis Treatment (Upper UTI)</h3>
+                <div class="alert-box">
+                    <strong>⚠️ Criteria for Pyelonephritis:</strong>
+                    Fever >38°C, loin pain/tenderness, systemically unwell, nausea/vomiting
+                </div>
+
+                <div class="antibiotic-card">
+                    <h4>Mild-Moderate Pyelonephritis (Oral Treatment)</h4>
+                    <div class="dosage">Cefalexin 500mg TDS for 7-10 days</div>
+                    <p><strong>Alternative:</strong> Co-amoxiclav 500/125mg TDS for 7-10 days (if sensitivities known)</p>
+                    <p><strong>If penicillin allergy:</strong> Ciprofloxacin 500mg BD for 7 days OR Trimethoprim 200mg BD for 14 days (check sensitivities)</p>
+                </div>
+
+                <div class="alert-box">
+                    <strong>🏥 Hospital Admission Criteria:</strong>
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li>Sepsis or severe systemic upset (SIRS criteria)</li>
+                        <li>Unable to tolerate oral antibiotics (vomiting)</li>
+                        <li>Pregnancy</li>
+                        <li>Immunocompromised</li>
+                        <li>Suspected obstruction or renal abscess</li>
+                        <li>Single functioning kidney</li>
+                        <li>Lack of response to oral treatment within 24-48 hours</li>
+                    </ul>
+                </div>
+
+                <h3>Special Populations</h3>
+                <div class="grid-2">
+                    <div class="info-box">
+                        <strong>Pregnancy</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li><strong>Asymptomatic bacteriuria:</strong> Requires treatment</li>
+                            <li><strong>First-line:</strong> Cefalexin 500mg BD 7 days</li>
+                            <li><strong>Avoid:</strong> Trimethoprim (first trimester), nitrofurantoin (third trimester), quinolones</li>
+                            <li>Low threshold for IV treatment and admission</li>
+                        </ul>
+                    </div>
+                    <div class="info-box">
+                        <strong>Elderly/Catheterized</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>Do NOT treat asymptomatic bacteriuria</li>
+                            <li>Only treat if symptomatic</li>
+                            <li>Consider catheter change if long-term catheter in situ</li>
+                            <li>Review need for catheter</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Treatment Failure</h3>
+                <div class="list-item">
+                    <strong>No improvement after 48 hours of appropriate antibiotic</strong>
+                    Send repeat MSU, review antibiotic sensitivities, consider compliance issues, reassess for complications (abscess, obstruction), consider imaging
+                </div>
+            </div>
+        </div>
+
+        <!-- Antibiotic Prophylaxis Tab -->
+        <div id="prophylaxis" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🛡️</div>
+                    <h2>Antibiotic Prophylaxis for rUTI</h2>
+                </div>
+
+                <div class="info-box">
+                    <strong>Indications for Antibiotic Prophylaxis (EAU/NICE):</strong>
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li>Frequent rUTI (≥3 infections in 12 months) significantly impacting quality of life</li>
+                        <li>Failed non-antibiotic preventive measures</li>
+                        <li>No correctable underlying structural abnormality</li>
+                        <li>Discussed benefits/risks with patient including antimicrobial resistance</li>
+                    </ul>
+                </div>
+
+                <h3>Prophylaxis Options</h3>
+
+                <div class="antibiotic-card">
+                    <h4>1. Nitrofurantoin (First-Line)</h4>
+                    <div class="dosage">50-100mg once daily at night</div>
+                    <p><strong>Duration:</strong> 3-6 month trial initially, review regularly</p>
+                    <p><strong>Advantages:</strong> Low resistance rates, minimal impact on bowel flora, well-tolerated</p>
+                    <p><strong>Monitoring:</strong> eGFR at baseline and 3-monthly (contraindicated if eGFR <45)</p>
+                    <p><strong>Side effects:</strong> Nausea, peripheral neuropathy (rare, long-term use), pulmonary reactions (rare)</p>
+                </div>
+
+                <div class="antibiotic-card">
+                    <h4>2. Trimethoprim</h4>
+                    <div class="dosage">100mg once daily at night</div>
+                    <p><strong>Duration:</strong> 3-6 month trial initially</p>
+                    <p><strong>Advantages:</strong> Well-tolerated, inexpensive</p>
+                    <p><strong>Concerns:</strong> Higher resistance rates (30-40%), avoid in pregnancy (first trimester)</p>
+                    <p><strong>Note:</strong> Check local resistance patterns before prescribing</p>
+                </div>
+
+                <div class="antibiotic-card">
+                    <h4>3. Cefalexin</h4>
+                    <div class="dosage">125mg once daily at night</div>
+                    <p><strong>Indication:</strong> When nitrofurantoin/trimethoprim unsuitable or ineffective</p>
+                    <p><strong>Advantages:</strong> Generally well-tolerated</p>
+                    <p><strong>Concerns:</strong> Broader spectrum, potential for C. difficile, ESBL development</p>
+                </div>
+
+                <h3>Post-Coital Prophylaxis</h3>
+                <div class="success-box">
+                    <strong>✓ For Women with UTI Triggered by Sexual Activity:</strong>
+                    <p style="margin-top: 0.5rem;"><strong>Single dose within 2 hours after intercourse:</strong></p>
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li><strong>Nitrofurantoin 100mg</strong> (preferred)</li>
+                        <li><strong>Trimethoprim 100mg</strong> (alternative)</li>
+                        <li><strong>Cefalexin 250mg</strong> (if others unsuitable)</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><em>More targeted approach, lower antibiotic exposure than continuous prophylaxis</em></p>
+                </div>
+
+                <h3>Patient Self-Treatment Strategy</h3>
+                <div class="info-box">
+                    <strong>Suitable for motivated, reliable patients with established pattern:</strong>
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li>Provide prescription for 3-day course to keep at home</li>
+                        <li>Patient recognizes typical UTI symptoms early</li>
+                        <li>Instructions to send MSU before starting antibiotics</li>
+                        <li>Clear criteria for when to seek medical review</li>
+                        <li>Regular follow-up to review effectiveness and frequency</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><strong>Antibiotics to provide:</strong> Nitrofurantoin 100mg MR BD or Trimethoprim 200mg BD (based on sensitivities)</p>
+                </div>
+
+                <h3>Monitoring on Prophylaxis</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Frequency</th>
+                            <th>Action Required</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Clinical review</td>
+                            <td>3 months, then 6-monthly</td>
+                            <td>Assess efficacy, side effects, quality of life impact</td>
+                        </tr>
+                        <tr>
+                            <td>UTI frequency</td>
+                            <td>Each review</td>
+                            <td>Document breakthrough infections and organisms</td>
+                        </tr>
+                        <tr>
+                            <td>Renal function (eGFR)</td>
+                            <td>Baseline, 3-monthly if on nitrofurantoin</td>
+                            <td>Stop nitrofurantoin if eGFR <45</td>
+                        </tr>
+                        <tr>
+                            <td>LFTs</td>
+                            <td>If symptoms develop (rare)</td>
+                            <td>Assess for drug-induced hepatitis</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h3>When to Stop Prophylaxis</h3>
+                <div class="list-item">
+                    <strong>Trial off treatment after 6-12 months</strong>
+                    If rUTI do not recur, prophylaxis can be discontinued. If recurrence occurs, consider restarting for further 6-12 months
+                </div>
+                <div class="list-item">
+                    <strong>Breakthrough infections on prophylaxis</strong>
+                    Send MSU, review antibiotic choice, check compliance, investigate for underlying pathology
+                </div>
+                <div class="list-item">
+                    <strong>Side effects or contraindications develop</strong>
+                    Consider alternative prophylactic agent or non-antibiotic strategies
+                </div>
+
+                <div class="alert-box">
+                    <strong>⚠️ Important Counseling Points:</strong>
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li>Prophylaxis reduces UTI frequency by ~50-90% (varies by study)</li>
+                        <li>Not a cure - infections may still occur</li>
+                        <li>Risk of antimicrobial resistance to patient and community</li>
+                        <li>Breakthrough infections may be resistant to prophylactic antibiotic</li>
+                        <li>Should be used alongside non-antibiotic preventive measures</li>
+                        <li>Regular review essential - not lifelong treatment by default</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lifestyle & Herbal Tab -->
+        <div id="lifestyle" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🌿</div>
+                    <h2>Non-Antibiotic Preventive Measures</h2>
+                </div>
+
+                <div class="success-box">
+                    <strong>✓ First-Line Prevention - Should be tried BEFORE antibiotic prophylaxis</strong>
+                    <p style="margin-top: 0.5rem;">All patients with rUTI should receive advice on behavioural and lifestyle modifications</p>
+                </div>
+
+                <h3>Evidence-Based Lifestyle Modifications</h3>
+
+                <div class="list-item">
+                    <strong>1. Adequate Fluid Intake</strong>
+                    Target 1.5-2 litres daily (unless fluid restriction required). Increases urinary flow, reduces bacterial concentration, improves bladder emptying. Water is optimal - avoid excessive caffeine and alcohol
+                </div>
+
+                <div class="list-item">
+                    <strong>2. Complete Bladder Emptying</strong>
+                    Avoid delaying micturition when urge occurs. Allow adequate time for complete voiding. Double voiding technique if high PVR identified. Consider timed voiding schedule (every 3-4 hours)
+                </div>
+
+                <div class="list-item">
+                    <strong>3. Post-Coital Voiding (Women)</strong>
+                    <strong>Evidence:</strong> Moderate quality evidence supporting benefit. Urinate within 15 minutes after sexual intercourse to flush bacteria from urethra. Simple, cost-free intervention
+                </div>
+
+                <div class="list-item">
+                    <strong>4. Avoid Spermicides and Diaphragms</strong>
+                    Spermicides alter vaginal flora and increase UTI risk. Consider alternative contraception methods if rUTI problem
+                </div>
+
+                <div class="list-item">
+                    <strong>5. Manage Constipation</strong>
+                    Chronic constipation associated with recurrent UTI, particularly in children and elderly. Adequate fibre intake, laxatives if needed. Bowel dysfunction can affect bladder emptying
+                </div>
+
+                <div class="list-item">
+                    <strong>6. Perineal Hygiene</strong>
+                    Front-to-back wiping after defecation. Avoid harsh soaps, douches, or vaginal deodorants. Cotton underwear, avoid tight clothing
+                </div>
+
+                <h3>Cranberry Products</h3>
+                <div class="info-box">
+                    <strong>Evidence Summary (EAU/Cochrane):</strong>
+                    <p style="margin-top: 0.5rem;"><strong>Mechanism:</strong> Proanthocyanidins (PACs) may prevent bacterial adhesion to uroepithelium</p>
+                    <p style="margin-top: 0.5rem;"><strong>Evidence Grade:</strong> Moderate quality evidence showing modest benefit</p>
+                    <p style="margin-top: 0.5rem;"><strong>Efficacy:</strong> May reduce UTI recurrence by approximately 26-35% in women with rUTI</p>
+                    
+                    <div style="margin-top: 1rem;">
+                        <strong>Recommended Products:</strong>
+                        <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                            <li><strong>Cranberry capsules/tablets:</strong> 36mg PAC daily (standardized extract preferred)</li>
+                            <li><strong>Cranberry juice:</strong> 240ml twice daily (must be unsweetened/low sugar - commercial juices often inadequate)</li>
+                            <li>Duration: Minimum 3-6 months trial to assess effectiveness</li>
+                        </ul>
+                    </div>
+
+                    <p style="margin-top: 1rem;"><strong>Contraindications:</strong> Warfarin interaction (potential INR increase), kidney stones (oxalate content), diabetes (if sweetened products)</p>
+                    <p style="margin-top: 0.5rem;"><em>NICE: Can be considered but evidence less robust than antibiotic prophylaxis</em></p>
+                </div>
+
+                <h3>D-Mannose</h3>
+                <div class="info-box">
+                    <strong>Evidence Summary:</strong>
+                    <p style="margin-top: 0.5rem;"><strong>Mechanism:</strong> Simple sugar that may prevent E. coli adhesion to bladder wall</p>
+                    <p style="margin-top: 0.5rem;"><strong>Evidence Grade:</strong> Weak. The MERIT trial (2024) found no benefit over placebo for preventing recurrent UTI; earlier small RCTs were inconsistent</p>
+                    <p style="margin-top: 0.5rem;"><strong>Dose:</strong> 2g daily (powder dissolved in water) or 500mg tablets twice daily</p>
+                    <p style="margin-top: 0.5rem;"><strong>Duration:</strong> 3-6 month trial</p>
+                    <p style="margin-top: 0.5rem;"><strong>Studies suggest:</strong> Not recommended as an effective prophylaxis strategy on current evidence</p>
+                    <p style="margin-top: 0.5rem;"><strong>Safety:</strong> Generally well-tolerated, minimal side effects. Caution in diabetes (affects blood sugar)</p>
+                    <p style="margin-top: 0.5rem;"><em>Not recommended in NICE; EAU gives only a weak recommendation. Shared decision-making if the patient wishes to try it.</em></p>
+                </div>
+
+                <h3>Probiotics</h3>
+                <div class="info-box">
+                    <strong>Evidence Summary:</strong>
+                    <p style="margin-top: 0.5rem;"><strong>Mechanism:</strong> Lactobacillus species may restore vaginal flora, compete with uropathogens</p>
+                    <p style="margin-top: 0.5rem;"><strong>Evidence Grade:</strong> Conflicting evidence, quality of studies variable</p>
+                    
+                    <div style="margin-top: 1rem;">
+                        <strong>Recommended Strains:</strong>
+                        <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                            <li><strong>Lactobacillus crispatus</strong></li>
+                            <li><strong>Lactobacillus rhamnosus GR-1</strong></li>
+                            <li><strong>Lactobacillus reuteri RC-14</strong></li>
+                        </ul>
+                    </div>
+
+                    <p style="margin-top: 1rem;"><strong>Route:</strong> Oral or vaginal administration</p>
+                    <p style="margin-top: 0.5rem;"><strong>Dose:</strong> 10⁸-10⁹ CFU daily</p>
+                    <p style="margin-top: 0.5rem;"><strong>Current consensus:</strong> May be beneficial but insufficient evidence for routine recommendation. Consider as adjunct therapy</p>
+                </div>
+
+                <h3>Vaginal Oestrogen (Postmenopausal Women)</h3>
+                <div class="success-box">
+                    <strong>✓ Strong Evidence Supporting Use</strong>
+                    <p style="margin-top: 0.5rem;"><strong>Indication:</strong> Postmenopausal women with rUTI and vaginal atrophy</p>
+                    <p style="margin-top: 0.5rem;"><strong>Mechanism:</strong> Restores vaginal pH, improves vaginal epithelium, normalizes lactobacillus flora</p>
+                    <p style="margin-top: 0.5rem;"><strong>Evidence:</strong> High-quality evidence showing ~50% reduction in rUTI</p>
+                    
+                    <div style="margin-top: 1rem;">
+                        <strong>Prescribing Options:</strong>
+                        <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                            <li><strong>Estriol cream 0.1%:</strong> 0.5g intravaginally daily for 2 weeks, then twice weekly maintenance</li>
+                            <li><strong>Estradiol pessaries 10mcg:</strong> 1 pessary daily for 2 weeks, then twice weekly</li>
+                            <li><strong>Estradiol vaginal ring:</strong> Replace every 3 months (continuous low-dose delivery)</li>
+                        </ul>
+                    </div>
+
+                    <p style="margin-top: 1rem;"><strong>Safety:</strong> Very low systemic absorption, minimal risks, no routine monitoring required</p>
+                    <p style="margin-top: 0.5rem;"><strong>Contraindications:</strong> Breast cancer (discuss with oncology), undiagnosed vaginal bleeding, active VTE</p>
+                    <p style="margin-top: 0.5rem;"><em>NICE strongly recommends for postmenopausal women with rUTI</em></p>
+                </div>
+
+                <h3>Methenamine Hippurate</h3>
+                <div class="info-box">
+                    <strong>Antiseptic Agent (Not an Antibiotic)</strong>
+                    <p style="margin-top: 0.5rem;"><strong>Mechanism:</strong> Converted to formaldehyde in acidic urine (pH <6), which has antibacterial properties</p>
+                    <p style="margin-top: 0.5rem;"><strong>Dose:</strong> 1g twice daily (Hiprex®)</p>
+                    <p style="margin-top: 0.5rem;"><strong>Evidence:</strong> Cochrane review shows modest benefit, particularly in patients without renal tract abnormalities</p>
+                    <p style="margin-top: 0.5rem;"><strong>Enhancing efficacy:</strong> Vitamin C 500mg-1g daily may help acidify urine (aim pH <6)</p>
+                    <p style="margin-top: 0.5rem;"><strong>Limitations:</strong> Less effective if urine pH >6 (check with urinalysis). Not effective if urea-splitting organisms present (Proteus)</p>
+                    <p style="margin-top: 0.5rem;"><strong>Interactions:</strong> Avoid with sulfonamides, alkalinizing agents</p>
+                    <p style="margin-top: 0.5rem;"><em>Consider as alternative to antibiotic prophylaxis in selected patients</em></p>
+                </div>
+
+                <h3>Other Herbal/Complementary Therapies</h3>
+                <div class="grid-2">
+                    <div class="list-item">
+                        <strong>Uva-ursi (Bearberry)</strong>
+                        Insufficient evidence for routine recommendation. Contains arbutin (converted to hydroquinone). Safety concerns with long-term use
+                    </div>
+                    <div class="list-item">
+                        <strong>Vitamin C</strong>
+                        May acidify urine but evidence for UTI prevention weak. High doses may increase stone risk
+                    </div>
+                    <div class="list-item">
+                        <strong>Acupuncture</strong>
+                        Limited evidence. Small studies suggest possible benefit but need larger trials
+                    </div>
+                    <div class="list-item">
+                        <strong>Green Tea Extract</strong>
+                        In vitro antibacterial activity but no clinical trial evidence for rUTI prevention
+                    </div>
+                </div>
+
+                <h3>Recommended Preventive Strategy</h3>
+                <div class="pathway-step">
+                    <span class="step-number">1</span>
+                    <strong>ALL patients:</strong> Lifestyle modifications (fluid intake, voiding habits, post-coital voiding if relevant)
+                </div>
+                <div class="pathway-step">
+                    <span class="step-number">2</span>
+                    <strong>Postmenopausal women:</strong> Add vaginal oestrogen if atrophy present
+                </div>
+                <div class="pathway-step">
+                    <span class="step-number">3</span>
+                    <strong>If still recurrent:</strong> Consider cranberry (36mg PAC) for a 3-6 month trial
+                </div>
+                <div class="pathway-step">
+                    <span class="step-number">4</span>
+                    <strong>If non-antibiotic measures fail:</strong> Consider antibiotic prophylaxis (see Prophylaxis tab)
+                </div>
+            </div>
+        </div>
+
+        <!-- Referral Pathway Tab -->
+        <div id="pathway" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🏥</div>
+                    <h2>Referral Pathway & Management Levels</h2>
+                </div>
+
+                <h3>Primary Care Management (Suitable for Community Treatment)</h3>
+                <div class="success-box">
+                    <strong>✓ Manage in Primary Care If:</strong>
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li>Uncomplicated rUTI in otherwise healthy women</li>
+                        <li>No structural abnormalities on imaging</li>
+                        <li>Post-void residual <100mL</li>
+                        <li>Good response to standard treatment</li>
+                        <li>No concerning symptoms (haematuria resolved, no systemic features)</li>
+                        <li>Patient willing to try non-antibiotic preventive measures</li>
+                    </ul>
+                </div>
+
+                <h3>Primary Care Management Pathway</h3>
+                <div class="pathway-step">
+                    <span class="step-number">1</span>
+                    <strong>Initial Assessment & Investigation</strong>
+                    <p style="margin-top: 0.5rem;">History, examination, MSU culture x2 (symptomatic episodes), post-void residual, renal function, consider renal ultrasound</p>
+                </div>
+                <div class="pathway-step">
+                    <span class="step-number">2</span>
+                    <strong>Lifestyle & Behavioural Advice</strong>
+                    <p style="margin-top: 0.5rem;">Fluid intake, voiding habits, post-coital measures, contraception review, perineal hygiene</p>
+                </div>
+                <div class="pathway-step">
+                    <span class="step-number">3</span>
+                    <strong>Non-Antibiotic Prophylaxis Trial</strong>
+                    <p style="margin-top: 0.5rem;">Cranberry products, vaginal oestrogen (if postmenopausal), probiotics consideration. Trial for 3-6 months</p>
+                </div>
+                <div class="pathway-step">
+                    <span class="step-number">4</span>
+                    <strong>Consider Antibiotic Prophylaxis</strong>
+                    <p style="margin-top: 0.5rem;">If non-antibiotic measures fail and significant impact on quality of life. Nitrofurantoin or trimethoprim. 3-6 month trial with regular review</p>
+                </div>
+                <div class="pathway-step">
+                    <span class="step-number">5</span>
+                    <strong>Ongoing Monitoring</strong>
+                    <p style="margin-top: 0.5rem;">3-monthly reviews, document infection frequency, adjust strategy as needed, trial off prophylaxis after 6-12 months</p>
+                </div>
+
+                <h3>Indications for Urology Referral (Routine)</h3>
+                <div class="alert-box">
+                    <strong>🔄 Refer to Urology If:</strong>
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li><strong>Persistent rUTI despite appropriate prophylaxis</strong> (>3 infections/year on treatment)</li>
+                        <li><strong>Structural abnormality identified:</strong> Stones, hydronephrosis, bladder abnormality, suspected fistula</li>
+                        <li><strong>Elevated post-void residual</strong> (>100mL, particularly if >200mL)</li>
+                        <li><strong>Recurrent UTI in men</strong> (always warrant investigation for structural cause)</li>
+                        <li><strong>Suspected voiding dysfunction:</strong> Neurogenic bladder, obstructive symptoms, incontinence</li>
+                        <li><strong>Relapsing UTI</strong> (same organism <2 weeks after treatment - suggests persistent focus)</li>
+                        <li><strong>Unusual organisms or multi-resistant bacteria</strong></li>
+                        <li><strong>Suspected interstitial cystitis / bladder pain syndrome</strong></li>
+                        <li><strong>Patient declining/unable to tolerate antibiotic prophylaxis</strong> and seeking alternatives</li>
+                    </ul>
+                </div>
+
+                <h3>Urgent/2-Week Wait Referral Criteria</h3>
+                <div class="alert-box">
+                    <strong>⚠️ URGENT Referral Required (2WW Cancer Pathway):</strong>
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li><strong>Visible haematuria age ≥45</strong> (especially if persistent or recurrent)</li>
+                        <li><strong>Visible haematuria age <45 with:</strong> Unexplained haematuria AND thrombocytosis, dysuria, or pelvic/rectal mass</li>
+                        <li><strong>Non-visible haematuria age ≥60</strong> (after UTI excluded/treated)</li>
+                        <li><strong>Palpable renal mass</strong></li>
+                        <li><strong>Pelvic mass</strong> (consider gynae if clearly gynae origin)</li>
+                    </ul>
+                    <p style="margin-top: 1rem;"><em>NICE NG12 - Suspected Cancer Recognition & Referral</em></p>
+                </div>
+
+                <h3>Acute/Emergency Referral</h3>
+                <div class="alert-box">
+                    <strong>🚨 Same-Day Assessment/Admission Required:</strong>
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li><strong>Suspected urosepsis</strong> (fever >38°C, rigors, hypotension, tachycardia, SIRS criteria)</li>
+                        <li><strong>Acute urinary retention</strong> (unable to pass urine)</li>
+                        <li><strong>Suspected pyonephrosis/obstructed infected kidney</strong> (fever + loin pain + imaging showing hydronephrosis)</li>
+                        <li><strong>Pyelonephritis unable to tolerate oral antibiotics</strong></li>
+                        <li><strong>Pyelonephritis in pregnancy</strong></li>
+                        <li><strong>Suspected renal/perinephric abscess</strong></li>
+                        <li><strong>Single functioning kidney with pyelonephritis</strong></li>
+                    </ul>
+                </div>
+
+                <h3>Information to Include in Referral</h3>
+                <div class="info-box">
+                    <strong>Essential Information for Effective Referral:</strong>
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li><strong>Infection pattern:</strong> Frequency, duration, temporal patterns</li>
+                        <li><strong>Microbiology:</strong> At least 2 MSU culture results with organisms and sensitivities</li>
+                        <li><strong>Investigations completed:</strong> Renal ultrasound report, post-void residual, renal function</li>
+                        <li><strong>Treatments tried:</strong> Acute treatment responses, prophylaxis trials (duration, agents, outcomes)</li>
+                        <li><strong>Non-antibiotic measures:</strong> What has been advised and tried</li>
+                        <li><strong>Impact on quality of life:</strong> Work absence, sexual function, psychological impact</li>
+                        <li><strong>Relevant past history:</strong> Previous urological procedures, gynaecological history, comorbidities</li>
+                        <li><strong>Current medications:</strong> Including contraception, immunosuppressants</li>
+                    </ul>
+                </div>
+
+                <h3>What to Expect from Urology Service</h3>
+                <div class="grid-2">
+                    <div class="info-box">
+                        <strong>Outpatient Assessment</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>Detailed history and examination</li>
+                            <li>Review of investigations</li>
+                            <li>Urine flow rate ± post-void residual</li>
+                            <li>Cystoscopy if indicated</li>
+                            <li>Further imaging if required (CT, MRI)</li>
+                        </ul>
+                    </div>
+                    <div class="info-box">
+                        <strong>Management Options</strong>
+                        <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                            <li>Identify and treat structural causes</li>
+                            <li>Specialist prophylaxis strategies</li>
+                            <li>Intravesical therapies (e.g., hyaluronic acid)</li>
+                            <li>Surgical intervention if indicated</li>
+                            <li>Multidisciplinary input (gynae, ID)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Special Situations</h3>
+
+                <div class="list-item">
+                    <strong>Recurrent UTI in Men</strong>
+                    ALWAYS refer for investigation. Higher likelihood of structural abnormality (prostate disease, stones, stricture, bladder outlet obstruction). Requires thorough urological assessment including flow rate, PVR, prostate examination, imaging, possible cystoscopy
+                </div>
+
+                <div class="list-item">
+                    <strong>Post-Surgical rUTI</strong>
+                    If rUTI following urological surgery (TURP, urethral surgery, stone treatment), refer back to operating surgeon or urology for assessment of surgical site complications
+                </div>
+
+                <div class="list-item">
+                    <strong>Pregnancy-Related</strong>
+                    Obstetric input essential. Urology referral if structural abnormalities or persistent issues. Lower threshold for admission and IV treatment
+                </div>
+
+                <div class="list-item">
+                    <strong>Immunocompromised Patients</strong>
+                    May need joint management with infectious diseases. Consider atypical organisms, fungal infections. Urology input for structural assessment
+                </div>
+            </div>
+        </div>
+
+        <!-- Decision Calculator Tab -->
+        <div id="calculator" class="tab-content">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🧮</div>
+                    <h2>Clinical Decision Calculator</h2>
+                </div>
+
+                <p>Complete this comprehensive assessment to receive personalized management recommendations based on current guidelines.</p>
+
+                <div class="interactive-form">
+                    <!-- Section 1: Demographics -->
+                    <h3 style="color: var(--primary); margin-top: 0; padding-bottom: 0.5rem; border-bottom: 2px solid var(--neutral-200);">👤 Patient Demographics</h3>
+                    
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Patient Sex: <span style="color: var(--danger);">*</span></label>
+                            <select id="sex" required>
+                                <option value="">Select...</option>
+                                <option value="female">Female</option>
+                                <option value="male">Male</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Age (years): <span style="color: var(--danger);">*</span></label>
+                            <input type="number" id="age" min="0" max="120" placeholder="Enter age" required>
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Menopausal Status (if female):</label>
+                            <select id="menopause">
+                                <option value="">Select...</option>
+                                <option value="premenopausal">Premenopausal</option>
+                                <option value="perimenopausal">Perimenopausal</option>
+                                <option value="postmenopausal">Postmenopausal</option>
+                                <option value="na">Not applicable</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>BMI (kg/m²):</label>
+                            <input type="number" id="bmi" min="10" max="70" step="0.1" placeholder="If known">
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Infection Pattern -->
+                    <h3 style="color: var(--primary); margin-top: 2rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--neutral-200);">🦠 Infection Pattern</h3>
+                    
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Number of UTIs in past 12 months: <span style="color: var(--danger);">*</span></label>
+                            <input type="number" id="uti-count" min="0" max="20" placeholder="e.g., 4" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Time since last UTI:</label>
+                            <select id="time-since-last">
+                                <option value="">Select...</option>
+                                <option value="current">Currently symptomatic</option>
+                                <option value="1week">Within 1 week</option>
+                                <option value="2weeks">1-2 weeks ago</option>
+                                <option value="1month">2-4 weeks ago</option>
+                                <option value="3months">1-3 months ago</option>
+                                <option value="longer">More than 3 months ago</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>UTI Pattern:</label>
+                        <select id="uti-pattern">
+                            <option value="">Select...</option>
+                            <option value="sporadic">Sporadic (irregular intervals)</option>
+                            <option value="postcoital">Post-coital (within 24-48 hours of intercourse)</option>
+                            <option value="seasonal">Seasonal pattern</option>
+                            <option value="postmenstrual">Post-menstrual</option>
+                            <option value="continuous">Near-continuous symptoms</option>
+                        </select>
+                    </div>
+
+                    <!-- Section 3: Current Symptoms -->
+                    <h3 style="color: var(--primary); margin-top: 2rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--neutral-200);">📋 Current Symptoms (if symptomatic now)</h3>
+                    
+                    <div class="form-group">
+                        <label style="margin-bottom: 1rem; display: block;">Select all current symptoms:</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.5rem;">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="symptom-dysuria">
+                                <label for="symptom-dysuria">Dysuria (painful urination)</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="symptom-frequency">
+                                <label for="symptom-frequency">Urinary frequency</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="symptom-urgency">
+                                <label for="symptom-urgency">Urinary urgency</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="symptom-suprapubic">
+                                <label for="symptom-suprapubic">Suprapubic pain</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="symptom-haematuria">
+                                <label for="symptom-haematuria">Visible haematuria</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="symptom-smelly">
+                                <label for="symptom-smelly">Foul-smelling urine</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="symptom-cloudy">
+                                <label for="symptom-cloudy">Cloudy urine</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="symptom-incontinence">
+                                <label for="symptom-incontinence">New/worsening incontinence</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="margin-bottom: 1rem; display: block; color: var(--danger); font-weight: 700;">⚠️ Red Flag Symptoms:</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.5rem;">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="symptom-fever">
+                                <label for="symptom-fever">Fever >38°C / Rigors</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="symptom-loin">
+                                <label for="symptom-loin">Loin pain/tenderness</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="symptom-nausea">
+                                <label for="symptom-nausea">Nausea/vomiting</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="symptom-sepsis">
+                                <label for="symptom-sepsis">Sepsis signs (hypotension, confusion)</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="symptom-retention">
+                                <label for="symptom-retention">Acute urinary retention</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Microbiology Results -->
+                    <h3 style="color: var(--primary); margin-top: 2rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--neutral-200);">🔬 Microbiology Results (Most Recent MSU)</h3>
+                    
+                    <div class="form-group">
+                        <label>Organism Identified:</label>
+                        <select id="organism">
+                            <option value="">Select if known...</option>
+                            <option value="ecoli">E. coli</option>
+                            <option value="klebsiella">Klebsiella species</option>
+                            <option value="proteus">Proteus mirabilis</option>
+                            <option value="enterococcus">Enterococcus species</option>
+                            <option value="pseudomonas">Pseudomonas aeruginosa</option>
+                            <option value="staph-saprophyticus">Staphylococcus saprophyticus</option>
+                            <option value="enterobacter">Enterobacter species</option>
+                            <option value="group-b-strep">Group B Streptococcus</option>
+                            <option value="mixed">Mixed growth</option>
+                            <option value="no-growth">No significant growth</option>
+                            <option value="not-sent">Not sent/available</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Antibiotic Sensitivities (select all that organism is SENSITIVE to):</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="sens-nitrofurantoin">
+                                <label for="sens-nitrofurantoin">Nitrofurantoin</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="sens-trimethoprim">
+                                <label for="sens-trimethoprim">Trimethoprim</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="sens-coamoxiclav">
+                                <label for="sens-coamoxiclav">Co-amoxiclav</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="sens-cefalexin">
+                                <label for="sens-cefalexin">Cefalexin</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="sens-ciprofloxacin">
+                                <label for="sens-ciprofloxacin">Ciprofloxacin</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="sens-fosfomycin">
+                                <label for="sens-fosfomycin">Fosfomycin</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="sens-pivmecillinam">
+                                <label for="sens-pivmecillinam">Pivmecillinam</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Antibiotic Resistances (select all that organism is RESISTANT to):</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="res-nitrofurantoin">
+                                <label for="res-nitrofurantoin">Nitrofurantoin</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="res-trimethoprim">
+                                <label for="res-trimethoprim">Trimethoprim</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="res-coamoxiclav">
+                                <label for="res-coamoxiclav">Co-amoxiclav</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="res-cefalexin">
+                                <label for="res-cefalexin">Cefalexin</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="res-ciprofloxacin">
+                                <label for="res-ciprofloxacin">Ciprofloxacin</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="res-multiple">
+                                <label for="res-multiple">Multi-resistant (3+ antibiotics)</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="res-esbl">
+                                <label for="res-esbl">ESBL producer</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 5: Investigations -->
+                    <h3 style="color: var(--primary); margin-top: 2rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--neutral-200);">🔍 Investigations Completed</h3>
+                    
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Post-void Residual (mL):</label>
+                            <input type="number" id="pvr" min="0" max="1000" placeholder="If measured">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Renal Function (eGFR mL/min):</label>
+                            <input type="number" id="egfr" min="0" max="150" placeholder="If known">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Imaging Results:</label>
+                        <select id="imaging">
+                            <option value="">Select...</option>
+                            <option value="not-done">Not performed</option>
+                            <option value="normal">Renal US - Normal</option>
+                            <option value="stones">Renal/bladder stones identified</option>
+                            <option value="hydronephrosis">Hydronephrosis</option>
+                            <option value="bladder-abnormal">Bladder wall thickening/abnormality</option>
+                            <option value="high-pvr">Significant residual volume</option>
+                            <option value="renal-mass">Renal mass/lesion</option>
+                            <option value="other-abnormal">Other structural abnormality</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Cystoscopy performed?</label>
+                        <select id="cystoscopy">
+                            <option value="">Select...</option>
+                            <option value="not-done">Not performed</option>
+                            <option value="normal">Normal</option>
+                            <option value="inflammation">Bladder inflammation</option>
+                            <option value="stones">Bladder stones</option>
+                            <option value="tumour">Bladder tumour</option>
+                            <option value="ic">Interstitial cystitis features</option>
+                            <option value="stricture">Urethral stricture</option>
+                        </select>
+                    </div>
+
+                    <!-- Section 6: Comorbidities and Risk Factors -->
+                    <h3 style="color: var(--primary); margin-top: 2rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--neutral-200);">🏥 Comorbidities & Risk Factors</h3>
+                    
+                    <div class="form-group">
+                        <label style="margin-bottom: 1rem; display: block;">Select all that apply:</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.5rem;">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="diabetes">
+                                <label for="diabetes">Diabetes mellitus</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="immunosuppressed">
+                                <label for="immunosuppressed">Immunosuppressed</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="pregnant">
+                                <label for="pregnant">Pregnant</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="ckd">
+                                <label for="ckd">Chronic kidney disease</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="neurogenic">
+                                <label for="neurogenic">Neurogenic bladder</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="catheter">
+                                <label for="catheter">Long-term catheter</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="prolapse">
+                                <label for="prolapse">Pelvic organ prolapse</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="prostate-disease">
+                                <label for="prostate-disease">Benign prostatic disease (BPH)</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="constipation">
+                                <label for="constipation">Chronic constipation</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="vaginal-atrophy">
+                                <label for="vaginal-atrophy">Vaginal atrophy symptoms</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="spermicide">
+                                <label for="spermicide">Uses spermicide/diaphragm</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="previous-surgery">
+                                <label for="previous-surgery">Previous urological surgery</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 7: Previous Treatments -->
+                    <h3 style="color: var(--primary); margin-top: 2rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--neutral-200);">💊 Previous Treatments Tried</h3>
+                    
+                    <div class="form-group">
+                        <label style="margin-bottom: 1rem; display: block;">Select all interventions already tried:</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 0.5rem;">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="tried-lifestyle">
+                                <label for="tried-lifestyle">Lifestyle modifications</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="tried-cranberry">
+                                <label for="tried-cranberry">Cranberry products</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="tried-dmannose">
+                                <label for="tried-dmannose">D-mannose</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="tried-probiotics">
+                                <label for="tried-probiotics">Probiotics</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="tried-oestrogen">
+                                <label for="tried-oestrogen">Vaginal oestrogen</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="tried-methenamine">
+                                <label for="tried-methenamine">Methenamine hippurate</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="tried-prophylaxis">
+                                <label for="tried-prophylaxis">Antibiotic prophylaxis</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="prophylaxis-details-group" style="display: none;">
+                        <label>Which prophylactic antibiotic(s) tried?</label>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.5rem; margin-top: 0.5rem;">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="tried-nitro">
+                                <label for="tried-nitro">Nitrofurantoin</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="tried-trim">
+                                <label for="tried-trim">Trimethoprim</label>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="tried-cef">
+                                <label for="tried-cef">Cefalexin</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Outcome of previous prophylaxis (if tried):</label>
+                        <select id="prophylaxis-outcome">
+                            <option value="">Select...</option>
+                            <option value="na">Not applicable</option>
+                            <option value="success">Successful - reduced UTI frequency</option>
+                            <option value="partial">Partial success - some reduction</option>
+                            <option value="failed">Failed - no improvement</option>
+                            <option value="breakthrough">Breakthrough infections on prophylaxis</option>
+                            <option value="side-effects">Stopped due to side effects</option>
+                        </select>
+                    </div>
+
+                    <button onclick="calculateRecommendations()" style="width: 100%; margin-top: 2rem; padding: 1.2rem; font-size: 1.1rem;">
+                        🔍 Generate Comprehensive Clinical Recommendations
+                    </button>
+                </div>
+
+                <div id="results" class="result-panel">
+                    <!-- Results will be inserted here -->
+                </div>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <strong>Clinical Disclaimer:</strong> This tool is designed to support clinical decision-making based on current EAU, NICE, GIRFT, and BNF guidelines. It does not replace clinical judgment or individualized patient assessment. All treatment decisions should consider local antimicrobial resistance patterns, patient factors, and specialist input where appropriate. Always check current BNF and local formularies for prescribing information. This tool is for healthcare professional use only.
+        </div>
+
+        <footer>
+            <p><strong>Recurrent UTI Clinical Decision Support Tool</strong></p>
+            <p>Based on: EAU Guidelines on Urological Infections 2026 | NICE NG112 (Dec 2024/May 2025) | GIRFT Urology 2024 | BNF | PHE Urinary Tract Infection Guidance</p>
+            <p style="margin-top: 1rem; font-size: 0.85rem;">© 2026 | For NHS Healthcare Professional Use | Version 1.1 (Nov 2026)</p>
+        </footer>
+    </div>
+
+    <button class="print-button" onclick="window.print()">🖨️ Print</button>
+
+    <script>
+        // Show/hide prophylaxis details when checkbox is clicked
+        document.addEventListener('DOMContentLoaded', function() {
+            const prophylaxisCheckbox = document.getElementById('tried-prophylaxis');
+            const prophylaxisDetailsGroup = document.getElementById('prophylaxis-details-group');
+            
+            if (prophylaxisCheckbox) {
+                prophylaxisCheckbox.addEventListener('change', function() {
+                    if (this.checked) {
+                        prophylaxisDetailsGroup.style.display = 'block';
+                    } else {
+                        prophylaxisDetailsGroup.style.display = 'none';
+                    }
+                });
+            }
+        });
+
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function calculateRecommendations() {
+            // Get all form values
+            const sex = document.getElementById('sex').value;
+            const age = parseInt(document.getElementById('age').value);
+            const utiCount = parseInt(document.getElementById('uti-count').value);
+            const menopause = document.getElementById('menopause').value;
+            const bmi = parseFloat(document.getElementById('bmi').value) || null;
+            const timeSinceLast = document.getElementById('time-since-last').value;
+            const utiPattern = document.getElementById('uti-pattern').value;
+            
+            // Symptoms
+            const symptoms = {
+                dysuria: document.getElementById('symptom-dysuria').checked,
+                frequency: document.getElementById('symptom-frequency').checked,
+                urgency: document.getElementById('symptom-urgency').checked,
+                suprapubic: document.getElementById('symptom-suprapubic').checked,
+                haematuria: document.getElementById('symptom-haematuria').checked,
+                smelly: document.getElementById('symptom-smelly').checked,
+                cloudy: document.getElementById('symptom-cloudy').checked,
+                incontinence: document.getElementById('symptom-incontinence').checked,
+                fever: document.getElementById('symptom-fever').checked,
+                loin: document.getElementById('symptom-loin').checked,
+                nausea: document.getElementById('symptom-nausea').checked,
+                sepsis: document.getElementById('symptom-sepsis').checked,
+                retention: document.getElementById('symptom-retention').checked
+            };
+            
+            // Microbiology
+            const organism = document.getElementById('organism').value;
+            const sensitivities = {
+                nitrofurantoin: document.getElementById('sens-nitrofurantoin').checked,
+                trimethoprim: document.getElementById('sens-trimethoprim').checked,
+                coamoxiclav: document.getElementById('sens-coamoxiclav').checked,
+                cefalexin: document.getElementById('sens-cefalexin').checked,
+                ciprofloxacin: document.getElementById('sens-ciprofloxacin').checked,
+                fosfomycin: document.getElementById('sens-fosfomycin').checked,
+                pivmecillinam: document.getElementById('sens-pivmecillinam').checked
+            };
+            const resistances = {
+                nitrofurantoin: document.getElementById('res-nitrofurantoin').checked,
+                trimethoprim: document.getElementById('res-trimethoprim').checked,
+                coamoxiclav: document.getElementById('res-coamoxiclav').checked,
+                cefalexin: document.getElementById('res-cefalexin').checked,
+                ciprofloxacin: document.getElementById('res-ciprofloxacin').checked,
+                multiple: document.getElementById('res-multiple').checked,
+                esbl: document.getElementById('res-esbl').checked
+            };
+            
+            // Investigations
+            const pvr = parseInt(document.getElementById('pvr').value) || 0;
+            const egfr = parseInt(document.getElementById('egfr').value) || 90;
+            const imaging = document.getElementById('imaging').value;
+            const cystoscopy = document.getElementById('cystoscopy').value;
+            
+            // Comorbidities
+            const comorbidities = {
+                diabetes: document.getElementById('diabetes').checked,
+                immunosuppressed: document.getElementById('immunosuppressed').checked,
+                pregnant: document.getElementById('pregnant').checked,
+                ckd: document.getElementById('ckd').checked,
+                neurogenic: document.getElementById('neurogenic').checked,
+                catheter: document.getElementById('catheter').checked,
+                prolapse: document.getElementById('prolapse').checked,
+                prostateDisease: document.getElementById('prostate-disease').checked,
+                constipation: document.getElementById('constipation').checked,
+                vaginalAtrophy: document.getElementById('vaginal-atrophy').checked,
+                spermicide: document.getElementById('spermicide').checked,
+                previousSurgery: document.getElementById('previous-surgery').checked
+            };
+            
+            // Previous treatments
+            const previousTreatments = {
+                lifestyle: document.getElementById('tried-lifestyle').checked,
+                cranberry: document.getElementById('tried-cranberry').checked,
+                dmannose: document.getElementById('tried-dmannose').checked,
+                probiotics: document.getElementById('tried-probiotics').checked,
+                oestrogen: document.getElementById('tried-oestrogen').checked,
+                methenamine: document.getElementById('tried-methenamine').checked,
+                prophylaxis: document.getElementById('tried-prophylaxis').checked,
+                nitrofurantoin: document.getElementById('tried-nitro').checked,
+                trimethoprim: document.getElementById('tried-trim').checked,
+                cefalexin: document.getElementById('tried-cef').checked
+            };
+            const prophylaxisOutcome = document.getElementById('prophylaxis-outcome').value;
+
+            // Validation
+            if (!sex || !age || isNaN(age) || !utiCount || isNaN(utiCount)) {
+                alert('Please complete required fields: Sex, Age, and UTI frequency');
+                return;
+            }
+
+            // Assessment logic
+            let urgentReferral = false;
+            let emergencyReferral = false;
+            let routineReferral = false;
+            let recommendations = [];
+            let investigations = [];
+            let acuteTreatment = [];
+
+            // Check for emergency situations
+            if (symptoms.sepsis || symptoms.retention || 
+                (symptoms.fever && symptoms.loin) ||
+                (comorbidities.pregnant && symptoms.fever)) {
+                emergencyReferral = true;
+            }
+
+            // Check for urgent referral
+            if ((symptoms.haematuria && age >= 45) || 
+                (cystoscopy === 'tumour') ||
+                (imaging === 'renal-mass')) {
+                urgentReferral = true;
+            }
+
+            // Check for routine referral
+            if (sex === 'male' && utiCount >= 2) routineReferral = true;
+            if (pvr > 100) routineReferral = true;
+            if (resistances.multiple || resistances.esbl) routineReferral = true;
+            if (previousTreatments.prophylaxis && 
+                (prophylaxisOutcome === 'failed' || prophylaxisOutcome === 'breakthrough')) {
+                routineReferral = true;
+            }
+            if (['stones', 'hydronephrosis', 'bladder-abnormal', 'renal-mass', 'other-abnormal'].includes(imaging)) {
+                routineReferral = true;
+            }
+            if (['inflammation', 'stones', 'tumour', 'stricture'].includes(cystoscopy)) {
+                routineReferral = true;
+            }
+            if (comorbidities.neurogenic) routineReferral = true;
+
+            // Generate recommendations based on assessment
+            
+            // EMERGENCY section
+            if (emergencyReferral) {
+                let emergencyReasons = [];
+                if (symptoms.sepsis) emergencyReasons.push('Signs of sepsis');
+                if (symptoms.retention) emergencyReasons.push('Acute urinary retention');
+                if (symptoms.fever && symptoms.loin) emergencyReasons.push('Suspected pyelonephritis with fever and loin pain');
+                if (comorbidities.pregnant && symptoms.fever) emergencyReasons.push('Febrile UTI in pregnancy');
+                
+                recommendations.push({
+                    priority: 'emergency',
+                    text: '🚨 EMERGENCY - IMMEDIATE HOSPITAL ASSESSMENT REQUIRED',
+                    reason: emergencyReasons.join('; '),
+                    details: [
+                        '<strong>ADMIT IMMEDIATELY - Do not delay</strong>',
+                        '• Call 999 or arrange immediate hospital transfer',
+                        '• Take blood cultures before antibiotics if possible',
+                        '• IV access and fluid resuscitation if septic',
+                        '• IV antibiotics required',
+                        '• Consider critical care involvement if severe sepsis'
+                    ]
+                });
+            }
+
+            // Generate rest of recommendations
+            if (!emergencyReferral && urgentReferral) {
+                let urgentReasons = [];
+                if (symptoms.haematuria && age >= 45) urgentReasons.push('Haematuria age ≥45 (2-week wait cancer pathway)');
+                if (cystoscopy === 'tumour') urgentReasons.push('Bladder tumour identified');
+                if (imaging === 'renal-mass') urgentReasons.push('Renal mass on imaging');
+                
+                recommendations.push({
+                    priority: 'urgent',
+                    text: '⚠️ URGENT UROLOGY REFERRAL (2-WEEK WAIT)',
+                    reason: urgentReasons.join('; ')
+                });
+            }
+
+            if (!emergencyReferral && !urgentReferral && routineReferral) {
+                let routineReasons = [];
+                if (sex === 'male') routineReasons.push('Male with rUTI');
+                if (pvr > 100) routineReasons.push(`Elevated PVR (${pvr}mL)`);
+                if (resistances.multiple) routineReasons.push('Multi-resistant organism');
+                
+                recommendations.push({
+                    priority: 'routine-referral',
+                    text: '🏥 ROUTINE UROLOGY REFERRAL RECOMMENDED',
+                    reason: routineReasons.join('; ')
+                });
+            }
+
+            // Add other recommendation sections
+            if (!emergencyReferral) {
+                // Lifestyle
+                recommendations.push({
+                    priority: 'lifestyle',
+                    text: '🌱 LIFESTYLE & BEHAVIOURAL MODIFICATIONS',
+                    details: ['Increase fluid intake to 1.5-2L daily', 'Post-coital voiding within 15 minutes']
+                });
+
+                // Investigations
+                investigations.push('MSU culture x2 during symptomatic episodes');
+                investigations.push('Post-void residual (bladder scan)');
+                investigations.push('Renal function (U&E)');
+            }
+
+            // Display results
+            displayResults(emergencyReferral, urgentReferral, routineReferral, recommendations, 
+                investigations, sex, age, utiCount, organism, symptoms);
+        }
+
+        function displayResults(emergencyReferral, urgentReferral, routineReferral, recommendations, 
+            investigations, sex, age, utiCount, organism, symptoms) {
+            const resultsDiv = document.getElementById('results');
+            
+            let html = '<h2 style="color: var(--primary); margin-bottom: 1.5rem;">📊 Clinical Decision Report</h2>';
+
+            // Patient summary
+            html += `
+                <div class="info-box" style="margin-bottom: 2rem;">
+                    <strong>Patient Summary:</strong> ${age}-year-old ${sex === 'male' ? 'male' : 'female'} with ${utiCount} UTI${utiCount > 1 ? 's' : ''} in past 12 months
+                </div>
+            `;
+
+            // Referral indicator
+            if (emergencyReferral) {
+                html += `
+                    <div class="referral-indicator" style="background: linear-gradient(135deg, #FFE8E8, #FFDDDD); color: #B91C1C; border: 3px solid #DC2626; font-size: 1.4rem; padding: 2rem;">
+                        🚨 EMERGENCY - IMMEDIATE HOSPITAL ASSESSMENT REQUIRED
+                    </div>
+                `;
+            } else if (urgentReferral) {
+                html += `
+                    <div class="referral-indicator referral-specialist">
+                        ⚠️ URGENT UROLOGY REFERRAL (2-WEEK WAIT)
+                    </div>
+                `;
+            } else if (routineReferral) {
+                html += `
+                    <div class="referral-indicator referral-specialist">
+                        🏥 ROUTINE UROLOGY REFERRAL RECOMMENDED
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="referral-indicator referral-community">
+                        ✅ SUITABLE FOR PRIMARY CARE MANAGEMENT
+                    </div>
+                `;
+            }
+
+            // Investigations
+            if (investigations.length > 0) {
+                html += `
+                    <h3 style="margin-top: 2rem; color: var(--primary);">🔬 Investigations Required</h3>
+                    <div class="info-box">
+                        <ul style="margin-left: 2rem;">
+                            ${investigations.map(inv => `<li>${inv}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            // Recommendations
+            recommendations.forEach(rec => {
+                let boxClass = rec.priority === 'emergency' || rec.priority === 'urgent' ? 'alert-box' : 
+                              rec.priority === 'lifestyle' ? 'success-box' : 'info-box';
+
+                html += `
+                    <h3 style="margin-top: 2rem; color: var(--primary);">${rec.text}</h3>
+                    <div class="${boxClass}">
+                `;
+
+                if (rec.reason) {
+                    html += `<p style="margin-bottom: 1rem;"><strong>Reason:</strong> ${rec.reason}</p>`;
+                }
+
+                if (rec.details) {
+                    html += '<ul style="margin-left: 2rem;">';
+                    rec.details.forEach(detail => {
+                        html += `<li>${detail}</li>`;
+                    });
+                    html += '</ul>';
+                }
+
+                html += '</div>';
+            });
+
+            resultsDiv.innerHTML = html;
+            resultsDiv.classList.add('show');
+            
+            // Smooth scroll
+            setTimeout(() => {
+                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
+    </script>
+</body>
+</html>

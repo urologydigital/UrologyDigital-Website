@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BPH Surgery Postoperative Survey - QEH King's Lynn</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CLINIC CONFIGURATION - Edit this section to set your clinic email -->
+    <script>
+        // ============================================
+        // CLINIC SETTINGS - MODIFY THESE VALUES
+        // ============================================
+        const CLINIC_CONFIG = {
+            // Email address where survey results will be sent (hidden from patients)
+            clinicEmail: "Dimitar.ormanov@qehkl.nhs.uk",
+            
+            // Clinic name for email subject
+            clinicName: "Urology Department - QEH King's Lynn",
+            
+            // OPTION 1: Use EmailJS (free tier: 200 emails/month)
+            useEmailJS: false,
+            emailjsPublicKey: "YOUR_PUBLIC_KEY",
+            emailjsServiceId: "YOUR_SERVICE_ID", 
+            emailjsTemplateId: "YOUR_TEMPLATE_ID",
+            
+            // OPTION 2: Use Formspree (free tier: 50 submissions/month)
+            useFormspree: false,
+            formspreeId: "YOUR_FORM_ID",
+            
+            // OPTION 3: Use Web3Forms (free: unlimited)
+            useWeb3Forms: false,
+            web3formsKey: "YOUR_ACCESS_KEY"
+        };
+        // ============================================
+    </script>
+    <style>
+        :root {
+            --nhs-blue: #005EB8;
+            --nhs-dark-blue: #003087;
+            --nhs-light-blue: #41B6E6;
+            --nhs-aqua: #00A499;
+            --light-grey: #F0F4F5;
+            --mid-grey: #768692;
+            --dark-grey: #425563;
+            --white: #FFFFFF;
+            --border-grey: #D8DDE0;
+            --success: #007F3B;
+            --warning: #FFB81C;
+            --error: #DA291C;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+            min-height: 100vh;
+            color: var(--dark-grey);
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--nhs-blue) 0%, var(--nhs-dark-blue) 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+            letter-spacing: -0.5px;
+        }
+
+        .header .hospital-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--nhs-light-blue);
+            margin: 8px 0;
+        }
+
+        .header .patient-notice {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 10px 0;
+            padding: 10px 20px;
+            background: rgba(255,184,28,0.9);
+            color: #000;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        /* Privacy Notice */
+        .privacy-notice {
+            background: linear-gradient(135deg, #e8f4f8 0%, #d4edda 100%);
+            border: 2px solid var(--success);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .privacy-notice svg {
+            width: 40px;
+            height: 40px;
+            color: var(--success);
+            flex-shrink: 0;
+        }
+
+        .privacy-notice-content h3 {
+            color: var(--success);
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .privacy-notice-content p {
+            font-size: 0.95rem;
+            color: var(--dark-grey);
+            margin-bottom: 5px;
+        }
+
+        .privacy-notice-content .highlight {
+            font-weight: 600;
+            color: var(--nhs-dark-blue);
+        }
+
+        /* Action Bar */
+        .action-bar {
+            background: white;
+            padding: 15px 25px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-grey);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .action-btn.submit {
+            background: linear-gradient(135deg, var(--nhs-aqua) 0%, #008a7e 100%);
+            color: white;
+            font-weight: 700;
+        }
+
+        .action-btn.submit:hover {
+            background: linear-gradient(135deg, #008a7e 0%, #007068 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,164,153,0.4);
+        }
+
+        .action-btn.primary {
+            background: var(--nhs-blue);
+            color: white;
+        }
+
+        .action-btn.primary:hover {
+            background: var(--nhs-dark-blue);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,94,184,0.3);
+        }
+
+        .action-btn.secondary {
+            background: var(--light-grey);
+            color: var(--dark-grey);
+        }
+
+        .action-btn.secondary:hover {
+            background: var(--border-grey);
+        }
+
+        .action-btn.success {
+            background: var(--success);
+            color: white;
+        }
+
+        .action-btn.success:hover {
+            background: #006631;
+        }
+
+        .action-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Form Container */
+        .form-container {
+            background: white;
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        #survey-form {
+            padding: 30px;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+            background: var(--nhs-blue);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-header svg {
+            width: 20px;
+            height: 20px;
+            opacity: 0.9;
+        }
+
+        .subsection-header {
+            color: var(--nhs-blue);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin: 20px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--light-grey);
+        }
+
+        /* Form Elements */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: var(--dark-grey);
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group input[type="number"],
+        .form-group select {
+            padding: 10px 14px;
+            border: 1.5px solid var(--border-grey);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--nhs-blue);
+            box-shadow: 0 0 0 3px rgba(0,94,184,0.1);
+        }
+
+        .form-group.required label::after {
+            content: ' *';
+            color: var(--error);
+        }
+
+        /* Checkbox Group for Surgery Types */
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: var(--light-grey);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .checkbox-item:hover {
+            background: #e8eef1;
+        }
+
+        .checkbox-item.selected {
+            background: rgba(0,94,184,0.1);
+            border-color: var(--nhs-blue);
+        }
+
+        .checkbox-item input[type="checkbox"],
+        .checkbox-item input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--nhs-blue);
+        }
+
+        .checkbox-item span {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* IPSS Table */
+        .ipss-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.85rem;
+        }
+
+        .ipss-table th {
+            background: var(--light-grey);
+            padding: 10px 6px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.75rem;
+            border: 1px solid var(--border-grey);
+            color: var(--dark-grey);
+        }
+
+        .ipss-table th:first-child {
+            text-align: left;
+            padding-left: 12px;
+            width: 40%;
+        }
+
+        .ipss-table td {
+            padding: 12px 6px;
+            text-align: center;
+            border: 1px solid var(--border-grey);
+        }
+
+        .ipss-table td:first-child {
+            text-align: left;
+            padding-left: 12px;
+            font-weight: 500;
+        }
+
+        .ipss-table tr:nth-child(even) {
+            background: #fafbfc;
+        }
+
+        .ipss-table input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--nhs-blue);
+            cursor: pointer;
+        }
+
+        /* Score Box */
+        .score-box {
+            background: linear-gradient(135deg, var(--light-grey) 0%, #e8eef1 100%);
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 20px;
+            margin-top: 15px;
+            border: 1px solid var(--border-grey);
+        }
+
+        .score-box .clinical-note {
+            width: 100%;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-grey);
+            font-weight: 600;
+            color: var(--nhs-blue);
+            font-size: 0.85rem;
+        }
+
+        .score-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .score-item label {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .score-value {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--nhs-blue);
+            min-width: 50px;
+            text-align: center;
+            border: 2px solid var(--nhs-blue);
+        }
+
+        .score-legend {
+            font-size: 0.8rem;
+            color: var(--mid-grey);
+            margin-left: auto;
+        }
+
+        /* Radio Question Groups */
+        .question-group {
+            margin-bottom: 18px;
+            padding: 15px;
+            background: #fafbfc;
+            border-radius: 8px;
+            border-left: 3px solid var(--nhs-blue);
+        }
+
+        .question-group .question-text {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-grey);
+        }
+
+        .radio-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: white;
+            border: 1.5px solid var(--border-grey);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .radio-option:hover {
+            border-color: var(--nhs-blue);
+            background: rgba(0,94,184,0.05);
+        }
+
+        .radio-option.selected {
+            background: var(--nhs-blue);
+            border-color: var(--nhs-blue);
+            color: white;
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        /* Comments Section */
+        .comments-area {
+            width: 100%;
+            min-height: 120px;
+            padding: 14px;
+            border: 1.5px solid var(--border-grey);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .comments-area:focus {
+            outline: none;
+            border-color: var(--nhs-blue);
+            box-shadow: 0 0 0 3px rgba(0,94,184,0.1);
+        }
+
+        /* Footer */
+        .form-footer {
+            background: var(--light-grey);
+            padding: 15px 30px;
+            border-radius: 0 0 12px 12px;
+            font-size: 0.75rem;
+            color: var(--mid-grey);
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            background: var(--dark-grey);
+            color: white;
+            border-radius: 8px;
+            font-weight: 500;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success {
+            background: var(--success);
+        }
+
+        .toast.error {
+            background: var(--error);
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+            }
+            .action-bar {
+                display: none !important;
+            }
+            .container {
+                max-width: 100%;
+                padding: 0;
+            }
+            .header {
+                border-radius: 0;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            .section-header {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+            .form-container {
+                box-shadow: none;
+            }
+            .radio-option.selected {
+                background: var(--nhs-blue) !important;
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .header {
+                padding: 20px;
+            }
+            .header h1 {
+                font-size: 1.4rem;
+            }
+            #survey-form {
+                padding: 20px;
+            }
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            .action-bar {
+                padding: 10px 15px;
+            }
+            .action-btn {
+                padding: 8px 14px;
+                font-size: 0.85rem;
+            }
+            .score-box {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .score-legend {
+                margin-left: 0;
+            }
+            .privacy-notice {
+                flex-direction: column;
+                text-align: center;
+            }
+            .privacy-notice svg {
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="ud-update" style="margin:12px auto;max-width:1100px;padding:10px 14px;border-left:4px solid #0a7;background:#effaf6;font:13px/1.45 system-ui,sans-serif;color:#124"><strong>Updated 23 Nov 2026 – what changed</strong><ul style="margin:6px 0 0 18px;padding:0"><li>Corrected citation (NG131 is prostate cancer; LUTS guidance is CG97) and updated EAU edition</li><li>IG flags for owner review (not changed): hard-coded NHS email in public repo; DOB in email subject; optional third-party form transports</li></ul><em>Decision support only; verify against current local and national guidance.</em></div>
+    <div class="container">
+        <div class="header">
+            <h1>Benign Prostate Surgery</h1>
+            <div class="hospital-name">The Queen Elizabeth Hospital King's Lynn NHS Foundation Trust</div>
+            <div class="patient-notice">FOR PATIENTS WHO HAVE ALREADY HAD THEIR PROSTATE SURGERY</div>
+            <p>Postoperative Symptom Survey • Based on NICE, EAU & GIRFT Guidelines</p>
+        </div>
+
+        <div class="action-bar">
+            <button class="action-btn submit" onclick="submitSurvey()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Submit Survey
+            </button>
+            <button class="action-btn primary" onclick="downloadPDF()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Download PDF
+            </button>
+            <button class="action-btn secondary" onclick="emailSurvey()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Email My Copy
+            </button>
+            <button class="action-btn secondary" onclick="copyToClipboard()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Copy to Clipboard
+            </button>
+            <button class="action-btn success" onclick="clearForm()">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Clear Form
+            </button>
+        </div>
+
+        <div class="form-container">
+            <form id="survey-form">
+                <!-- Privacy Notice -->
+                <div class="privacy-notice">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <div class="privacy-notice-content">
+                        <h3>🔒 Your Privacy is Protected</h3>
+                        <p><strong>We do not collect any identifiable personal information.</strong></p>
+                        <p>Please provide only your <span class="highlight">Date of Birth</span> and <span class="highlight">Date of Surgery</span>.</p>
+                        <p>This information is used solely to verify your records in our hospital system and to match your feedback with your clinical outcomes.</p>
+                    </div>
+                </div>
+
+                <!-- SECTION A: Verification Information -->
+                <div class="section">
+                    <div class="section-header">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        SECTION A: Verification Information
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group required">
+                            <label for="dob">Date of Birth</label>
+                            <input type="date" id="dob" name="dob" required>
+                        </div>
+                        <div class="form-group required">
+                            <label for="surgeryDate">Date of Surgery</label>
+                            <input type="date" id="surgeryDate" name="surgeryDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="weeksPostOp">Weeks Post-Op</label>
+                            <input type="number" id="weeksPostOp" name="weeksPostOp" min="0" placeholder="e.g., 6">
+                        </div>
+                    </div>
+                    
+                    <div class="subsection-header">Type of Surgery</div>
+                    <div class="checkbox-grid" id="surgeryTypes">
+                        <label class="checkbox-item">
+                            <input type="radio" name="surgeryType" value="HoLEP">
+                            <span>HoLEP</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="radio" name="surgeryType" value="TURP">
+                            <span>TURP</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="radio" name="surgeryType" value="Bipolar TURP">
+                            <span>Bipolar TURP</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="radio" name="surgeryType" value="UroLift (PUL)">
+                            <span>UroLift (PUL)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="radio" name="surgeryType" value="Rezum">
+                            <span>Rezum</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="radio" name="surgeryType" value="Aquablation">
+                            <span>Aquablation</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="radio" name="surgeryType" value="GreenLight (PVP)">
+                            <span>GreenLight (PVP)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="radio" name="surgeryType" value="Elesta Echolaser">
+                            <span>Elesta Echolaser</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="radio" name="surgeryType" value="Prostatic Artery Embolisation">
+                            <span>Prostatic Artery Embolisation</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="radio" name="surgeryType" value="Other">
+                            <span>Other</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- SECTION B: IPSS -->
+                <div class="section">
+                    <div class="section-header">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        SECTION B: POSTOPERATIVE IPSS (International Prostate Symptom Score)
+                    </div>
+                    <p style="font-size: 0.85rem; color: var(--mid-grey); margin-bottom: 15px; font-style: italic;">
+                        Answer based on your symptoms over the <strong>past month</strong>. Select one option per question.
+                    </p>
+                    
+                    <table class="ipss-table">
+                        <thead>
+                            <tr>
+                                <th>Symptom</th>
+                                <th>Not at all<br>(0)</th>
+                                <th>&lt;1 in 5<br>(1)</th>
+                                <th>&lt;Half<br>(2)</th>
+                                <th>~Half<br>(3)</th>
+                                <th>&gt;Half<br>(4)</th>
+                                <th>Always<br>(5)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1. Incomplete emptying</td>
+                                <td><input type="radio" name="ipss1" value="0"></td>
+                                <td><input type="radio" name="ipss1" value="1"></td>
+                                <td><input type="radio" name="ipss1" value="2"></td>
+                                <td><input type="radio" name="ipss1" value="3"></td>
+                                <td><input type="radio" name="ipss1" value="4"></td>
+                                <td><input type="radio" name="ipss1" value="5"></td>
+                            </tr>
+                            <tr>
+                                <td>2. Frequency (&lt;2hrs apart)</td>
+                                <td><input type="radio" name="ipss2" value="0"></td>
+                                <td><input type="radio" name="ipss2" value="1"></td>
+                                <td><input type="radio" name="ipss2" value="2"></td>
+                                <td><input type="radio" name="ipss2" value="3"></td>
+                                <td><input type="radio" name="ipss2" value="4"></td>
+                                <td><input type="radio" name="ipss2" value="5"></td>
+                            </tr>
+                            <tr>
+                                <td>3. Intermittency (stop-start)</td>
+                                <td><input type="radio" name="ipss3" value="0"></td>
+                                <td><input type="radio" name="ipss3" value="1"></td>
+                                <td><input type="radio" name="ipss3" value="2"></td>
+                                <td><input type="radio" name="ipss3" value="3"></td>
+                                <td><input type="radio" name="ipss3" value="4"></td>
+                                <td><input type="radio" name="ipss3" value="5"></td>
+                            </tr>
+                            <tr>
+                                <td>4. Urgency (hard to wait)</td>
+                                <td><input type="radio" name="ipss4" value="0"></td>
+                                <td><input type="radio" name="ipss4" value="1"></td>
+                                <td><input type="radio" name="ipss4" value="2"></td>
+                                <td><input type="radio" name="ipss4" value="3"></td>
+                                <td><input type="radio" name="ipss4" value="4"></td>
+                                <td><input type="radio" name="ipss4" value="5"></td>
+                            </tr>
+                            <tr>
+                                <td>5. Weak stream</td>
+                                <td><input type="radio" name="ipss5" value="0"></td>
+                                <td><input type="radio" name="ipss5" value="1"></td>
+                                <td><input type="radio" name="ipss5" value="2"></td>
+                                <td><input type="radio" name="ipss5" value="3"></td>
+                                <td><input type="radio" name="ipss5" value="4"></td>
+                                <td><input type="radio" name="ipss5" value="5"></td>
+                            </tr>
+                            <tr>
+                                <td>6. Straining to begin</td>
+                                <td><input type="radio" name="ipss6" value="0"></td>
+                                <td><input type="radio" name="ipss6" value="1"></td>
+                                <td><input type="radio" name="ipss6" value="2"></td>
+                                <td><input type="radio" name="ipss6" value="3"></td>
+                                <td><input type="radio" name="ipss6" value="4"></td>
+                                <td><input type="radio" name="ipss6" value="5"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <table class="ipss-table">
+                        <thead>
+                            <tr>
+                                <th>Nocturia</th>
+                                <th>None<br>(0)</th>
+                                <th>1 time<br>(1)</th>
+                                <th>2 times<br>(2)</th>
+                                <th>3 times<br>(3)</th>
+                                <th>4 times<br>(4)</th>
+                                <th>5+<br>(5)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>7. Times up at night to urinate</td>
+                                <td><input type="radio" name="ipss7" value="0"></td>
+                                <td><input type="radio" name="ipss7" value="1"></td>
+                                <td><input type="radio" name="ipss7" value="2"></td>
+                                <td><input type="radio" name="ipss7" value="3"></td>
+                                <td><input type="radio" name="ipss7" value="4"></td>
+                                <td><input type="radio" name="ipss7" value="5"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="question-group">
+                        <div class="question-text">Quality of Life: If you had to live with your urinary symptoms as they are now, how would you feel?</div>
+                        <div class="radio-options" id="qolOptions">
+                            <label class="radio-option"><input type="radio" name="qol" value="0">Delighted (0)</label>
+                            <label class="radio-option"><input type="radio" name="qol" value="1">Pleased (1)</label>
+                            <label class="radio-option"><input type="radio" name="qol" value="2">Mostly OK (2)</label>
+                            <label class="radio-option"><input type="radio" name="qol" value="3">Mixed (3)</label>
+                            <label class="radio-option"><input type="radio" name="qol" value="4">Unhappy (4)</label>
+                            <label class="radio-option"><input type="radio" name="qol" value="5">Unhappy (5)</label>
+                            <label class="radio-option"><input type="radio" name="qol" value="6">Terrible (6)</label>
+                        </div>
+                    </div>
+                    
+                    <div class="score-box">
+                        <div class="clinical-note">FOR CLINICAL USE - SCORES TO BE CALCULATED BY HEALTHCARE PROFESSIONAL</div>
+                        <div class="score-item">
+                            <label>IPSS Total (0-35):</label>
+                            <div class="score-value" id="ipssTotal">-</div>
+                        </div>
+                        <div class="score-item">
+                            <label>QoL Score (0-6):</label>
+                            <div class="score-value" id="qolScore">-</div>
+                        </div>
+                        <div class="score-legend">
+                            <strong>Severity:</strong> Mild (0-7) • Moderate (8-19) • Severe (20-35)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION C: Urgency & Incontinence -->
+                <div class="section">
+                    <div class="section-header">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                        SECTION C: Urgency & Incontinence
+                    </div>
+                    
+                    <div class="question-group">
+                        <div class="question-text">1. How often do you have sudden urgency that is hard to control?</div>
+                        <div class="radio-options">
+                            <label class="radio-option"><input type="radio" name="urgency" value="Never">Never</label>
+                            <label class="radio-option"><input type="radio" name="urgency" value="Rarely">Rarely</label>
+                            <label class="radio-option"><input type="radio" name="urgency" value="Sometimes">Sometimes</label>
+                            <label class="radio-option"><input type="radio" name="urgency" value="Often">Often</label>
+                            <label class="radio-option"><input type="radio" name="urgency" value="Always">Always</label>
+                        </div>
+                    </div>
+                    
+                    <div class="question-group">
+                        <div class="question-text">2. Do you leak urine before reaching the toilet (urge incontinence)?</div>
+                        <div class="radio-options">
+                            <label class="radio-option"><input type="radio" name="urgeIncont" value="Never">Never</label>
+                            <label class="radio-option"><input type="radio" name="urgeIncont" value="Rarely">Rarely</label>
+                            <label class="radio-option"><input type="radio" name="urgeIncont" value="Sometimes">Sometimes</label>
+                            <label class="radio-option"><input type="radio" name="urgeIncont" value="Often">Often</label>
+                            <label class="radio-option"><input type="radio" name="urgeIncont" value="Always">Always</label>
+                        </div>
+                    </div>
+                    
+                    <div class="question-group">
+                        <div class="question-text">3. Do you leak urine with coughing, sneezing or physical activity?</div>
+                        <div class="radio-options">
+                            <label class="radio-option"><input type="radio" name="stressIncont" value="Never">Never</label>
+                            <label class="radio-option"><input type="radio" name="stressIncont" value="Rarely">Rarely</label>
+                            <label class="radio-option"><input type="radio" name="stressIncont" value="Sometimes">Sometimes</label>
+                            <label class="radio-option"><input type="radio" name="stressIncont" value="Often">Often</label>
+                            <label class="radio-option"><input type="radio" name="stressIncont" value="Always">Always</label>
+                        </div>
+                    </div>
+                    
+                    <div class="question-group">
+                        <div class="question-text">4. How many pads/day do you use for leakage?</div>
+                        <div class="radio-options">
+                            <label class="radio-option"><input type="radio" name="pads" value="None">None</label>
+                            <label class="radio-option"><input type="radio" name="pads" value="1">1</label>
+                            <label class="radio-option"><input type="radio" name="pads" value="2">2</label>
+                            <label class="radio-option"><input type="radio" name="pads" value="3-4">3-4</label>
+                            <label class="radio-option"><input type="radio" name="pads" value="5+">5+</label>
+                        </div>
+                    </div>
+                    
+                    <div class="question-group">
+                        <div class="question-text">5. Has your continence improved since surgery?</div>
+                        <div class="radio-options">
+                            <label class="radio-option"><input type="radio" name="continenceImprove" value="Much better">Much better</label>
+                            <label class="radio-option"><input type="radio" name="continenceImprove" value="Better">Better</label>
+                            <label class="radio-option"><input type="radio" name="continenceImprove" value="Same">Same</label>
+                            <label class="radio-option"><input type="radio" name="continenceImprove" value="Worse">Worse</label>
+                            <label class="radio-option"><input type="radio" name="continenceImprove" value="Much worse">Much worse</label>
+                        </div>
+                    </div>
+                    
+                    <div class="question-group">
+                        <div class="question-text">6. Are you doing pelvic floor exercises?</div>
+                        <div class="radio-options">
+                            <label class="radio-option"><input type="radio" name="pelvicFloor" value="Yes, regularly">Yes, regularly</label>
+                            <label class="radio-option"><input type="radio" name="pelvicFloor" value="Sometimes">Sometimes</label>
+                            <label class="radio-option"><input type="radio" name="pelvicFloor" value="No">No</label>
+                            <label class="radio-option"><input type="radio" name="pelvicFloor" value="Not advised">Not advised</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION D: Sexual Function (Simplified) -->
+                <div class="section">
+                    <div class="section-header">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                        SECTION D: Sexual Function
+                    </div>
+                    
+                    <div class="question-group">
+                        <div class="question-text">1. Has your erectile function changed since surgery?</div>
+                        <div class="radio-options">
+                            <label class="radio-option"><input type="radio" name="erectile" value="No change">No change</label>
+                            <label class="radio-option"><input type="radio" name="erectile" value="Improved">Improved</label>
+                            <label class="radio-option"><input type="radio" name="erectile" value="Slightly worse">Slightly worse</label>
+                            <label class="radio-option"><input type="radio" name="erectile" value="Much worse">Much worse</label>
+                            <label class="radio-option"><input type="radio" name="erectile" value="N/A">N/A</label>
+                        </div>
+                    </div>
+                    
+                    <div class="question-group">
+                        <div class="question-text">2. Do you have dry ejaculation (retrograde ejaculation)?</div>
+                        <div class="radio-options">
+                            <label class="radio-option"><input type="radio" name="retrograde" value="No">No</label>
+                            <label class="radio-option"><input type="radio" name="retrograde" value="Sometimes">Sometimes</label>
+                            <label class="radio-option"><input type="radio" name="retrograde" value="Always">Always</label>
+                            <label class="radio-option"><input type="radio" name="retrograde" value="Not sure">Not sure</label>
+                            <label class="radio-option"><input type="radio" name="retrograde" value="N/A">N/A</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION E: Service Satisfaction -->
+                <div class="section">
+                    <div class="section-header">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                        </svg>
+                        SECTION E: Service Satisfaction
+                    </div>
+                    
+                    <div class="question-group">
+                        <div class="question-text">1. Were you given adequate information about surgery and expected outcomes?</div>
+                        <div class="radio-options">
+                            <label class="radio-option"><input type="radio" name="preopInfo" value="Definitely yes">Definitely yes</label>
+                            <label class="radio-option"><input type="radio" name="preopInfo" value="Mostly">Mostly</label>
+                            <label class="radio-option"><input type="radio" name="preopInfo" value="Partly">Partly</label>
+                            <label class="radio-option"><input type="radio" name="preopInfo" value="No">No</label>
+                        </div>
+                    </div>
+                    
+                    <div class="question-group">
+                        <div class="question-text">2. Were potential side effects explained before surgery?</div>
+                        <div class="radio-options">
+                            <label class="radio-option"><input type="radio" name="sideEffects" value="Definitely yes">Definitely yes</label>
+                            <label class="radio-option"><input type="radio" name="sideEffects" value="Mostly">Mostly</label>
+                            <label class="radio-option"><input type="radio" name="sideEffects" value="Partly">Partly</label>
+                            <label class="radio-option"><input type="radio" name="sideEffects" value="No">No</label>
+                        </div>
+                    </div>
+                    
+                    <div class="question-group">
+                        <div class="question-text">3. Were you given clear discharge instructions?</div>
+                        <div class="radio-options">
+                            <label class="radio-option"><input type="radio" name="discharge" value="Definitely yes">Definitely yes</label>
+                            <label class="radio-option"><input type="radio" name="discharge" value="Mostly">Mostly</label>
+                            <label class="radio-option"><input type="radio" name="discharge" value="Partly">Partly</label>
+                            <label class="radio-option"><input type="radio" name="discharge" value="No">No</label>
+                        </div>
+                    </div>
+                    
+                    <div class="question-group">
+                        <div class="question-text">4. Did you have access to a Clinical Nurse Specialist (CNS)?</div>
+                        <div class="radio-options">
+                            <label class="radio-option"><input type="radio" name="cns" value="Yes, easy">Yes, easy</label>
+                            <label class="radio-option"><input type="radio" name="cns" value="Yes, difficult">Yes, difficult</label>
+                            <label class="radio-option"><input type="radio" name="cns" value="No CNS">No CNS</label>
+                            <label class="radio-option"><input type="radio" name="cns" value="Not sure">Not sure</label>
+                        </div>
+                    </div>
+                    
+                    <div class="question-group">
+                        <div class="question-text">5. Overall, how would you rate your care from the urology service?</div>
+                        <div class="radio-options">
+                            <label class="radio-option"><input type="radio" name="overallRating" value="Excellent">Excellent</label>
+                            <label class="radio-option"><input type="radio" name="overallRating" value="Very Good">Very Good</label>
+                            <label class="radio-option"><input type="radio" name="overallRating" value="Good">Good</label>
+                            <label class="radio-option"><input type="radio" name="overallRating" value="Fair">Fair</label>
+                            <label class="radio-option"><input type="radio" name="overallRating" value="Poor">Poor</label>
+                        </div>
+                    </div>
+                    
+                    <div class="question-group">
+                        <div class="question-text">6. Would you recommend this service to friends or family?</div>
+                        <div class="radio-options">
+                            <label class="radio-option"><input type="radio" name="recommend" value="Definitely">Definitely</label>
+                            <label class="radio-option"><input type="radio" name="recommend" value="Probably">Probably</label>
+                            <label class="radio-option"><input type="radio" name="recommend" value="Not sure">Not sure</label>
+                            <label class="radio-option"><input type="radio" name="recommend" value="Probably not">Probably not</label>
+                            <label class="radio-option"><input type="radio" name="recommend" value="No">No</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION F: Comments -->
+                <div class="section">
+                    <div class="section-header">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                        </svg>
+                        SECTION F: Your Comments
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="comments">Please share any additional comments about your symptoms, recovery, or experience:</label>
+                        <textarea class="comments-area" id="comments" name="comments" placeholder="Your feedback helps us improve our service..."></textarea>
+                    </div>
+                    
+                    <div class="subsection-header">What could we improve?</div>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="improve" value="Communication">
+                            <span>Communication</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="improve" value="Waiting times">
+                            <span>Waiting times</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="improve" value="Information">
+                            <span>Information</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="improve" value="Follow-up">
+                            <span>Follow-up</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="improve" value="CNS access">
+                            <span>CNS access</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="improve" value="Pain management">
+                            <span>Pain management</span>
+                        </label>
+                    </div>
+                </div>
+            </form>
+            
+            <div class="form-footer">
+                <p><strong>The Queen Elizabeth Hospital King's Lynn NHS Foundation Trust</strong></p>
+                <p>References: NICE CG97 (LUTS in men) | EAU Non-Neurogenic Male LUTS Guidelines 2026 | AUA BPH Guidelines 2023 | GIRFT Urology 2024</p>
+                <p>IPSS: Barry MJ et al. J Urol 1992 | Form v1.0 January 2026</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // Initialize date fields
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click handlers for radio options styling
+            document.querySelectorAll('.radio-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const name = this.querySelector('input[type="radio"]').name;
+                    document.querySelectorAll(`input[name="${name}"]`).forEach(radio => {
+                        radio.closest('.radio-option').classList.remove('selected');
+                    });
+                    this.classList.add('selected');
+                    calculateIPSS();
+                });
+            });
+            
+            // Checkbox item styling
+            document.querySelectorAll('.checkbox-item input').forEach(input => {
+                input.addEventListener('change', function() {
+                    if (this.type === 'radio') {
+                        document.querySelectorAll(`input[name="${this.name}"]`).forEach(radio => {
+                            radio.closest('.checkbox-item').classList.remove('selected');
+                        });
+                    }
+                    this.closest('.checkbox-item').classList.toggle('selected', this.checked);
+                });
+            });
+            
+            // IPSS radio buttons
+            document.querySelectorAll('.ipss-table input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', calculateIPSS);
+            });
+        });
+
+        function calculateIPSS() {
+            let total = 0;
+            let answered = 0;
+            
+            for (let i = 1; i <= 7; i++) {
+                const selected = document.querySelector(`input[name="ipss${i}"]:checked`);
+                if (selected) {
+                    total += parseInt(selected.value);
+                    answered++;
+                }
+            }
+            
+            document.getElementById('ipssTotal').textContent = answered > 0 ? total : '-';
+            
+            const qol = document.querySelector('input[name="qol"]:checked');
+            document.getElementById('qolScore').textContent = qol ? qol.value : '-';
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        function getFormData() {
+            const form = document.getElementById('survey-form');
+            const formData = new FormData(form);
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                if (data[key]) {
+                    if (Array.isArray(data[key])) {
+                        data[key].push(value);
+                    } else {
+                        data[key] = [data[key], value];
+                    }
+                } else {
+                    data[key] = value;
+                }
+            }
+            
+            data.ipssTotal = document.getElementById('ipssTotal').textContent;
+            data.qolScore = document.getElementById('qolScore').textContent;
+            
+            return data;
+        }
+
+        function formatDataAsText() {
+            const data = getFormData();
+            let text = `BPH SURGERY POSTOPERATIVE SURVEY\n`;
+            text += `The Queen Elizabeth Hospital King's Lynn\n`;
+            text += `${'='.repeat(50)}\n\n`;
+            
+            text += `VERIFICATION INFORMATION\n`;
+            text += `-`.repeat(30) + `\n`;
+            text += `Date of Birth: ${data.dob || 'Not provided'}\n`;
+            text += `Surgery Date: ${data.surgeryDate || 'Not provided'}\n`;
+            text += `Weeks Post-Op: ${data.weeksPostOp || 'Not provided'}\n`;
+            text += `Surgery Type: ${data.surgeryType || 'Not provided'}\n\n`;
+            
+            text += `POSTOPERATIVE IPSS SCORES\n`;
+            text += `-`.repeat(30) + `\n`;
+            text += `1. Incomplete emptying: ${data.ipss1 || '-'}\n`;
+            text += `2. Frequency: ${data.ipss2 || '-'}\n`;
+            text += `3. Intermittency: ${data.ipss3 || '-'}\n`;
+            text += `4. Urgency: ${data.ipss4 || '-'}\n`;
+            text += `5. Weak stream: ${data.ipss5 || '-'}\n`;
+            text += `6. Straining: ${data.ipss6 || '-'}\n`;
+            text += `7. Nocturia: ${data.ipss7 || '-'}\n`;
+            text += `IPSS Total: ${data.ipssTotal}\n`;
+            text += `Quality of Life: ${data.qolScore}\n\n`;
+            
+            text += `URGENCY & INCONTINENCE\n`;
+            text += `-`.repeat(30) + `\n`;
+            text += `Urgency frequency: ${data.urgency || '-'}\n`;
+            text += `Urge incontinence: ${data.urgeIncont || '-'}\n`;
+            text += `Stress incontinence: ${data.stressIncont || '-'}\n`;
+            text += `Pads per day: ${data.pads || '-'}\n`;
+            text += `Continence improvement: ${data.continenceImprove || '-'}\n`;
+            text += `Pelvic floor exercises: ${data.pelvicFloor || '-'}\n\n`;
+            
+            text += `SEXUAL FUNCTION\n`;
+            text += `-`.repeat(30) + `\n`;
+            text += `Erectile function change: ${data.erectile || '-'}\n`;
+            text += `Dry ejaculation (retrograde): ${data.retrograde || '-'}\n\n`;
+            
+            text += `SERVICE SATISFACTION\n`;
+            text += `-`.repeat(30) + `\n`;
+            text += `Pre-op information: ${data.preopInfo || '-'}\n`;
+            text += `Side effects explained: ${data.sideEffects || '-'}\n`;
+            text += `Discharge instructions: ${data.discharge || '-'}\n`;
+            text += `CNS access: ${data.cns || '-'}\n`;
+            text += `Overall rating: ${data.overallRating || '-'}\n`;
+            text += `Would recommend: ${data.recommend || '-'}\n\n`;
+            
+            text += `COMMENTS\n`;
+            text += `-`.repeat(30) + `\n`;
+            text += `${data.comments || 'No comments provided'}\n\n`;
+            
+            if (data.improve) {
+                const improvements = Array.isArray(data.improve) ? data.improve.join(', ') : data.improve;
+                text += `Areas for improvement: ${improvements}\n`;
+            }
+            
+            return text;
+        }
+
+        function validateForm() {
+            const dob = document.getElementById('dob').value;
+            const surgeryDate = document.getElementById('surgeryDate').value;
+            
+            if (!dob) {
+                showToast('Please enter your Date of Birth', 'error');
+                document.getElementById('dob').focus();
+                return false;
+            }
+            
+            if (!surgeryDate) {
+                showToast('Please enter your Date of Surgery', 'error');
+                document.getElementById('surgeryDate').focus();
+                return false;
+            }
+            
+            return true;
+        }
+
+        function submitSurvey() {
+            if (!validateForm()) {
+                return;
+            }
+            
+            const data = getFormData();
+            const text = formatDataAsText();
+            
+            // Try configured email service
+            if (CLINIC_CONFIG.useEmailJS && CLINIC_CONFIG.emailjsPublicKey !== "YOUR_PUBLIC_KEY") {
+                submitViaEmailJS(text, data);
+            } else if (CLINIC_CONFIG.useFormspree && CLINIC_CONFIG.formspreeId !== "YOUR_FORM_ID") {
+                submitViaFormspree(text, data);
+            } else if (CLINIC_CONFIG.useWeb3Forms && CLINIC_CONFIG.web3formsKey !== "YOUR_ACCESS_KEY") {
+                submitViaWeb3Forms(text, data);
+            } else {
+                submitViaMailto(text, data);
+            }
+        }
+        
+        function submitViaEmailJS(text, data) {
+            emailjs.init(CLINIC_CONFIG.emailjsPublicKey);
+            
+            const templateParams = {
+                to_email: CLINIC_CONFIG.clinicEmail,
+                clinic_name: CLINIC_CONFIG.clinicName,
+                dob: data.dob || 'Not provided',
+                survey_date: new Date().toLocaleDateString(),
+                surgery_date: data.surgeryDate || 'Not provided',
+                surgery_type: data.surgeryType || 'Not specified',
+                ipss_total: data.ipssTotal,
+                qol_score: data.qolScore,
+                survey_content: text
+            };
+            
+            emailjs.send(CLINIC_CONFIG.emailjsServiceId, CLINIC_CONFIG.emailjsTemplateId, templateParams)
+                .then(function() {
+                    showSubmissionSuccess();
+                })
+                .catch(function(error) {
+                    console.error('EmailJS error:', error);
+                    submitViaMailto(text, data);
+                });
+        }
+        
+        function submitViaFormspree(text, data) {
+            const formData = new FormData();
+            formData.append('email', CLINIC_CONFIG.clinicEmail);
+            formData.append('_subject', `BPH Survey - DOB: ${data.dob} - Surgery: ${data.surgeryDate} - IPSS: ${data.ipssTotal}`);
+            formData.append('message', text);
+            
+            fetch(`https://formspree.io/f/${CLINIC_CONFIG.formspreeId}`, {
+                method: 'POST',
+                body: formData,
+                headers: { 'Accept': 'application/json' }
+            })
+            .then(response => {
+                if (response.ok) {
+                    showSubmissionSuccess();
+                } else {
+                    throw new Error('Submission failed');
+                }
+            })
+            .catch(error => {
+                console.error('Formspree error:', error);
+                submitViaMailto(text, data);
+            });
+        }
+        
+        function submitViaWeb3Forms(text, data) {
+            const formData = new FormData();
+            formData.append('access_key', CLINIC_CONFIG.web3formsKey);
+            formData.append('to_email', CLINIC_CONFIG.clinicEmail);
+            formData.append('subject', `BPH Survey - DOB: ${data.dob} - Surgery: ${data.surgeryDate} - IPSS: ${data.ipssTotal}`);
+            formData.append('message', text);
+            formData.append('from_name', 'QEH BPH Surgery Survey');
+            
+            fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    showSubmissionSuccess();
+                } else {
+                    throw new Error('Submission failed');
+                }
+            })
+            .catch(error => {
+                console.error('Web3Forms error:', error);
+                submitViaMailto(text, data);
+            });
+        }
+        
+        function submitViaMailto(text, data) {
+            const subject = encodeURIComponent(`BPH Survey - DOB: ${data.dob} - Surgery: ${data.surgeryDate} - IPSS: ${data.ipssTotal}`);
+            const body = encodeURIComponent(text);
+            
+            const link = document.createElement('a');
+            link.href = `mailto:${CLINIC_CONFIG.clinicEmail}?subject=${subject}&body=${body}`;
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast('Survey prepared for submission. Please send the email that opened.', 'success');
+            saveLocalBackup(text, data);
+        }
+        
+        function showSubmissionSuccess() {
+            showToast('Survey submitted successfully! Thank you for your feedback.', 'success');
+            
+            setTimeout(() => {
+                if (confirm('Survey submitted! Would you like to clear the form?')) {
+                    clearForm();
+                }
+            }, 1500);
+        }
+        
+        function saveLocalBackup(text, data) {
+            const timestamp = new Date().toISOString();
+            const key = `qeh_bph_survey_${timestamp}`;
+            
+            try {
+                localStorage.setItem(key, JSON.stringify({
+                    timestamp: timestamp,
+                    data: data,
+                    text: text
+                }));
+            } catch (e) {
+                console.log('Could not save local backup');
+            }
+        }
+
+        function downloadPDF() {
+            if (!validateForm()) {
+                return;
+            }
+            
+            const element = document.querySelector('.form-container');
+            const actionBar = document.querySelector('.action-bar');
+            
+            actionBar.style.display = 'none';
+            
+            const data = getFormData();
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: `BPH_Survey_QEH_${data.dob || 'Patient'}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { 
+                    scale: 2, 
+                    useCORS: true,
+                    logging: false
+                },
+                jsPDF: { 
+                    unit: 'mm', 
+                    format: 'a4', 
+                    orientation: 'portrait' 
+                }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                actionBar.style.display = 'flex';
+                showToast('PDF downloaded successfully!', 'success');
+            }).catch(err => {
+                actionBar.style.display = 'flex';
+                showToast('Error generating PDF', 'error');
+                console.error(err);
+            });
+        }
+
+        function emailSurvey() {
+            const data = getFormData();
+            const subject = encodeURIComponent(`My BPH Surgery Survey - ${new Date().toLocaleDateString()}`);
+            const body = encodeURIComponent(formatDataAsText());
+            
+            window.location.href = `mailto:?subject=${subject}&body=${body}`;
+            showToast('Email client opened - send yourself a copy!', 'success');
+        }
+
+        function copyToClipboard() {
+            const text = formatDataAsText();
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Survey copied to clipboard!', 'success');
+            }).catch(err => {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('Survey copied to clipboard!', 'success');
+            });
+        }
+
+        function clearForm() {
+            if (confirm('Are you sure you want to clear all form data?')) {
+                document.getElementById('survey-form').reset();
+                document.querySelectorAll('.radio-option.selected, .checkbox-item.selected').forEach(el => {
+                    el.classList.remove('selected');
+                });
+                document.getElementById('ipssTotal').textContent = '-';
+                document.getElementById('qolScore').textContent = '-';
+                
+                showToast('Form cleared!', 'success');
+            }
+        }
+    </script>
+</body>
+</html>

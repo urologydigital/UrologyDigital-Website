@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Male Urological Assessment Questionnaires</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f172a;
+            --primary-light: #1e293b;
+            --accent: #0d9488;
+            --accent-light: #14b8a6;
+            --accent-pale: #ccfbf1;
+            --success: #059669;
+            --success-light: #10b981;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --text-muted: #94a3b8;
+            --border: #e2e8f0;
+            --border-light: #f1f5f9;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.04);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+            --radius: 12px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 1rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.75rem;
+            font-weight: 400;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            max-width: 500px;
+            margin: 0 auto 1rem;
+        }
+
+        .guidelines-badge {
+            display: inline-flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .badge {
+            background: var(--accent-pale);
+            color: var(--accent);
+            padding: 0.375rem 0.875rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.025em;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Questionnaire Selection Cards */
+        .questionnaire-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .questionnaire-select-card {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .questionnaire-select-card:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .questionnaire-select-card.completed {
+            border-color: var(--success);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, transparent 100%);
+        }
+
+        .questionnaire-select-card.completed::after {
+            content: '✓';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 28px;
+            height: 28px;
+            background: var(--success);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-pale) 0%, #e0f2fe 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .questionnaire-select-card h3 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.125rem;
+            font-weight: 400;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .questionnaire-select-card .subtitle {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .questionnaire-select-card p {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-bottom: 0.75rem;
+        }
+
+        .card-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .card-score {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--success);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.75rem;
+        }
+
+        /* View All Results Button */
+        .view-results-container {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .view-results-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .view-results-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .view-results-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Questionnaire Form Card */
+        .questionnaire-form {
+            display: none;
+        }
+
+        .questionnaire-form.active {
+            display: block;
+        }
+
+        .form-card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-header {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .form-header-content h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.375rem;
+            font-weight: 400;
+            margin-bottom: 0.25rem;
+        }
+
+        .form-header-content p {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        .close-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.25rem;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        .form-body {
+            padding: 2rem;
+        }
+
+        .question-item {
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .question-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .question-item:first-child {
+            padding-top: 0;
+        }
+
+        .question-label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .question-num {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            min-width: 24px;
+        }
+
+        .question-text {
+            font-weight: 500;
+            color: var(--text);
+            flex: 1;
+            line-height: 1.5;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-left: 0;
+        }
+
+        .option-item {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1rem;
+            background: var(--bg);
+            border: 2px solid transparent;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-item:hover {
+            background: white;
+            border-color: var(--border);
+        }
+
+        .option-item.selected {
+            background: var(--accent-pale);
+            border-color: var(--accent);
+        }
+
+        .option-radio {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            margin-right: 0.875rem;
+            flex-shrink: 0;
+            position: relative;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .option-item.selected .option-radio {
+            border-color: var(--accent);
+            background: var(--accent);
+        }
+
+        .option-item.selected .option-radio::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        .option-score {
+            padding: 0.25rem 0.625rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-left: 0.5rem;
+        }
+
+        .option-item.selected .option-score {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+
+        .form-footer {
+            padding: 1.5rem 2rem;
+            background: var(--bg);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-info {
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+
+        .progress-info strong {
+            color: var(--accent);
+        }
+
+        .btn {
+            padding: 0.875rem 1.75rem;
+            border: none;
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--text-light);
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .results-card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-header {
+            background: linear-gradient(135deg, var(--success) 0%, var(--success-light) 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .results-header h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.75rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-date {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .results-body {
+            padding: 2rem;
+        }
+
+        .score-item {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .score-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .score-item.not-completed {
+            opacity: 0.5;
+        }
+
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .score-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .score-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .severity-badge {
+            display: inline-block;
+            padding: 0.375rem 0.875rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .severity-mild { background: #dcfce7; color: #166534; }
+        .severity-moderate { background: #fef3c7; color: #92400e; }
+        .severity-severe { background: #fee2e2; color: #991b1b; }
+        .severity-normal { background: #dcfce7; color: #166534; }
+
+        .score-bar-wrapper {
+            margin: 1rem 0;
+        }
+
+        .score-bar {
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .score-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+
+        .score-bar-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .score-description {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .subscale-row {
+            display: flex;
+            gap: 1rem;
+            margin: 0.75rem 0;
+            font-size: 0.85rem;
+        }
+
+        .subscale-item {
+            padding: 0.5rem 0.875rem;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .subscale-item strong {
+            color: var(--primary);
+        }
+
+        /* Patient Actions */
+        .actions-card {
+            background: var(--card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .actions-card h3 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: var(--primary);
+            margin-bottom: 1.25rem;
+        }
+
+        .action-list {
+            list-style: none;
+        }
+
+        .action-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .action-list li:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .action-list li:first-child {
+            padding-top: 0;
+        }
+
+        .action-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-pale);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+            flex-shrink: 0;
+        }
+
+        .action-content h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+        }
+
+        .action-content p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .export-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .export-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1rem;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .export-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .export-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Disclaimer */
+        .disclaimer {
+            background: #fffbeb;
+            border: 1px solid #fbbf24;
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            margin-top: 1.5rem;
+        }
+
+        .disclaimer-title {
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .disclaimer p {
+            font-size: 0.85rem;
+            color: #92400e;
+            line-height: 1.6;
+        }
+
+        .guidelines-info {
+            background: #f0fdfa;
+            border: 1px solid var(--accent-light);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .guidelines-info h4 {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .guidelines-info ul {
+            font-size: 0.825rem;
+            color: var(--text-light);
+            padding-left: 1.25rem;
+            margin: 0;
+        }
+
+        .guidelines-info li {
+            margin-bottom: 0.25rem;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            padding: 0.875rem 1.5rem;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            border-color: var(--text-light);
+        }
+
+        /* Print Styles */
+        @media print {
+            .header, .questionnaire-grid, .view-results-container, .export-grid, .back-btn, .form-header .close-btn {
+                display: none !important;
+            }
+            .results-section {
+                display: block !important;
+            }
+            .results-card, .actions-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                break-inside: avoid;
+            }
+            body {
+                background: white;
+            }
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 640px) {
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .form-header {
+                padding: 1.25rem 1.25rem;
+            }
+            .form-body {
+                padding: 1.25rem;
+            }
+            .form-footer {
+                padding: 1.25rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .export-grid {
+                grid-template-columns: 1fr;
+            }
+            .questionnaire-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Selection screen intro */
+        .selection-intro {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+        }
+
+        .selection-intro p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+<div class="ud-update" style="margin:12px auto;max-width:1100px;padding:10px 14px;border-left:4px solid #0a7;background:#effaf6;font:13px/1.45 system-ui,sans-serif;color:#124"><strong>Updated 23 Nov 2026 – what changed</strong><ul style="margin:6px 0 0 18px;padding:0"><li>Added EAU 2026 Male LUTS reference; IPSS / LUTS / IIEF-5 scoring unchanged (validated instruments)</li></ul><em>Decision support only; verify against current local and national guidance.</em></div>
+    <header class="header">
+        <h1>Male Urological Assessment</h1>
+        <p>Validated questionnaires for comprehensive lower urinary tract symptom evaluation</p>
+        <div class="guidelines-badge">
+            <span class="badge">NICE Guidelines</span>
+            <span class="badge">EAU Guidelines</span>
+            <span class="badge">GIRFT</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Selection Screen -->
+        <div id="selectionScreen">
+            <div class="selection-intro">
+                <p>Select any questionnaire below to complete independently, or complete all three for a comprehensive assessment.</p>
+            </div>
+
+            <div class="questionnaire-grid">
+                <div class="questionnaire-select-card" id="ipssCard" onclick="openQuestionnaire('ipss')">
+                    <div class="card-icon">📋</div>
+                    <h3>IPSS + Quality of Life</h3>
+                    <div class="subtitle">International Prostate Symptom Score</div>
+                    <p>Assesses urinary symptoms related to prostate conditions including frequency, urgency, and stream quality.</p>
+                    <div class="card-meta">
+                        <span>8 questions</span>
+                        <span>•</span>
+                        <span>~3 mins</span>
+                    </div>
+                    <div class="card-score hidden" id="ipssScoreDisplay"></div>
+                </div>
+
+                <div class="questionnaire-select-card" id="iciqCard" onclick="openQuestionnaire('iciq')">
+                    <div class="card-icon">📝</div>
+                    <h3>ICIQ-MLUTS</h3>
+                    <div class="subtitle">Male Lower Urinary Tract Symptoms</div>
+                    <p>Comprehensive assessment of voiding symptoms, incontinence, and their impact on daily life.</p>
+                    <div class="card-meta">
+                        <span>13 questions</span>
+                        <span>•</span>
+                        <span>~5 mins</span>
+                    </div>
+                    <div class="card-score hidden" id="iciqScoreDisplay"></div>
+                </div>
+
+                <div class="questionnaire-select-card" id="shimCard" onclick="openQuestionnaire('shim')">
+                    <div class="card-icon">💪</div>
+                    <h3>SHIM Score</h3>
+                    <div class="subtitle">Sexual Health Inventory for Men (IIEF-5)</div>
+                    <p>Evaluates erectile function and helps identify potential erectile dysfunction.</p>
+                    <div class="card-meta">
+                        <span>5 questions</span>
+                        <span>•</span>
+                        <span>~2 mins</span>
+                    </div>
+                    <div class="card-score hidden" id="shimScoreDisplay"></div>
+                </div>
+            </div>
+
+            <div class="view-results-container">
+                <button class="view-results-btn" id="viewResultsBtn" onclick="showResults()" disabled>
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    View All Results
+                </button>
+            </div>
+        </div>
+
+        <!-- IPSS Form -->
+        <div class="questionnaire-form" id="ipssForm">
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-content">
+                        <h2>IPSS + Quality of Life</h2>
+                        <p>Answer based on your experience during the last month</p>
+                    </div>
+                    <button class="close-btn" onclick="closeQuestionnaire()">✕</button>
+                </div>
+                <div class="form-body" id="ipssQuestions"></div>
+                <div class="form-footer">
+                    <div class="progress-info">
+                        <strong id="ipssProgress">0</strong> of 8 questions answered
+                    </div>
+                    <button class="btn btn-primary" id="ipssSubmitBtn" onclick="submitIPSS()" disabled>
+                        Complete Questionnaire
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ICIQ Form -->
+        <div class="questionnaire-form" id="iciqForm">
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-content">
+                        <h2>ICIQ-MLUTS</h2>
+                        <p>Answer based on your experience during the last 4 weeks</p>
+                    </div>
+                    <button class="close-btn" onclick="closeQuestionnaire()">✕</button>
+                </div>
+                <div class="form-body" id="iciqQuestions"></div>
+                <div class="form-footer">
+                    <div class="progress-info">
+                        <strong id="iciqProgress">0</strong> of 13 questions answered
+                    </div>
+                    <button class="btn btn-primary" id="iciqSubmitBtn" onclick="submitICIQ()" disabled>
+                        Complete Questionnaire
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SHIM Form -->
+        <div class="questionnaire-form" id="shimForm">
+            <div class="form-card">
+                <div class="form-header">
+                    <div class="form-header-content">
+                        <h2>SHIM Score (IIEF-5)</h2>
+                        <p>Answer based on your experience over the last 6 months</p>
+                    </div>
+                    <button class="close-btn" onclick="closeQuestionnaire()">✕</button>
+                </div>
+                <div class="form-body" id="shimQuestions"></div>
+                <div class="form-footer">
+                    <div class="progress-info">
+                        <strong id="shimProgress">0</strong> of 5 questions answered
+                    </div>
+                    <button class="btn btn-primary" id="shimSubmitBtn" onclick="submitSHIM()" disabled>
+                        Complete Questionnaire
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="results-card">
+                <div class="results-header">
+                    <h2>Your Assessment Results</h2>
+                    <p class="results-date" id="resultsDate"></p>
+                </div>
+                <div class="results-body" id="resultsBody"></div>
+            </div>
+
+            <div class="actions-card">
+                <h3>📝 What To Do With These Results</h3>
+                <ul class="action-list">
+                    <li>
+                        <div class="action-icon">✍️</div>
+                        <div class="action-content">
+                            <h4>Write Down Your Scores</h4>
+                            <p>Record your scores on paper to bring to your appointment</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="action-icon">📸</div>
+                        <div class="action-content">
+                            <h4>Take a Photo</h4>
+                            <p>Screenshot or photograph this results page for your records</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="action-icon">🖨️</div>
+                        <div class="action-content">
+                            <h4>Print the Results</h4>
+                            <p>Create a paper copy to share with your healthcare provider</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="action-icon">💾</div>
+                        <div class="action-content">
+                            <h4>Download Summary</h4>
+                            <p>Save a digital copy for your personal health records</p>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="export-grid">
+                    <button class="export-btn" onclick="window.print()">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                        Print
+                    </button>
+                    <button class="export-btn" onclick="downloadResults()">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        Download
+                    </button>
+                    <button class="export-btn" onclick="copyResults()">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                        Copy
+                    </button>
+                </div>
+            </div>
+
+            <div class="disclaimer">
+                <div class="disclaimer-title">
+                    <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    Important Medical Disclaimer
+                </div>
+                <p>These questionnaires are screening tools only and do not constitute a medical diagnosis. Results should be discussed with your healthcare provider who can interpret them in the context of your full medical history and clinical examination.</p>
+            </div>
+
+            <div class="guidelines-info">
+                <h4>Based on Clinical Guidelines</h4>
+                <ul>
+                    <li><strong>EAU 2026 Male LUTS guideline</strong></li><li><strong>NICE CG97:</strong> Lower urinary tract symptoms in men: management</li>
+                    <li><strong>EAU Guidelines:</strong> Management of Non-neurogenic Male LUTS</li>
+                    <li><strong>GIRFT:</strong> Urology recommendations for LUTS/BPH assessment</li>
+                </ul>
+            </div>
+
+            <button class="back-btn" onclick="backToSelection()">
+                ← Back to Questionnaires
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Question Data
+        const ipssQuestions = [
+            {
+                id: 'ipss1',
+                text: 'Incomplete Emptying: Over the past month, how often have you had a sensation of not emptying your bladder completely after you finished urinating?',
+                options: [
+                    { value: 0, text: 'Not at all' },
+                    { value: 1, text: 'Less than 1 time in 5' },
+                    { value: 2, text: 'Less than half the time' },
+                    { value: 3, text: 'About half the time' },
+                    { value: 4, text: 'More than half the time' },
+                    { value: 5, text: 'Almost always' }
+                ]
+            },
+            {
+                id: 'ipss2',
+                text: 'Frequency: Over the past month, how often have you had to urinate again less than two hours after you finished urinating?',
+                options: [
+                    { value: 0, text: 'Not at all' },
+                    { value: 1, text: 'Less than 1 time in 5' },
+                    { value: 2, text: 'Less than half the time' },
+                    { value: 3, text: 'About half the time' },
+                    { value: 4, text: 'More than half the time' },
+                    { value: 5, text: 'Almost always' }
+                ]
+            },
+            {
+                id: 'ipss3',
+                text: 'Intermittency: Over the past month, how often have you found you stopped and started again several times when you urinated?',
+                options: [
+                    { value: 0, text: 'Not at all' },
+                    { value: 1, text: 'Less than 1 time in 5' },
+                    { value: 2, text: 'Less than half the time' },
+                    { value: 3, text: 'About half the time' },
+                    { value: 4, text: 'More than half the time' },
+                    { value: 5, text: 'Almost always' }
+                ]
+            },
+            {
+                id: 'ipss4',
+                text: 'Urgency: Over the past month, how often have you found it difficult to postpone urination?',
+                options: [
+                    { value: 0, text: 'Not at all' },
+                    { value: 1, text: 'Less than 1 time in 5' },
+                    { value: 2, text: 'Less than half the time' },
+                    { value: 3, text: 'About half the time' },
+                    { value: 4, text: 'More than half the time' },
+                    { value: 5, text: 'Almost always' }
+                ]
+            },
+            {
+                id: 'ipss5',
+                text: 'Weak Stream: Over the past month, how often have you had a weak urinary stream?',
+                options: [
+                    { value: 0, text: 'Not at all' },
+                    { value: 1, text: 'Less than 1 time in 5' },
+                    { value: 2, text: 'Less than half the time' },
+                    { value: 3, text: 'About half the time' },
+                    { value: 4, text: 'More than half the time' },
+                    { value: 5, text: 'Almost always' }
+                ]
+            },
+            {
+                id: 'ipss6',
+                text: 'Straining: Over the past month, how often have you had to push or strain to begin urination?',
+                options: [
+                    { value: 0, text: 'Not at all' },
+                    { value: 1, text: 'Less than 1 time in 5' },
+                    { value: 2, text: 'Less than half the time' },
+                    { value: 3, text: 'About half the time' },
+                    { value: 4, text: 'More than half the time' },
+                    { value: 5, text: 'Almost always' }
+                ]
+            },
+            {
+                id: 'ipss7',
+                text: 'Nocturia: Over the past month, how many times did you most typically get up to urinate from the time you went to bed until the time you got up in the morning?',
+                options: [
+                    { value: 0, text: 'None' },
+                    { value: 1, text: '1 time' },
+                    { value: 2, text: '2 times' },
+                    { value: 3, text: '3 times' },
+                    { value: 4, text: '4 times' },
+                    { value: 5, text: '5 or more times' }
+                ]
+            },
+            {
+                id: 'ipssQol',
+                text: 'Quality of Life: If you were to spend the rest of your life with your urinary condition the way it is now, how would you feel about that?',
+                options: [
+                    { value: 0, text: 'Delighted' },
+                    { value: 1, text: 'Pleased' },
+                    { value: 2, text: 'Mostly satisfied' },
+                    { value: 3, text: 'Mixed – about equally satisfied and dissatisfied' },
+                    { value: 4, text: 'Mostly dissatisfied' },
+                    { value: 5, text: 'Unhappy' },
+                    { value: 6, text: 'Terrible' }
+                ],
+                isQol: true
+            }
+        ];
+
+        const iciqQuestions = [
+            {
+                id: 'iciq1',
+                text: 'Hesitancy: Do you have to wait for urine flow to begin?',
+                options: [
+                    { value: 0, text: 'Never' },
+                    { value: 1, text: 'Occasionally' },
+                    { value: 2, text: 'Sometimes' },
+                    { value: 3, text: 'Most of the time' },
+                    { value: 4, text: 'All of the time' }
+                ],
+                subscale: 'voiding'
+            },
+            {
+                id: 'iciq2',
+                text: 'Straining: Do you have to strain to continue urinating?',
+                options: [
+                    { value: 0, text: 'Never' },
+                    { value: 1, text: 'Occasionally' },
+                    { value: 2, text: 'Sometimes' },
+                    { value: 3, text: 'Most of the time' },
+                    { value: 4, text: 'All of the time' }
+                ],
+                subscale: 'voiding'
+            },
+            {
+                id: 'iciq3',
+                text: 'Stream: Would you say that the strength of your urinary stream is...',
+                options: [
+                    { value: 0, text: 'Normal' },
+                    { value: 1, text: 'Occasionally reduced' },
+                    { value: 2, text: 'Sometimes reduced' },
+                    { value: 3, text: 'Reduced most of the time' },
+                    { value: 4, text: 'Reduced all of the time' }
+                ],
+                subscale: 'voiding'
+            },
+            {
+                id: 'iciq4',
+                text: 'Intermittency: Does your urinary stream stop and start?',
+                options: [
+                    { value: 0, text: 'Never' },
+                    { value: 1, text: 'Occasionally' },
+                    { value: 2, text: 'Sometimes' },
+                    { value: 3, text: 'Most of the time' },
+                    { value: 4, text: 'All of the time' }
+                ],
+                subscale: 'voiding'
+            },
+            {
+                id: 'iciq5',
+                text: 'Incomplete Emptying: Do you feel that your bladder has not emptied properly after urinating?',
+                options: [
+                    { value: 0, text: 'Never' },
+                    { value: 1, text: 'Occasionally' },
+                    { value: 2, text: 'Sometimes' },
+                    { value: 3, text: 'Most of the time' },
+                    { value: 4, text: 'All of the time' }
+                ],
+                subscale: 'voiding'
+            },
+            {
+                id: 'iciq6',
+                text: 'Urgency: Do you have a sudden compelling desire to urinate which is difficult to delay?',
+                options: [
+                    { value: 0, text: 'Never' },
+                    { value: 1, text: 'Occasionally' },
+                    { value: 2, text: 'Sometimes' },
+                    { value: 3, text: 'Most of the time' },
+                    { value: 4, text: 'All of the time' }
+                ],
+                subscale: 'incontinence'
+            },
+            {
+                id: 'iciq7',
+                text: 'Urge Incontinence: Does urine leak before you can get to the toilet?',
+                options: [
+                    { value: 0, text: 'Never' },
+                    { value: 1, text: 'Occasionally' },
+                    { value: 2, text: 'Sometimes' },
+                    { value: 3, text: 'Most of the time' },
+                    { value: 4, text: 'All of the time' }
+                ],
+                subscale: 'incontinence'
+            },
+            {
+                id: 'iciq8',
+                text: 'Stress Incontinence: Does urine leak when you are physically active, exert yourself, cough or sneeze?',
+                options: [
+                    { value: 0, text: 'Never' },
+                    { value: 1, text: 'Occasionally' },
+                    { value: 2, text: 'Sometimes' },
+                    { value: 3, text: 'Most of the time' },
+                    { value: 4, text: 'All of the time' }
+                ],
+                subscale: 'incontinence'
+            },
+            {
+                id: 'iciq9',
+                text: 'Unexplained Incontinence: Do you leak urine for no obvious reason and without feeling that you want to go?',
+                options: [
+                    { value: 0, text: 'Never' },
+                    { value: 1, text: 'Occasionally' },
+                    { value: 2, text: 'Sometimes' },
+                    { value: 3, text: 'Most of the time' },
+                    { value: 4, text: 'All of the time' }
+                ],
+                subscale: 'incontinence'
+            },
+            {
+                id: 'iciq10',
+                text: 'Nocturnal Enuresis: Do you wet the bed at night?',
+                options: [
+                    { value: 0, text: 'Never' },
+                    { value: 1, text: 'Occasionally' },
+                    { value: 2, text: 'Sometimes' },
+                    { value: 3, text: 'Most of the time' },
+                    { value: 4, text: 'All of the time' }
+                ],
+                subscale: 'incontinence'
+            },
+            {
+                id: 'iciq11',
+                text: 'Post-micturition Dribble: Do you have dribbling of urine after urinating and when you have dressed yourself?',
+                options: [
+                    { value: 0, text: 'Never' },
+                    { value: 1, text: 'Occasionally' },
+                    { value: 2, text: 'Sometimes' },
+                    { value: 3, text: 'Most of the time' },
+                    { value: 4, text: 'All of the time' }
+                ],
+                subscale: 'incontinence'
+            },
+            {
+                id: 'iciq12',
+                text: 'Nocturia: During the night, how many times do you have to get up to urinate, on average?',
+                options: [
+                    { value: 0, text: 'None' },
+                    { value: 1, text: '1 time' },
+                    { value: 2, text: '2 times' },
+                    { value: 3, text: '3 times' },
+                    { value: 4, text: '4 or more times' }
+                ],
+                subscale: 'incontinence'
+            },
+            {
+                id: 'iciq13',
+                text: 'Daytime Frequency: During the day, how often do you urinate, on average?',
+                options: [
+                    { value: 0, text: 'Every 4 hours or more' },
+                    { value: 1, text: 'Every 3 hours' },
+                    { value: 2, text: 'Every 2 hours' },
+                    { value: 3, text: 'Every hour' },
+                    { value: 4, text: 'More frequently than every hour' }
+                ],
+                subscale: 'incontinence'
+            }
+        ];
+
+        const shimQuestions = [
+            {
+                id: 'shim1',
+                text: 'How do you rate your confidence that you could get and keep an erection?',
+                options: [
+                    { value: 1, text: 'Very low' },
+                    { value: 2, text: 'Low' },
+                    { value: 3, text: 'Moderate' },
+                    { value: 4, text: 'High' },
+                    { value: 5, text: 'Very high' }
+                ]
+            },
+            {
+                id: 'shim2',
+                text: 'When you had erections with sexual stimulation, how often were your erections hard enough for penetration?',
+                options: [
+                    { value: 0, text: 'No sexual activity' },
+                    { value: 1, text: 'Almost never or never' },
+                    { value: 2, text: 'A few times (much less than half the time)' },
+                    { value: 3, text: 'Sometimes (about half the time)' },
+                    { value: 4, text: 'Most times (much more than half the time)' },
+                    { value: 5, text: 'Almost always or always' }
+                ]
+            },
+            {
+                id: 'shim3',
+                text: 'During sexual intercourse, how often were you able to maintain your erection after you had penetrated (entered) your partner?',
+                options: [
+                    { value: 0, text: 'Did not attempt intercourse' },
+                    { value: 1, text: 'Almost never or never' },
+                    { value: 2, text: 'A few times (much less than half the time)' },
+                    { value: 3, text: 'Sometimes (about half the time)' },
+                    { value: 4, text: 'Most times (much more than half the time)' },
+                    { value: 5, text: 'Almost always or always' }
+                ]
+            },
+            {
+                id: 'shim4',
+                text: 'During sexual intercourse, how difficult was it to maintain your erection to completion of intercourse?',
+                options: [
+                    { value: 0, text: 'Did not attempt intercourse' },
+                    { value: 1, text: 'Extremely difficult' },
+                    { value: 2, text: 'Very difficult' },
+                    { value: 3, text: 'Difficult' },
+                    { value: 4, text: 'Slightly difficult' },
+                    { value: 5, text: 'Not difficult' }
+                ]
+            },
+            {
+                id: 'shim5',
+                text: 'When you attempted sexual intercourse, how often was it satisfactory for you?',
+                options: [
+                    { value: 0, text: 'Did not attempt intercourse' },
+                    { value: 1, text: 'Almost never or never' },
+                    { value: 2, text: 'A few times (much less than half the time)' },
+                    { value: 3, text: 'Sometimes (about half the time)' },
+                    { value: 4, text: 'Most times (much more than half the time)' },
+                    { value: 5, text: 'Almost always or always' }
+                ]
+            }
+        ];
+
+        // State
+        let answers = {
+            ipss: {},
+            iciq: {},
+            shim: {}
+        };
+
+        let completed = {
+            ipss: false,
+            iciq: false,
+            shim: false
+        };
+
+        let scores = {
+            ipss: null,
+            iciq: null,
+            shim: null
+        };
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderQuestions('ipss', ipssQuestions, 'ipssQuestions');
+            renderQuestions('iciq', iciqQuestions, 'iciqQuestions');
+            renderQuestions('shim', shimQuestions, 'shimQuestions');
+        });
+
+        function renderQuestions(section, questions, containerId) {
+            const container = document.getElementById(containerId);
+            let html = '';
+
+            questions.forEach((q, idx) => {
+                html += `
+                    <div class="question-item">
+                        <div class="question-label">
+                            <span class="question-num">${idx + 1}.</span>
+                            <span class="question-text">${q.text}</span>
+                        </div>
+                        <div class="options-list">
+                            ${q.options.map(opt => `
+                                <div class="option-item" data-section="${section}" data-question="${q.id}" data-value="${opt.value}" onclick="selectOption(this)">
+                                    <span class="option-radio"></span>
+                                    <span class="option-text">${opt.text}</span>
+                                    <span class="option-score">${opt.value}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function selectOption(element) {
+            const section = element.dataset.section;
+            const question = element.dataset.question;
+            const value = parseInt(element.dataset.value);
+
+            // Remove selected from siblings
+            const parent = element.parentElement;
+            parent.querySelectorAll('.option-item').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+
+            // Store answer
+            answers[section][question] = value;
+
+            // Update progress
+            updateProgress(section);
+        }
+
+        function updateProgress(section) {
+            const questionCounts = {
+                ipss: 8,
+                iciq: 13,
+                shim: 5
+            };
+
+            const answered = Object.keys(answers[section]).length;
+            const total = questionCounts[section];
+
+            document.getElementById(`${section}Progress`).textContent = answered;
+            document.getElementById(`${section}SubmitBtn`).disabled = answered !== total;
+        }
+
+        function openQuestionnaire(type) {
+            document.getElementById('selectionScreen').classList.add('hidden');
+            document.getElementById(`${type}Form`).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function closeQuestionnaire() {
+            document.querySelectorAll('.questionnaire-form').forEach(form => {
+                form.classList.remove('active');
+            });
+            document.getElementById('selectionScreen').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function submitIPSS() {
+            let total = 0;
+            let qol = 0;
+
+            ipssQuestions.forEach(q => {
+                if (answers.ipss[q.id] !== undefined) {
+                    if (q.isQol) {
+                        qol = answers.ipss[q.id];
+                    } else {
+                        total += answers.ipss[q.id];
+                    }
+                }
+            });
+
+            scores.ipss = { total, qol };
+            completed.ipss = true;
+
+            // Update card
+            document.getElementById('ipssCard').classList.add('completed');
+            const scoreDisplay = document.getElementById('ipssScoreDisplay');
+            scoreDisplay.textContent = `Score: ${total}/35 • QoL: ${qol}/6`;
+            scoreDisplay.classList.remove('hidden');
+
+            checkViewResultsBtn();
+            closeQuestionnaire();
+        }
+
+        function submitICIQ() {
+            let voiding = 0;
+            let incontinence = 0;
+
+            iciqQuestions.forEach(q => {
+                if (answers.iciq[q.id] !== undefined) {
+                    if (q.subscale === 'voiding') {
+                        voiding += answers.iciq[q.id];
+                    } else {
+                        incontinence += answers.iciq[q.id];
+                    }
+                }
+            });
+
+            scores.iciq = { voiding, incontinence, total: voiding + incontinence };
+            completed.iciq = true;
+
+            // Update card
+            document.getElementById('iciqCard').classList.add('completed');
+            const scoreDisplay = document.getElementById('iciqScoreDisplay');
+            scoreDisplay.textContent = `Score: ${voiding + incontinence}/44`;
+            scoreDisplay.classList.remove('hidden');
+
+            checkViewResultsBtn();
+            closeQuestionnaire();
+        }
+
+        function submitSHIM() {
+            let total = 0;
+
+            shimQuestions.forEach(q => {
+                if (answers.shim[q.id] !== undefined) {
+                    total += answers.shim[q.id];
+                }
+            });
+
+            scores.shim = total;
+            completed.shim = true;
+
+            // Update card
+            document.getElementById('shimCard').classList.add('completed');
+            const scoreDisplay = document.getElementById('shimScoreDisplay');
+            scoreDisplay.textContent = `Score: ${total}/25`;
+            scoreDisplay.classList.remove('hidden');
+
+            checkViewResultsBtn();
+            closeQuestionnaire();
+        }
+
+        function checkViewResultsBtn() {
+            const anyCompleted = completed.ipss || completed.iciq || completed.shim;
+            document.getElementById('viewResultsBtn').disabled = !anyCompleted;
+        }
+
+        function showResults() {
+            document.getElementById('selectionScreen').classList.add('hidden');
+            document.getElementById('resultsSection').classList.add('active');
+
+            // Set date
+            const now = new Date();
+            document.getElementById('resultsDate').textContent = now.toLocaleDateString('en-GB', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            renderResults();
+            window.scrollTo(0, 0);
+        }
+
+        function renderResults() {
+            let html = '';
+
+            // IPSS Results
+            if (completed.ipss) {
+                const ipss = scores.ipss;
+                let severityClass, severityText, description;
+
+                if (ipss.total <= 7) {
+                    severityClass = 'severity-mild';
+                    severityText = 'Mild Symptoms';
+                    description = 'Your symptoms are mild. Watchful waiting with lifestyle advice may be appropriate. Consider keeping a bladder diary.';
+                } else if (ipss.total <= 19) {
+                    severityClass = 'severity-moderate';
+                    severityText = 'Moderate Symptoms';
+                    description = 'Your symptoms are moderate. Consider discussing treatment options with your healthcare provider, which may include medication or further investigation.';
+                } else {
+                    severityClass = 'severity-severe';
+                    severityText = 'Severe Symptoms';
+                    description = 'Your symptoms are severe. Specialist assessment is recommended to discuss treatment options including medication and surgical interventions.';
+                }
+
+                let qolClass, qolText;
+                if (ipss.qol <= 2) {
+                    qolClass = 'severity-mild';
+                    qolText = 'Satisfied';
+                } else if (ipss.qol <= 4) {
+                    qolClass = 'severity-moderate';
+                    qolText = 'Mixed/Dissatisfied';
+                } else {
+                    qolClass = 'severity-severe';
+                    qolText = 'Unhappy';
+                }
+
+                html += `
+                    <div class="score-item">
+                        <div class="score-header">
+                            <div>
+                                <div class="score-title">IPSS (Prostate Symptom Score)</div>
+                                <div class="score-subtitle">International Prostate Symptom Score</div>
+                            </div>
+                            <div class="score-value">${ipss.total}/35</div>
+                        </div>
+                        <span class="severity-badge ${severityClass}">${severityText}</span>
+                        <div class="score-bar-wrapper">
+                            <div class="score-bar">
+                                <div class="score-bar-fill" style="width: ${(ipss.total/35)*100}%; background: ${ipss.total <= 7 ? '#10b981' : ipss.total <= 19 ? '#f59e0b' : '#ef4444'};"></div>
+                            </div>
+                            <div class="score-bar-labels">
+                                <span>Mild (0-7)</span>
+                                <span>Moderate (8-19)</span>
+                                <span>Severe (20-35)</span>
+                            </div>
+                        </div>
+                        <p class="score-description">${description}</p>
+                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-light);">
+                            <div class="score-header" style="margin-bottom: 0.5rem;">
+                                <div>
+                                    <div class="score-title" style="font-size: 0.9rem;">Quality of Life Score</div>
+                                </div>
+                                <div class="score-value" style="font-size: 1.25rem;">${ipss.qol}/6</div>
+                            </div>
+                            <span class="severity-badge ${qolClass}">${qolText}</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="score-item not-completed">
+                        <div class="score-header">
+                            <div>
+                                <div class="score-title">IPSS (Prostate Symptom Score)</div>
+                                <div class="score-subtitle">Not completed</div>
+                            </div>
+                            <div class="score-value">—</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // ICIQ Results
+            if (completed.iciq) {
+                const iciq = scores.iciq;
+                let severityClass, severityText, description;
+
+                if (iciq.total <= 15) {
+                    severityClass = 'severity-mild';
+                    severityText = 'Mild LUTS';
+                    description = 'Your lower urinary tract symptoms are in the mild range. Continue to monitor and discuss any concerns with your healthcare provider.';
+                } else if (iciq.total <= 25) {
+                    severityClass = 'severity-moderate';
+                    severityText = 'Moderate LUTS';
+                    description = 'Your symptoms are moderate. Consider discussing assessment and treatment options with a specialist.';
+                } else {
+                    severityClass = 'severity-severe';
+                    severityText = 'Severe LUTS';
+                    description = 'Your symptoms are in the severe range. Specialist referral is recommended for comprehensive assessment.';
+                }
+
+                html += `
+                    <div class="score-item">
+                        <div class="score-header">
+                            <div>
+                                <div class="score-title">ICIQ-MLUTS</div>
+                                <div class="score-subtitle">Male Lower Urinary Tract Symptoms</div>
+                            </div>
+                            <div class="score-value">${iciq.total}/44</div>
+                        </div>
+                        <span class="severity-badge ${severityClass}">${severityText}</span>
+                        <div class="subscale-row">
+                            <div class="subscale-item"><strong>Voiding:</strong> ${iciq.voiding}/20</div>
+                            <div class="subscale-item"><strong>Incontinence:</strong> ${iciq.incontinence}/24</div>
+                        </div>
+                        <div class="score-bar-wrapper">
+                            <div class="score-bar">
+                                <div class="score-bar-fill" style="width: ${(iciq.total/44)*100}%; background: ${iciq.total <= 15 ? '#10b981' : iciq.total <= 25 ? '#f59e0b' : '#ef4444'};"></div>
+                            </div>
+                        </div>
+                        <p class="score-description">${description}</p>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="score-item not-completed">
+                        <div class="score-header">
+                            <div>
+                                <div class="score-title">ICIQ-MLUTS</div>
+                                <div class="score-subtitle">Not completed</div>
+                            </div>
+                            <div class="score-value">—</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // SHIM Results
+            if (completed.shim) {
+                const shim = scores.shim;
+                let severityClass, severityText, description;
+
+                if (shim >= 22) {
+                    severityClass = 'severity-normal';
+                    severityText = 'No ED';
+                    description = 'Your erectile function appears normal. No specific intervention indicated based on this score.';
+                } else if (shim >= 17) {
+                    severityClass = 'severity-mild';
+                    severityText = 'Mild ED';
+                    description = 'You may have mild erectile dysfunction. Consider discussing lifestyle factors and treatment options with your healthcare provider.';
+                } else if (shim >= 12) {
+                    severityClass = 'severity-moderate';
+                    severityText = 'Mild-Moderate ED';
+                    description = 'Your score suggests mild to moderate erectile dysfunction. Treatment options are available and should be discussed with your doctor.';
+                } else if (shim >= 8) {
+                    severityClass = 'severity-moderate';
+                    severityText = 'Moderate ED';
+                    description = 'You have moderate erectile dysfunction. This is common and treatable. Please discuss options with your healthcare provider.';
+                } else {
+                    severityClass = 'severity-severe';
+                    severityText = 'Severe ED';
+                    description = 'Your score indicates severe erectile dysfunction. Multiple treatment options exist. Please consult with your healthcare provider.';
+                }
+
+                html += `
+                    <div class="score-item">
+                        <div class="score-header">
+                            <div>
+                                <div class="score-title">SHIM Score (IIEF-5)</div>
+                                <div class="score-subtitle">Sexual Health Inventory for Men</div>
+                            </div>
+                            <div class="score-value">${shim}/25</div>
+                        </div>
+                        <span class="severity-badge ${severityClass}">${severityText}</span>
+                        <div class="score-bar-wrapper">
+                            <div class="score-bar">
+                                <div class="score-bar-fill" style="width: ${(shim/25)*100}%; background: ${shim >= 22 ? '#10b981' : shim >= 12 ? '#f59e0b' : '#ef4444'};"></div>
+                            </div>
+                            <div class="score-bar-labels">
+                                <span>Severe (1-7)</span>
+                                <span>Moderate (8-16)</span>
+                                <span>Mild/Normal (17-25)</span>
+                            </div>
+                        </div>
+                        <p class="score-description">${description}</p>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="score-item not-completed">
+                        <div class="score-header">
+                            <div>
+                                <div class="score-title">SHIM Score (IIEF-5)</div>
+                                <div class="score-subtitle">Not completed</div>
+                            </div>
+                            <div class="score-value">—</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            document.getElementById('resultsBody').innerHTML = html;
+        }
+
+        function backToSelection() {
+            document.getElementById('resultsSection').classList.remove('active');
+            document.getElementById('selectionScreen').classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        function downloadResults() {
+            const date = new Date().toLocaleDateString('en-GB');
+            let content = `MALE UROLOGICAL ASSESSMENT RESULTS\n`;
+            content += `${'='.repeat(40)}\n`;
+            content += `Date: ${date}\n\n`;
+
+            if (completed.ipss) {
+                content += `IPSS (International Prostate Symptom Score)\n`;
+                content += `${'-'.repeat(40)}\n`;
+                content += `Total Score: ${scores.ipss.total}/35\n`;
+                content += `Severity: ${scores.ipss.total <= 7 ? 'Mild' : scores.ipss.total <= 19 ? 'Moderate' : 'Severe'}\n`;
+                content += `Quality of Life Score: ${scores.ipss.qol}/6\n\n`;
+            }
+
+            if (completed.iciq) {
+                content += `ICIQ-MLUTS Score\n`;
+                content += `${'-'.repeat(40)}\n`;
+                content += `Total Score: ${scores.iciq.total}/44\n`;
+                content += `Voiding Subscale: ${scores.iciq.voiding}/20\n`;
+                content += `Incontinence Subscale: ${scores.iciq.incontinence}/24\n\n`;
+            }
+
+            if (completed.shim) {
+                content += `SHIM Score (IIEF-5)\n`;
+                content += `${'-'.repeat(40)}\n`;
+                content += `Total Score: ${scores.shim}/25\n`;
+                content += `Assessment: ${scores.shim >= 22 ? 'No ED' : scores.shim >= 17 ? 'Mild ED' : scores.shim >= 12 ? 'Mild-Moderate ED' : scores.shim >= 8 ? 'Moderate ED' : 'Severe ED'}\n\n`;
+            }
+
+            content += `${'='.repeat(40)}\n`;
+            content += `Based on NICE, EAU, and GIRFT Guidelines\n\n`;
+            content += `DISCLAIMER: This is a screening tool only.\n`;
+            content += `Please discuss results with your healthcare provider.\n`;
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Urological_Assessment_${date.replace(/\//g, '-')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function copyResults() {
+            const date = new Date().toLocaleDateString('en-GB');
+            let text = `Urological Assessment Results (${date})\n`;
+            text += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+
+            if (completed.ipss) {
+                text += `IPSS: ${scores.ipss.total}/35 (${scores.ipss.total <= 7 ? 'Mild' : scores.ipss.total <= 19 ? 'Moderate' : 'Severe'}) • QoL: ${scores.ipss.qol}/6\n`;
+            }
+
+            if (completed.iciq) {
+                text += `ICIQ-MLUTS: ${scores.iciq.total}/44 (Voiding: ${scores.iciq.voiding}, Incontinence: ${scores.iciq.incontinence})\n`;
+            }
+
+            if (completed.shim) {
+                text += `SHIM: ${scores.shim}/25 (${scores.shim >= 22 ? 'No ED' : scores.shim >= 17 ? 'Mild ED' : scores.shim >= 12 ? 'Mild-Moderate ED' : scores.shim >= 8 ? 'Moderate ED' : 'Severe ED'})\n`;
+            }
+
+            navigator.clipboard.writeText(text.trim()).then(() => {
+                alert('Results copied to clipboard!');
+            }).catch(() => {
+                alert('Could not copy. Please select and copy manually.');
+            });
+        }
+    </script>
+</body>
+</html>

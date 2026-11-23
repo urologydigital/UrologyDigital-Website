@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urology Cancer MDT Referral Form</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            font-size: 14px;
+        }
+        
+        .form-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: #005EB8;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .header-right {
+            text-align: right;
+            font-size: 12px;
+        }
+        
+        .warning-box {
+            background: #FFE5E5;
+            color: #D32F2F;
+            padding: 10px 20px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        
+        .form-content {
+            padding: 20px;
+        }
+        
+        .section {
+            margin-bottom: 15px;
+        }
+        
+        .section-header {
+            background: #003087;
+            color: white;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+        
+        .section-header.optional {
+            background: #E8EDEE;
+            color: #003087;
+        }
+        
+        .section-header.optional span {
+            font-weight: normal;
+            font-style: italic;
+            color: #666;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+        
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .field {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .field.full-width {
+            width: 100%;
+        }
+        
+        .field label {
+            font-weight: bold;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        
+        .field label.optional {
+            font-weight: normal;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .field input[type="text"],
+        .field input[type="email"],
+        .field input[type="tel"],
+        .field input[type="date"],
+        .field input[type="number"] {
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 13px;
+        }
+        
+        .field input.small {
+            width: 80px;
+        }
+        
+        .field input.medium {
+            width: 150px;
+        }
+        
+        .field input.large {
+            width: 250px;
+        }
+        
+        .field textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 13px;
+            resize: vertical;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .checkbox-item input[type="checkbox"],
+        .checkbox-item input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        
+        .checkbox-item label {
+            font-size: 13px;
+            cursor: pointer;
+        }
+        
+        .ps-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .ps-group .checkbox-item {
+            background: #f5f5f5;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+        
+        .frailty-section {
+            background: #E8EDEE;
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        
+        .frailty-scale {
+            font-size: 11px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .submission-box {
+            border: 2px solid #003087;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .submission-box h3 {
+            color: #003087;
+            margin: 0 0 10px 0;
+            font-size: 14px;
+        }
+        
+        .email-config {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        
+        .email-config h4 {
+            margin: 0 0 10px 0;
+            color: #003087;
+            font-size: 13px;
+        }
+        
+        .email-field {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .email-field label {
+            width: 180px;
+            font-size: 12px;
+        }
+        
+        .email-field input {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            font-size: 13px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #005EB8;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #003087;
+        }
+        
+        .btn-secondary {
+            background: #666;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #444;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+        
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .btn-info:hover {
+            background: #138496;
+        }
+        
+        .btn-warning {
+            background: #fd7e14;
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background: #e96b02;
+        }
+        
+        .footer {
+            font-size: 11px;
+            color: #666;
+            padding: 10px 20px;
+            border-top: 1px solid #eee;
+            margin-top: 15px;
+        }
+        
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-content.success {
+            border-top: 5px solid #28a745;
+        }
+        
+        .modal-content.error {
+            border-top: 5px solid #dc3545;
+        }
+        
+        .modal-content.preview {
+            border-top: 5px solid #005EB8;
+            width: 90%;
+            max-width: 800px;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .modal-close:hover {
+            color: #000;
+        }
+        
+        .modal-content h2 {
+            margin: 0 0 15px 0;
+            padding-right: 30px;
+        }
+        
+        .modal-content p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .email-list {
+            text-align: left;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        .email-list div {
+            padding: 5px 0;
+            font-size: 13px;
+        }
+        
+        .preview-container {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 15px 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .preview-html {
+            padding: 0;
+        }
+        
+        .preview-text {
+            padding: 15px;
+            background: #f9f9f9;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+        
+        .tab-btn {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            background: #f5f5f5;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+        }
+        
+        .tab-btn.active {
+            background: #005EB8;
+            color: white;
+            border-color: #005EB8;
+        }
+        
+        .copy-success {
+            display: none;
+            color: #28a745;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #005EB8;
+            padding: 12px 15px;
+            margin: 15px 0;
+            font-size: 12px;
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                font-size: 11px;
+            }
+            
+            .form-container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+            
+            .header {
+                background: #005EB8 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .section-header {
+                background: #003087 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .section-header.optional {
+                background: #E8EDEE !important;
+            }
+            
+            .warning-box {
+                background: #FFE5E5 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .frailty-section {
+                background: #E8EDEE !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .email-config,
+            .button-row,
+            .no-print {
+                display: none !important;
+            }
+            
+            .modal {
+                display: none !important;
+            }
+            
+            .field input,
+            .field textarea {
+                border: 1px solid #999 !important;
+            }
+            
+            .submission-box {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="ud-update" style="margin:12px auto;max-width:1100px;padding:10px 14px;border-left:4px solid #0a7;background:#effaf6;font:13px/1.45 system-ui,sans-serif;color:#124"><strong>Updated 23 Nov 2026 – what changed</strong><ul style="margin:6px 0 0 18px;padding:0"><li>NICE NG12 reference updated to Apr 2026 version</li><li>IG note: patient identifiers are sent via mailto/email client – use only within approved NHS email routes; functionality unchanged</li></ul><em>Decision support only; verify against current local and national guidance.</em></div>
+    <div class="form-container">
+        <div class="header">
+            <h1>UROLOGY CANCER MDT REFERRAL FORM</h1>
+            <div class="header-right">
+                <div>[Trust Name] NHS Foundation Trust</div>
+                <div>Version 1.0 | Based on NICE NG12 (Apr 2026 update) &amp; GIRFT</div>
+            </div>
+        </div>
+        
+        <div class="warning-box">
+            ⚠ Incomplete forms will be returned. Patient will NOT be discussed if form is not completed correctly.
+        </div>
+        
+        <form id="mdtForm" class="form-content">
+            <!-- Patient Details -->
+            <div class="section">
+                <div class="section-header">PATIENT DETAILS</div>
+                <div class="row">
+                    <div class="field">
+                        <label>Name:</label>
+                        <input type="text" name="patient_name" id="patient_name" class="medium" required>
+                    </div>
+                    <div class="field">
+                        <label>Surname:</label>
+                        <input type="text" name="surname" id="surname" class="medium" required>
+                    </div>
+                    <div class="field">
+                        <label>DOB:</label>
+                        <input type="date" name="dob" id="dob" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label>Hospital Number:</label>
+                        <input type="text" name="hospital_number" id="hospital_number" class="medium" required>
+                    </div>
+                    <div class="field">
+                        <label class="optional">NHS Number (optional):</label>
+                        <input type="text" name="nhs_number" id="nhs_number" class="medium">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Referral Details -->
+            <div class="section">
+                <div class="section-header">REFERRAL DETAILS</div>
+                <div class="row">
+                    <div class="field">
+                        <label>Discussion requested by:</label>
+                        <input type="text" name="requested_by" id="requested_by" class="medium" required>
+                    </div>
+                    <div class="field">
+                        <label>Date:</label>
+                        <input type="date" name="referral_date" id="referral_date" required>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label>Contact No / Email:</label>
+                        <input type="text" name="referrer_contact" id="referrer_contact" class="large" required>
+                    </div>
+                    <div class="field">
+                        <label>Patient Status:</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="radio" name="patient_status" id="inpatient" value="Inpatient">
+                                <label for="inpatient">Inpatient</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" name="patient_status" id="outpatient" value="Outpatient">
+                                <label for="outpatient">Outpatient</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label>Previous MDT discussion?</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="radio" name="prev_mdt" id="prev_mdt_yes" value="Yes">
+                                <label for="prev_mdt_yes">Y</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" name="prev_mdt" id="prev_mdt_no" value="No">
+                                <label for="prev_mdt_no">N</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label>If Y, when:</label>
+                        <input type="date" name="prev_mdt_date" id="prev_mdt_date" class="small">
+                    </div>
+                    <div class="field">
+                        <label>Known cancer?</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="radio" name="known_cancer" id="known_yes" value="Yes">
+                                <label for="known_yes">Y</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" name="known_cancer" id="known_no" value="No">
+                                <label for="known_no">N</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="field">
+                        <label>Cancer type:</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="cancer_type" id="ca_prostate" value="Prostate">
+                                <label for="ca_prostate">Prostate</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="cancer_type" id="ca_bladder" value="Bladder">
+                                <label for="ca_bladder">Bladder</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="cancer_type" id="ca_renal" value="Renal">
+                                <label for="ca_renal">Renal</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="cancer_type" id="ca_testis" value="Testis">
+                                <label for="ca_testis">Testis</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="cancer_type" id="ca_penile" value="Penile">
+                                <label for="ca_penile">Penile</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="cancer_type" id="ca_other" value="Other">
+                                <label for="ca_other">Other</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Clinical Reason -->
+            <div class="section">
+                <div class="section-header">CLINICAL REASON FOR REFERRAL / QUERY FOR MDT</div>
+                <div class="field full-width">
+                    <textarea name="clinical_query" id="clinical_query" rows="4" placeholder="What specific question/decision is required from the MDT?" required></textarea>
+                </div>
+            </div>
+            
+            <!-- Performance Status & Comorbidities -->
+            <div class="section">
+                <div class="section-header">PERFORMANCE STATUS & COMORBIDITIES</div>
+                <div class="row">
+                    <div class="field">
+                        <label>WHO Performance Status:</label>
+                        <div class="ps-group">
+                            <div class="checkbox-item">
+                                <input type="radio" name="who_ps" id="ps_0" value="0">
+                                <label for="ps_0">0</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" name="who_ps" id="ps_1" value="1">
+                                <label for="ps_1">1</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" name="who_ps" id="ps_2" value="2">
+                                <label for="ps_2">2</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" name="who_ps" id="ps_3" value="3">
+                                <label for="ps_3">3</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="radio" name="who_ps" id="ps_4" value="4">
+                                <label for="ps_4">4</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="field full-width">
+                        <label>Comorbidities:</label>
+                        <input type="text" name="comorbidities" id="comorbidities" style="flex:1">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="field full-width">
+                        <label>Significant medication (e.g. anticoagulants, hormones):</label>
+                        <input type="text" name="medications" id="medications" style="flex:1">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="field full-width">
+                        <label>Previous treatment for cancer (e.g. RT, BCG, MMC, surgery):</label>
+                        <input type="text" name="previous_treatment" id="previous_treatment" style="flex:1">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Patient Symptoms -->
+            <div class="section">
+                <div class="section-header">PATIENT SYMPTOMS</div>
+                <div class="row">
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="symptoms" id="sym_luts" value="LUTS">
+                            <label for="sym_luts">LUTS</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="symptoms" id="sym_vh" value="Visible haematuria">
+                            <label for="sym_vh">Visible haematuria</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="symptoms" id="sym_nvh" value="Non-visible haematuria">
+                            <label for="sym_nvh">Non-visible haematuria</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="symptoms" id="sym_pain" value="Pain">
+                            <label for="sym_pain">Pain</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="symptoms" id="sym_incidental" value="Incidental finding">
+                            <label for="sym_incidental">Incidental finding</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="field full-width">
+                        <label>Brief description:</label>
+                        <input type="text" name="symptoms_description" id="symptoms_description" style="flex:1">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Significant Results -->
+            <div class="section">
+                <div class="section-header">SIGNIFICANT AVAILABLE RESULTS</div>
+                <div class="row">
+                    <div class="field">
+                        <label>PSA:</label>
+                        <input type="text" name="psa" id="psa" class="small">
+                    </div>
+                    <div class="field">
+                        <label>eGFR:</label>
+                        <input type="text" name="egfr" id="egfr" class="small">
+                    </div>
+                    <div class="field">
+                        <label>Tumour markers:</label>
+                        <input type="text" name="tumour_markers" id="tumour_markers" class="medium">
+                    </div>
+                    <div class="field">
+                        <label>Other:</label>
+                        <input type="text" name="other_bloods" id="other_bloods" class="small">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="field full-width">
+                        <label>Previous histology / imaging (brief summary):</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <textarea name="histology_imaging" id="histology_imaging" rows="2" style="width:100%"></textarea>
+                </div>
+                <div class="row">
+                    <div class="field full-width">
+                        <label>Relevant procedure & findings (e.g. cystoscopy, TURBT, biopsy):</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <textarea name="procedure_findings" id="procedure_findings" rows="2" style="width:100%"></textarea>
+                </div>
+                <div class="row">
+                    <div class="field full-width">
+                        <label>Any additional information:</label>
+                        <input type="text" name="additional_info" id="additional_info" style="flex:1">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Frailty Assessment (Optional) -->
+            <div class="section">
+                <div class="section-header optional">
+                    FRAILTY ASSESSMENT <span>(optional - for elderly/complex patients, GIRFT recommended)</span>
+                </div>
+                <div class="frailty-section">
+                    <div class="row">
+                        <div class="field">
+                            <label>Rockwood Clinical Frailty Scale (1-9):</label>
+                            <input type="number" name="frailty_score" id="frailty_score" min="1" max="9" class="small">
+                        </div>
+                    </div>
+                    <div class="frailty-scale">
+                        1 = Very Fit &nbsp;|&nbsp; 2 = Well &nbsp;|&nbsp; 3 = Managing Well &nbsp;|&nbsp; 4 = Vulnerable &nbsp;|&nbsp; 5 = Mildly Frail &nbsp;|&nbsp; 6 = Moderately Frail &nbsp;|&nbsp; 7 = Severely Frail &nbsp;|&nbsp; 8 = Very Severely Frail &nbsp;|&nbsp; 9 = Terminally Ill
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Submission -->
+            <div class="submission-box">
+                <h3>SUBMISSION</h3>
+                
+                <div class="email-config no-print">
+                    <h4>📧 Email Recipients (confirmation will be sent to all)</h4>
+                    <div class="email-field">
+                        <label>Referrer Email:</label>
+                        <input type="email" id="email_referrer" placeholder="your.name@nhs.net">
+                    </div>
+                    <div class="email-field">
+                        <label>MDT Coordinator:</label>
+                        <input type="email" id="email_mdt" placeholder="mdt.coordinator@nhs.net" value="urology.mdt@nhs.net">
+                    </div>
+                    <div class="email-field">
+                        <label>Cancer Services:</label>
+                        <input type="email" id="email_cancer_services" placeholder="cancer.services@nhs.net" value="cancer.services@nhs.net">
+                    </div>
+                    <div class="email-field">
+                        <label>Cancer Nursing Team:</label>
+                        <input type="email" id="email_nursing" placeholder="cancer.nursing@nhs.net" value="cancer.nursing@nhs.net">
+                    </div>
+                    <div class="email-field">
+                        <label>Cancer Lead:</label>
+                        <input type="email" id="email_lead" placeholder="cancer.lead@nhs.net" value="cancer.lead@nhs.net">
+                    </div>
+                </div>
+                
+                <div class="row" style="color:#666; font-size:12px;">
+                    <div><strong>MDT Day:</strong> [Insert e.g. Friday]</div>
+                    <div style="margin-left:30px;"><strong>Deadline:</strong> [Insert e.g. Wednesday 12:00]</div>
+                </div>
+                <div style="color:#666; font-size:12px; margin-top:5px;">
+                    Ensure imaging on PACS & histology available for review.
+                </div>
+                
+                <div class="button-row no-print">
+                    <button type="button" class="btn btn-success" onclick="submitViaEmail()">
+                        ✉️ Send via Email
+                    </button>
+                    <button type="button" class="btn btn-info" onclick="copyToClipboard()">
+                        📋 Copy to Clipboard
+                    </button>
+                    <button type="button" class="btn btn-warning" onclick="previewEmail()">
+                        👁️ Preview Email
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="window.print()">
+                        🖨️ Print
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="clearForm()">
+                        🗑️ Clear
+                    </button>
+                    <span id="copySuccess" class="copy-success">✓ Copied!</span>
+                </div>
+            </div>
+        </form>
+        
+        <div class="footer">
+            Refs: NICE NG12 (updated Apr 2026), GIRFT Urology, NHS England MDT Guidance &nbsp;|&nbsp; Review Date: [Insert] &nbsp;|&nbsp; Document Owner: [Insert]
+        </div>
+    </div>
+    
+    <!-- Preview Modal -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content preview">
+            <span class="modal-close" onclick="closePreview()">&times;</span>
+            <h2>📧 Email Preview</h2>
+            
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showTab('html')">HTML Format</button>
+                <button class="tab-btn" onclick="showTab('text')">Plain Text</button>
+            </div>
+            
+            <div class="preview-container">
+                <div id="previewHtml" class="preview-html"></div>
+                <div id="previewText" class="preview-text" style="display:none;"></div>
+            </div>
+            
+            <div class="button-row">
+                <button class="btn btn-info" onclick="copyHtmlToClipboard()">📋 Copy HTML</button>
+                <button class="btn btn-info" onclick="copyTextToClipboard()">📋 Copy Plain Text</button>
+                <button class="btn btn-secondary" onclick="closePreview()">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content success">
+            <span class="modal-close" onclick="closeSuccess()">&times;</span>
+            <h2>✅ Referral Prepared</h2>
+            <p>Your email client should open with the referral. Recipients:</p>
+            <div class="email-list" id="emailList"></div>
+            <button class="btn btn-primary" onclick="closeSuccess()">Close</button>
+        </div>
+    </div>
+    
+    <!-- Error Modal -->
+    <div id="errorModal" class="modal">
+        <div class="modal-content error">
+            <span class="modal-close" onclick="closeError()">&times;</span>
+            <h2>⚠️ Form Incomplete</h2>
+            <p id="errorMessage">Please complete all required fields.</p>
+            <button class="btn btn-primary" onclick="closeError()">OK</button>
+        </div>
+    </div>
+
+    <script>
+        // Collect form data
+        function collectFormData() {
+            const form = document.getElementById('mdtForm');
+            const data = {};
+            
+            // Text inputs
+            const textFields = ['patient_name', 'surname', 'dob', 'hospital_number', 'nhs_number',
+                'requested_by', 'referral_date', 'referrer_contact', 'prev_mdt_date',
+                'clinical_query', 'comorbidities', 'medications', 'previous_treatment',
+                'symptoms_description', 'psa', 'egfr', 'tumour_markers', 'other_bloods',
+                'histology_imaging', 'procedure_findings', 'additional_info', 'frailty_score'];
+            
+            textFields.forEach(field => {
+                const el = document.getElementById(field);
+                data[field] = el ? el.value : '';
+            });
+            
+            // Radio buttons
+            const radioGroups = ['patient_status', 'prev_mdt', 'known_cancer', 'who_ps'];
+            radioGroups.forEach(group => {
+                const selected = document.querySelector(`input[name="${group}"]:checked`);
+                data[group] = selected ? selected.value : '';
+            });
+            
+            // Checkboxes (cancer_type, symptoms)
+            data.cancer_type = Array.from(document.querySelectorAll('input[name="cancer_type"]:checked'))
+                .map(cb => cb.value);
+            data.symptoms = Array.from(document.querySelectorAll('input[name="symptoms"]:checked'))
+                .map(cb => cb.value);
+            
+            return data;
+        }
+        
+        // Validate form
+        function validateForm() {
+            const required = ['patient_name', 'surname', 'dob', 'hospital_number',
+                'requested_by', 'referral_date', 'referrer_contact', 'clinical_query'];
+            
+            for (let field of required) {
+                const el = document.getElementById(field);
+                if (!el || !el.value.trim()) {
+                    return { valid: false, field: field.replace(/_/g, ' ') };
+                }
+            }
+            return { valid: true };
+        }
+        
+        // Format date for display
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-GB');
+        }
+        
+        // Generate HTML email
+        function generateHtmlEmail(data) {
+            const cancerTypes = data.cancer_type.length ? data.cancer_type.join(', ') : 'Not specified';
+            const symptoms = data.symptoms.length ? data.symptoms.join(', ') : 'Not specified';
+            const timestamp = new Date().toLocaleString('en-GB');
+            
+            return `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; font-size: 14px; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 700px; margin: 0 auto; }
+        .header { background: #005EB8; color: white; padding: 15px 20px; margin-bottom: 0; }
+        .header h1 { margin: 0; font-size: 18px; }
+        .header-sub { font-size: 12px; margin-top: 5px; }
+        .patient-banner { background: #003087; color: white; padding: 12px 20px; font-size: 16px; font-weight: bold; }
+        .section { border: 1px solid #ddd; margin-bottom: 15px; }
+        .section-header { background: #f5f5f5; padding: 10px 15px; font-weight: bold; color: #003087; border-bottom: 1px solid #ddd; font-size: 13px; }
+        .section-content { padding: 15px; }
+        .row { display: flex; margin-bottom: 8px; }
+        .label { font-weight: bold; width: 180px; color: #555; }
+        .value { flex: 1; }
+        .highlight { background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 15px 0; }
+        .highlight-title { font-weight: bold; color: #856404; margin-bottom: 8px; }
+        .footer { background: #f5f5f5; padding: 12px 20px; font-size: 11px; color: #666; margin-top: 20px; border-top: 2px solid #005EB8; }
+        .urgent { color: #D32F2F; }
+        .tag { display: inline-block; background: #e8edee; padding: 3px 10px; border-radius: 3px; margin: 2px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>UROLOGY CANCER MDT REFERRAL</h1>
+            <div class="header-sub">[Trust Name] NHS Foundation Trust</div>
+        </div>
+        
+        <div class="patient-banner">
+            ${data.surname.toUpperCase()}, ${data.patient_name} | DOB: ${formatDate(data.dob)} | Hosp No: ${data.hospital_number}
+        </div>
+        
+        <div class="section">
+            <div class="section-header">PATIENT DETAILS</div>
+            <div class="section-content">
+                <div class="row"><span class="label">Name:</span><span class="value">${data.patient_name} ${data.surname}</span></div>
+                <div class="row"><span class="label">Date of Birth:</span><span class="value">${formatDate(data.dob)}</span></div>
+                <div class="row"><span class="label">Hospital Number:</span><span class="value">${data.hospital_number}</span></div>
+                <div class="row"><span class="label">NHS Number:</span><span class="value">${data.nhs_number || 'Not provided'}</span></div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">REFERRAL DETAILS</div>
+            <div class="section-content">
+                <div class="row"><span class="label">Requested by:</span><span class="value">${data.requested_by}</span></div>
+                <div class="row"><span class="label">Date:</span><span class="value">${formatDate(data.referral_date)}</span></div>
+                <div class="row"><span class="label">Contact:</span><span class="value">${data.referrer_contact}</span></div>
+                <div class="row"><span class="label">Patient Status:</span><span class="value">${data.patient_status || 'Not specified'}</span></div>
+                <div class="row"><span class="label">Previous MDT:</span><span class="value">${data.prev_mdt || 'Not specified'}${data.prev_mdt_date ? ' (' + formatDate(data.prev_mdt_date) + ')' : ''}</span></div>
+                <div class="row"><span class="label">Known Cancer:</span><span class="value">${data.known_cancer || 'Not specified'}</span></div>
+                <div class="row"><span class="label">Cancer Type:</span><span class="value">${cancerTypes}</span></div>
+            </div>
+        </div>
+        
+        <div class="highlight">
+            <div class="highlight-title">📋 CLINICAL QUERY FOR MDT</div>
+            ${data.clinical_query || 'Not specified'}
+        </div>
+        
+        <div class="section">
+            <div class="section-header">PERFORMANCE STATUS & COMORBIDITIES</div>
+            <div class="section-content">
+                <div class="row"><span class="label">WHO Performance Status:</span><span class="value">${data.who_ps || 'Not specified'}</span></div>
+                <div class="row"><span class="label">Comorbidities:</span><span class="value">${data.comorbidities || 'None specified'}</span></div>
+                <div class="row"><span class="label">Significant Medications:</span><span class="value">${data.medications || 'None specified'}</span></div>
+                <div class="row"><span class="label">Previous Cancer Treatment:</span><span class="value">${data.previous_treatment || 'None specified'}</span></div>
+                ${data.frailty_score ? `<div class="row"><span class="label">Frailty Score (Rockwood):</span><span class="value">${data.frailty_score}/9</span></div>` : ''}
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">SYMPTOMS</div>
+            <div class="section-content">
+                <div class="row">
+                    <span class="label">Presenting Symptoms:</span>
+                    <span class="value">${data.symptoms.map(s => `<span class="tag">${s}</span>`).join(' ') || 'Not specified'}</span>
+                </div>
+                <div class="row"><span class="label">Description:</span><span class="value">${data.symptoms_description || 'Not provided'}</span></div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-header">INVESTIGATION RESULTS</div>
+            <div class="section-content">
+                <div class="row">
+                    <span class="label">PSA:</span><span class="value">${data.psa || 'N/A'}</span>
+                </div>
+                <div class="row">
+                    <span class="label">eGFR:</span><span class="value">${data.egfr || 'N/A'}</span>
+                </div>
+                <div class="row">
+                    <span class="label">Tumour Markers:</span><span class="value">${data.tumour_markers || 'N/A'}</span>
+                </div>
+                <div class="row">
+                    <span class="label">Other:</span><span class="value">${data.other_bloods || 'N/A'}</span>
+                </div>
+                <div class="row"><span class="label">Histology/Imaging:</span><span class="value">${data.histology_imaging || 'Not provided'}</span></div>
+                <div class="row"><span class="label">Procedure Findings:</span><span class="value">${data.procedure_findings || 'Not provided'}</span></div>
+                <div class="row"><span class="label">Additional Info:</span><span class="value">${data.additional_info || 'None'}</span></div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <strong>Submitted:</strong> ${timestamp}<br>
+            Please ensure imaging is available on PACS and histology slides are ready for review.<br>
+            Refs: NICE NG12, GIRFT Urology, NHS England MDT Guidance
+        </div>
+    </div>
+</body>
+</html>`;
+        }
+        
+        // Generate plain text email
+        function generateTextEmail(data) {
+            const cancerTypes = data.cancer_type.length ? data.cancer_type.join(', ') : 'Not specified';
+            const symptoms = data.symptoms.length ? data.symptoms.join(', ') : 'Not specified';
+            const timestamp = new Date().toLocaleString('en-GB');
+            const line = '═'.repeat(50);
+            const thinLine = '─'.repeat(50);
+            
+            return `
+UROLOGY CANCER MDT REFERRAL
+[Trust Name] NHS Foundation Trust
+${line}
+
+PATIENT: ${data.surname.toUpperCase()}, ${data.patient_name}
+DOB: ${formatDate(data.dob)} | Hospital No: ${data.hospital_number}
+
+${line}
+PATIENT DETAILS
+${thinLine}
+Name:              ${data.patient_name} ${data.surname}
+Date of Birth:     ${formatDate(data.dob)}
+Hospital Number:   ${data.hospital_number}
+NHS Number:        ${data.nhs_number || 'Not provided'}
+
+${line}
+REFERRAL DETAILS
+${thinLine}
+Requested by:      ${data.requested_by}
+Date:              ${formatDate(data.referral_date)}
+Contact:           ${data.referrer_contact}
+Patient Status:    ${data.patient_status || 'Not specified'}
+Previous MDT:      ${data.prev_mdt || 'Not specified'}${data.prev_mdt_date ? ' (' + formatDate(data.prev_mdt_date) + ')' : ''}
+Known Cancer:      ${data.known_cancer || 'Not specified'}
+Cancer Type:       ${cancerTypes}
+
+${line}
+*** CLINICAL QUERY FOR MDT ***
+${thinLine}
+${data.clinical_query || 'Not specified'}
+
+${line}
+PERFORMANCE STATUS & COMORBIDITIES
+${thinLine}
+WHO PS:            ${data.who_ps || 'Not specified'}
+Comorbidities:     ${data.comorbidities || 'None specified'}
+Medications:       ${data.medications || 'None specified'}
+Previous Tx:       ${data.previous_treatment || 'None specified'}
+${data.frailty_score ? `Frailty (Rockwood): ${data.frailty_score}/9` : ''}
+
+${line}
+SYMPTOMS
+${thinLine}
+Presenting:        ${symptoms}
+Description:       ${data.symptoms_description || 'Not provided'}
+
+${line}
+INVESTIGATION RESULTS
+${thinLine}
+PSA:               ${data.psa || 'N/A'}
+eGFR:              ${data.egfr || 'N/A'}
+Tumour Markers:    ${data.tumour_markers || 'N/A'}
+Other:             ${data.other_bloods || 'N/A'}
+
+Histology/Imaging:
+${data.histology_imaging || 'Not provided'}
+
+Procedure Findings:
+${data.procedure_findings || 'Not provided'}
+
+Additional Info:
+${data.additional_info || 'None'}
+
+${line}
+Submitted: ${timestamp}
+Please ensure imaging on PACS & histology available for review.
+Refs: NICE NG12, GIRFT Urology, NHS England MDT Guidance
+${line}
+            `.trim();
+        }
+        
+        // Get email recipients
+        function getRecipients() {
+            const emails = {
+                'Referrer': document.getElementById('email_referrer').value,
+                'MDT Coordinator': document.getElementById('email_mdt').value,
+                'Cancer Services': document.getElementById('email_cancer_services').value,
+                'Cancer Nursing Team': document.getElementById('email_nursing').value,
+                'Cancer Lead': document.getElementById('email_lead').value
+            };
+            return Object.entries(emails).filter(([_, email]) => email.trim());
+        }
+        
+        // Submit via email
+        function submitViaEmail() {
+            const validation = validateForm();
+            if (!validation.valid) {
+                document.getElementById('errorMessage').textContent = 
+                    `Please complete: ${validation.field}`;
+                document.getElementById('errorModal').style.display = 'flex';
+                return;
+            }
+            
+            const recipients = getRecipients();
+            if (recipients.length === 0) {
+                document.getElementById('errorMessage').textContent = 
+                    'Please enter at least one email address.';
+                document.getElementById('errorModal').style.display = 'flex';
+                return;
+            }
+            
+            const data = collectFormData();
+            const subject = `Urology MDT Referral: ${data.surname}, ${data.patient_name} (${data.hospital_number})`;
+            const body = generateTextEmail(data);
+            
+            const allEmails = recipients.map(([_, email]) => email).join(',');
+            window.location.href = `mailto:${allEmails}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            
+            // Show success
+            document.getElementById('emailList').innerHTML = recipients
+                .map(([name, email]) => `<div>✓ <strong>${name}:</strong> ${email}</div>`).join('');
+            document.getElementById('successModal').style.display = 'flex';
+        }
+        
+        // Copy to clipboard
+        function copyToClipboard() {
+            const validation = validateForm();
+            if (!validation.valid) {
+                document.getElementById('errorMessage').textContent = 
+                    `Please complete: ${validation.field}`;
+                document.getElementById('errorModal').style.display = 'flex';
+                return;
+            }
+            
+            const data = collectFormData();
+            const text = generateTextEmail(data);
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const successEl = document.getElementById('copySuccess');
+                successEl.style.display = 'inline';
+                setTimeout(() => successEl.style.display = 'none', 3000);
+            });
+        }
+        
+        // Preview email
+        function previewEmail() {
+            const validation = validateForm();
+            if (!validation.valid) {
+                document.getElementById('errorMessage').textContent = 
+                    `Please complete: ${validation.field}`;
+                document.getElementById('errorModal').style.display = 'flex';
+                return;
+            }
+            
+            const data = collectFormData();
+            document.getElementById('previewHtml').innerHTML = generateHtmlEmail(data);
+            document.getElementById('previewText').textContent = generateTextEmail(data);
+            document.getElementById('previewModal').style.display = 'flex';
+        }
+        
+        // Tab switching
+        function showTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (tab === 'html') {
+                document.getElementById('previewHtml').style.display = 'block';
+                document.getElementById('previewText').style.display = 'none';
+            } else {
+                document.getElementById('previewHtml').style.display = 'none';
+                document.getElementById('previewText').style.display = 'block';
+            }
+        }
+        
+        // Copy HTML to clipboard
+        function copyHtmlToClipboard() {
+            const data = collectFormData();
+            const html = generateHtmlEmail(data);
+            navigator.clipboard.writeText(html).then(() => alert('HTML copied to clipboard!'));
+        }
+        
+        // Copy text to clipboard
+        function copyTextToClipboard() {
+            const data = collectFormData();
+            const text = generateTextEmail(data);
+            navigator.clipboard.writeText(text).then(() => alert('Plain text copied to clipboard!'));
+        }
+        
+        // Clear form
+        function clearForm() {
+            if (confirm('Clear all form data?')) {
+                document.getElementById('mdtForm').reset();
+            }
+        }
+        
+        // Close modals
+        function closePreview() { document.getElementById('previewModal').style.display = 'none'; }
+        function closeSuccess() { document.getElementById('successModal').style.display = 'none'; }
+        function closeError() { document.getElementById('errorModal').style.display = 'none'; }
+        
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+        
+        // Set today's date
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('referral_date').value = new Date().toISOString().split('T')[0];
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Male LUTS Clinical Decision Support Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a365d;
+            --primary-light: #2c5282;
+            --accent: #38a169;
+            --accent-light: #48bb78;
+            --warning: #dd6b20;
+            --danger: #e53e3e;
+            --bg: #f7fafc;
+            --card: #ffffff;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+        .header { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%); color: white; padding: 1.25rem; text-align: center; }
+        .header h1 { font-family: 'Fraunces', serif; font-size: 1.4rem; margin-bottom: 0.2rem; }
+        .header p { opacity: 0.9; font-size: 0.8rem; }
+        .badges { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.4rem; flex-wrap: wrap; }
+        .badges span { background: rgba(255,255,255,0.2); padding: 0.15rem 0.5rem; border-radius: 20px; font-size: 0.65rem; font-weight: 600; }
+        .container { max-width: 900px; margin: 0 auto; padding: 1rem; }
+        
+        .section { background: white; border-radius: 10px; margin-bottom: 0.75rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); overflow: hidden; }
+        .section-header { background: var(--primary); color: white; padding: 0.6rem 1rem; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; }
+        .section-header .icon { font-size: 1rem; }
+        .section-body { padding: 1rem; }
+        
+        .form-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 0.75rem; align-items: flex-end; }
+        .form-row:last-child { margin-bottom: 0; }
+        .form-group { flex: 1; min-width: 140px; }
+        .form-group.small { flex: 0 0 100px; min-width: 100px; }
+        .form-group.medium { flex: 0 0 150px; min-width: 150px; }
+        .form-group.large { flex: 2; min-width: 200px; }
+        .form-group.full { flex: 0 0 100%; }
+        
+        label { display: block; font-weight: 500; margin-bottom: 0.25rem; font-size: 0.8rem; }
+        label small { color: var(--text-light); font-weight: 400; }
+        input, select, textarea { width: 100%; padding: 0.5rem 0.6rem; border: 1.5px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 0.85rem; background: var(--bg); transition: all 0.2s; }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); background: white; }
+        textarea { resize: vertical; min-height: 60px; }
+        
+        .checkbox-group { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+        .checkbox-item { display: flex; align-items: center; gap: 0.3rem; padding: 0.3rem 0.5rem; background: var(--bg); border-radius: 5px; cursor: pointer; font-size: 0.78rem; border: 1.5px solid transparent; transition: all 0.2s; }
+        .checkbox-item:hover { background: #edf2f7; }
+        .checkbox-item.selected { background: rgba(56,161,105,0.1); border-color: var(--accent); }
+        .checkbox-item input { width: 14px; height: 14px; accent-color: var(--accent); }
+        
+        .inline-label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; }
+        .inline-label input, .inline-label select { width: auto; }
+        
+        .interp { font-size: 0.75rem; margin-top: 0.2rem; font-weight: 500; }
+        .interp.good { color: var(--accent); }
+        .interp.warn { color: var(--warning); }
+        .interp.bad { color: var(--danger); }
+        
+        .score-badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 600; font-size: 0.7rem; margin-left: 0.5rem; }
+        .badge-mild { background: rgba(56,161,105,0.15); color: #276749; }
+        .badge-moderate { background: rgba(221,107,32,0.15); color: #c05621; }
+        .badge-severe { background: rgba(229,62,62,0.15); color: #c53030; }
+        
+        .alert { padding: 0.6rem 0.8rem; border-radius: 6px; margin-top: 0.75rem; font-size: 0.8rem; display: flex; align-items: flex-start; gap: 0.5rem; }
+        .alert-warning { background: #fffaf0; border: 1.5px solid var(--warning); color: #744210; }
+        .alert-danger { background: #fff5f5; border: 1.5px solid var(--danger); color: #c53030; }
+        .alert-info { background: #ebf8ff; border: 1.5px solid #3182ce; color: #2c5282; }
+        .alert-success { background: #f0fff4; border: 1.5px solid var(--accent); color: #276749; }
+        .alert strong { font-weight: 600; }
+        .alert .icon { font-size: 1rem; flex-shrink: 0; }
+        
+        .hidden { display: none !important; }
+        
+        .btn { padding: 0.6rem 1.25rem; border: none; border-radius: 6px; font-family: inherit; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent), var(--accent-light)); color: white; }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 3px 10px rgba(56,161,105,0.3); }
+        .btn-secondary { background: var(--bg); color: var(--text); border: 1.5px solid var(--border); }
+        .btn-danger { background: var(--danger); color: white; }
+        .action-bar { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+        
+        .recommendation-box { background: linear-gradient(135deg, #f0fff4, #c6f6d5); border: 2px solid var(--accent); border-radius: 10px; padding: 1rem; margin-top: 1rem; }
+        .recommendation-box h3 { color: #276749; font-family: 'Fraunces', serif; font-size: 1.1rem; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+        .recommendation-box h3 .icon { font-size: 1.25rem; }
+        
+        .treatment-item { background: white; border-radius: 8px; padding: 0.75rem; margin-bottom: 0.5rem; border-left: 3px solid var(--accent); }
+        .treatment-item.secondary { border-left-color: var(--warning); }
+        .treatment-item.action { border-left-color: var(--danger); }
+        .treatment-item h4 { font-size: 0.9rem; color: var(--primary); margin-bottom: 0.25rem; }
+        .treatment-item p { font-size: 0.8rem; color: var(--text-light); margin: 0; }
+        .treatment-item .dose { color: var(--accent); font-weight: 600; }
+        
+        .drug-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.5rem; margin-top: 0.5rem; }
+        .drug-card { background: var(--bg); border-radius: 6px; padding: 0.6rem; }
+        .drug-card .name { font-weight: 700; color: var(--primary); font-size: 0.85rem; }
+        .drug-card .dose { color: var(--accent); font-weight: 600; font-size: 0.8rem; }
+        .drug-card .info { font-size: 0.75rem; color: var(--text-light); margin-top: 0.2rem; }
+        
+        .surgery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.5rem; margin-top: 0.5rem; }
+        .surgery-card { background: white; border: 1.5px solid var(--border); border-radius: 8px; padding: 0.75rem; }
+        .surgery-card:hover { border-color: var(--primary); }
+        .surgery-card .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+        .surgery-card .name { font-weight: 700; color: var(--primary); font-size: 0.9rem; }
+        .surgery-card .badge { padding: 0.15rem 0.4rem; border-radius: 10px; font-size: 0.65rem; font-weight: 600; }
+        .surgery-card .badge-gold { background: #faf089; color: #744210; }
+        .surgery-card .badge-alt { background: #e2e8f0; color: #4a5568; }
+        .surgery-card .badge-new { background: #bee3f8; color: #2c5282; }
+        .surgery-card .details { font-size: 0.75rem; color: var(--text-light); }
+        .surgery-card .pros { color: var(--accent); }
+        .surgery-card .cons { color: var(--danger); }
+        .surgery-card .risks { background: #fff5f5; padding: 0.4rem; border-radius: 4px; margin-top: 0.4rem; font-size: 0.7rem; color: #c53030; }
+        
+        .tabs { display: flex; gap: 0.25rem; margin-bottom: 1rem; background: white; padding: 0.4rem; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); flex-wrap: wrap; }
+        .tab { padding: 0.5rem 0.9rem; border: none; background: transparent; cursor: pointer; border-radius: 6px; font-family: inherit; font-weight: 600; font-size: 0.8rem; color: var(--text-light); transition: all 0.2s; }
+        .tab:hover { background: var(--bg); }
+        .tab.active { background: var(--primary); color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .divider { height: 1px; background: var(--border); margin: 0.75rem 0; }
+        
+        .summary-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.75rem; background: var(--bg); border-radius: 6px; margin-bottom: 0.75rem; }
+        .summary-item { background: white; padding: 0.4rem 0.6rem; border-radius: 4px; border-left: 2px solid var(--primary); }
+        .summary-item .label { font-size: 0.65rem; color: var(--text-light); text-transform: uppercase; }
+        .summary-item .value { font-weight: 700; font-size: 0.85rem; color: var(--primary); }
+        
+        @media (max-width: 600px) {
+            .form-group { min-width: 100%; }
+            .form-group.small, .form-group.medium { flex: 1; min-width: 45%; }
+        }
+    </style>
+</head>
+<body>
+<div class="ud-update" style="margin:12px auto;max-width:1100px;padding:10px 14px;border-left:4px solid #0a7;background:#effaf6;font:13px/1.45 system-ui,sans-serif;color:#124"><strong>Updated 23 Nov 2026 – what changed</strong><ul style="margin:6px 0 0 18px;padding:0"><li>Guideline badges moved to EAU 2026 and NICE CG97/NG112</li><li>Vibegron claims softened (no-BP-effect statement removed pending SmPC check)</li><li>Anticholinergic burden / cognitive risk emphasised for OAB drug choice</li></ul><em>Decision support only; verify against current local and national guidance.</em></div>
+    <header class="header">
+        <h1>Male LUTS Clinical Decision Support</h1>
+        <p>Non-Neurogenic Lower Urinary Tract Symptoms</p>
+        <div class="badges"><span>NICE CG97 / NG112</span><span>EAU 2026</span><span>GIRFT</span></div>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('main')">Assessment & Diagnostics</button>
+            <button class="tab" onclick="showTab('treatment')">Treatment Options</button>
+            <button class="tab" onclick="showTab('underactive')">Underactive Bladder</button>
+        </div>
+
+        <!-- MAIN TAB: ASSESSMENT & DIAGNOSTICS -->
+        <div id="main" class="tab-content active">
+            
+            <!-- Patient Demographics -->
+            <div class="section">
+                <div class="section-header"><span class="icon">👤</span> Patient Demographics</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group small"><label>Age (years)</label><input type="number" id="age" min="18" max="110" placeholder="Age"></div>
+                        <div class="form-group medium"><label>WHO Status <small>(0-4)</small></label>
+                            <select id="whoStatus"><option value="">Select...</option><option value="0">0 - Fully active</option><option value="1">1 - Restricted</option><option value="2">2 - Ambulatory</option><option value="3">3 - Limited self-care</option><option value="4">4 - Disabled</option></select>
+                        </div>
+                        <div class="form-group medium"><label>Frailty Score <small>(1-9)</small></label>
+                            <select id="frailtyScore"><option value="">Select...</option><option value="1">1 - Very fit</option><option value="2">2 - Well</option><option value="3">3 - Managing</option><option value="4">4 - Vulnerable</option><option value="5">5 - Mildly frail</option><option value="6">6 - Mod frail</option><option value="7">7 - Severely frail</option><option value="8">8 - Very severe</option><option value="9">9 - Terminal</option></select>
+                        </div>
+                        <div class="form-group medium"><label>Life Expectancy</label>
+                            <select id="lifeExpectancy"><option value="">Select...</option><option value="less5">&lt;5 years</option><option value="5-10">5-10 years</option><option value="more10">&gt;10 years</option></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Symptom Scores -->
+            <div class="section">
+                <div class="section-header"><span class="icon">📋</span> Symptom Assessment</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group small"><label>IPSS <small>(0-35)</small></label><input type="number" id="ipssScore" min="0" max="35" placeholder="Score" oninput="updateIPSS()"></div>
+                        <div class="form-group small"><label>IPSS QoL <small>(0-6)</small></label><input type="number" id="ipssQol" min="0" max="6" placeholder="QoL"></div>
+                        <div class="form-group" style="flex:2;"><label>IPSS Severity</label><div id="ipssBadge" style="padding-top:0.5rem;">-</div></div>
+                        <div class="form-group small"><label>SHIM <small>(1-25)</small></label><input type="number" id="shimScore" min="1" max="25" placeholder="Score" oninput="updateSHIM()"></div>
+                        <div class="form-group"><label>ED Status</label><div id="shimBadge" style="padding-top:0.5rem;">-</div></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Predominant Symptoms</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item"><input type="checkbox" id="storage" onchange="toggleCheck(this)"><span>Storage/OAB</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="voiding" onchange="toggleCheck(this)"><span>Voiding</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="postMict" onchange="toggleCheck(this)"><span>Post-micturition</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="nocturiaSx" onchange="toggleCheck(this)"><span>Nocturia ≥2</span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Red Flags -->
+            <div class="section">
+                <div class="section-header" style="background:var(--danger);"><span class="icon">🚨</span> Red Flags</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group full"><label>Select any present (require urgent evaluation)</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item"><input type="checkbox" id="haematuria" class="red-flag" onchange="toggleCheck(this);checkAlerts()"><span>Haematuria</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="retention" class="red-flag" onchange="toggleCheck(this);checkAlerts()"><span>Urinary Retention</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="recurrentUTI" class="red-flag" onchange="toggleCheck(this);checkAlerts()"><span>Recurrent UTI</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="bladderStones" class="red-flag" onchange="toggleCheck(this);checkAlerts()"><span>Bladder Stones</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="renalImpairment" class="red-flag" onchange="toggleCheck(this);checkAlerts()"><span>Renal Impairment</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="haematuriaAlert" class="alert alert-danger hidden"><span class="icon">⚠️</span><div><strong>Haematuria present:</strong> Offer cystoscopy and upper tract imaging to exclude malignancy.</div></div>
+                </div>
+            </div>
+
+            <!-- Medical History -->
+            <div class="section">
+                <div class="section-header"><span class="icon">🏥</span> Medical History</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group"><label>Comorbidities</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item"><input type="checkbox" id="dm" onchange="toggleCheck(this)"><span>Diabetes</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="htn" onchange="toggleCheck(this)"><span>Hypertension</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="cardiac" onchange="toggleCheck(this)"><span>Cardiac Disease</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="anticoag" onchange="toggleCheck(this)"><span>Anticoagulation</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="ckd" onchange="toggleCheck(this)"><span>CKD</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="neuro" onchange="toggleCheck(this)"><span>Neurological</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group large"><label>Other relevant history</label><textarea id="otherHistory" placeholder="Enter any other relevant medical history..."></textarea></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current/Previous Treatment -->
+            <div class="section">
+                <div class="section-header"><span class="icon">💊</span> Current / Previous LUTS Treatment</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group"><label>Medications tried/currently on</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item"><input type="checkbox" id="noMeds" onchange="toggleCheck(this);toggleNoMeds()"><span>None</span></label>
+                                <label class="checkbox-item med-option"><input type="checkbox" id="onAlpha" onchange="toggleCheck(this);checkAlerts()"><span>Alpha-blocker</span></label>
+                                <label class="checkbox-item med-option"><input type="checkbox" id="on5ARI" onchange="toggleCheck(this);checkAlerts()"><span>5-ARI</span></label>
+                                <label class="checkbox-item med-option"><input type="checkbox" id="onCombo" onchange="toggleCheck(this);checkAlerts()"><span>Combination</span></label>
+                                <label class="checkbox-item med-option"><input type="checkbox" id="onPDE5" onchange="toggleCheck(this);checkAlerts()"><span>PDE5i</span></label>
+                                <label class="checkbox-item med-option"><input type="checkbox" id="onOAB" onchange="toggleCheck(this);checkAlerts()"><span>OAB medication</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Previous prostate surgery</label>
+                            <select id="prevSurgery" onchange="checkAlerts()"><option value="">None</option><option value="turp">TURP</option><option value="holep">HoLEP</option><option value="greenlight">GreenLight</option><option value="urolift">UroLift</option><option value="rezum">Rezūm</option><option value="other">Other</option></select>
+                        </div>
+                        <div class="form-group large"><label>Surgery details (if applicable)</label><input type="text" id="surgeryDetails" placeholder="Year, outcome, etc."></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Long-term Catheter -->
+            <div class="section">
+                <div class="section-header"><span class="icon">🔧</span> Catheter Status</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group medium"><label>Long-term catheter?</label>
+                            <select id="hasLTC" onchange="checkAlerts()"><option value="no">No</option><option value="urethral">Yes - Urethral</option><option value="spc">Yes - SPC</option></select>
+                        </div>
+                        <div class="form-group medium" id="ltcDurationGroup" style="display:none;"><label>Duration</label>
+                            <select id="ltcDuration"><option value="">Select...</option><option value="less1">Less than 1 year</option><option value="more1">More than 1 year</option></select>
+                        </div>
+                        <div class="form-group"><label>Reason for catheter</label><input type="text" id="ltcReason" placeholder="e.g., retention, failed TWOC"></div>
+                    </div>
+                    <div id="ltcAlert" class="alert alert-warning hidden"><span class="icon">⚠️</span><div><strong>Long-term catheter:</strong> Patient should be offered surgical treatment to achieve catheter-free status if fit for surgery.</div></div>
+                </div>
+            </div>
+
+            <!-- Laboratory -->
+            <div class="section">
+                <div class="section-header"><span class="icon">🔬</span> Laboratory Investigations</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group small"><label>PSA <small>(ng/mL)</small></label><input type="number" id="psa" step="0.01" min="0" placeholder="PSA" oninput="calcPSADensity()"></div>
+                        <div class="form-group small"><label>Creatinine <small>(μmol/L)</small></label><input type="number" id="creatinine" min="0" placeholder="Creat"></div>
+                        <div class="form-group small"><label>eGFR</label><input type="number" id="egfr" min="0" max="120" placeholder="eGFR"></div>
+                        <div class="form-group"><label>Urinalysis</label>
+                            <select id="urinalysis"><option value="">Select...</option><option value="normal">Normal</option><option value="haematuria">Haematuria</option><option value="pyuria">Pyuria</option><option value="infection">Infection signs</option></select>
+                        </div>
+                    </div>
+                    <div id="psaAlert" class="alert alert-danger hidden"><span class="icon">⚠️</span><div><strong>Elevated PSA / High PSA Density:</strong> Consider prostate cancer investigations - offer MRI prostate and prostate biopsy if indicated.</div></div>
+                </div>
+            </div>
+
+            <!-- DRE & Imaging -->
+            <div class="section">
+                <div class="section-header"><span class="icon">📏</span> DRE & Prostate Imaging</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group"><label>DRE Findings</label>
+                            <select id="dreFindings" onchange="checkAlerts()"><option value="">Select...</option><option value="normal">Normal - smooth, benign</option><option value="enlarged">Enlarged - smooth, benign</option><option value="nodule">Nodule present</option><option value="hard">Hard/irregular</option><option value="suspicious">Suspicious for malignancy</option></select>
+                        </div>
+                        <div class="form-group small"><label>Estimated size (DRE)</label>
+                            <select id="dreSize"><option value="">Select...</option><option value="small">&lt;30g</option><option value="medium">30-60g</option><option value="large">60-100g</option><option value="vlarge">&gt;100g</option></select>
+                        </div>
+                    </div>
+                    <div id="dreAlert" class="alert alert-danger hidden"><span class="icon">⚠️</span><div><strong>Abnormal DRE:</strong> Suspicious findings - consider urgent prostate MRI and biopsy to exclude malignancy.</div></div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="form-row">
+                        <div class="form-group"><label>Imaging performed</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-item"><input type="checkbox" id="hadUSS" onchange="toggleCheck(this)"><span>USS (TRUS/Abdo)</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="hadCT" onchange="toggleCheck(this)"><span>CT Urogram</span></label>
+                                <label class="checkbox-item"><input type="checkbox" id="hadMRI" onchange="toggleCheck(this)"><span>MRI Prostate</span></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group small"><label>Prostate Volume <small>(mL)</small></label><input type="number" id="prostateVol" min="0" placeholder="Volume" oninput="calcPSADensity()"></div>
+                        <div class="form-group small"><label>PSA Density</label><input type="text" id="psaDensity" readonly placeholder="Auto" style="background:#e2e8f0;"></div>
+                        <div class="form-group"><label>PSA Density Interpretation</label><div id="psaDensityInterp" class="interp">-</div></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label>Prostate morphology</label>
+                            <select id="prostateMorphology"><option value="">Select...</option><option value="bilobar">Bilobar enlargement</option><option value="trilobar">Trilobar enlargement</option><option value="medianLobe">Prominent median lobe</option><option value="lateral">Lateral lobe predominant</option></select>
+                        </div>
+                        <div class="form-group"><label>Upper tract findings</label>
+                            <select id="upperTracts"><option value="">Select...</option><option value="normal">Normal</option><option value="hydro">Hydronephrosis</option><option value="stones">Renal stones</option><option value="other">Other abnormality</option></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Uroflowmetry -->
+            <div class="section">
+                <div class="section-header"><span class="icon">📊</span> Uroflowmetry & Post-Void Residual</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group small"><label>Qmax <small>(mL/s)</small></label><input type="number" id="qmax" step="0.1" min="0" placeholder="Peak flow" oninput="updateQmax()"></div>
+                        <div class="form-group small"><label>Voided Vol <small>(mL)</small></label><input type="number" id="voidedVol" min="0" placeholder="Volume"></div>
+                        <div class="form-group"><label>Flow pattern</label>
+                            <select id="flowPattern"><option value="">Select...</option><option value="normal">Normal bell-shaped</option><option value="plateau">Plateau (obstructive)</option><option value="intermittent">Intermittent</option><option value="straining">Straining pattern</option></select>
+                        </div>
+                        <div class="form-group"><label>Qmax Interpretation</label><div id="qmaxInterp" class="interp">-</div></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group small"><label>PVR <small>(mL)</small></label><input type="number" id="pvr" min="0" placeholder="PVR" oninput="updatePVR()"></div>
+                        <div class="form-group"><label>PVR Interpretation</label><div id="pvrInterp" class="interp">-</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Urodynamics Classification (if available) -->
+            <div class="section">
+                <div class="section-header"><span class="icon">📈</span> Urodynamics Classification <small style="opacity:0.8;margin-left:0.5rem;">(if available)</small></div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group medium"><label>UDS performed?</label>
+                            <select id="udsPerformed" onchange="document.getElementById('udsDetails').style.display = this.value === 'yes' ? 'block' : 'none';"><option value="no">No</option><option value="yes">Yes</option></select>
+                        </div>
+                    </div>
+                    <div id="udsDetails" style="display:none;">
+                        
+                        <p style="font-size:0.85rem;font-weight:600;color:var(--primary);margin:0.75rem 0 0.5rem;border-bottom:1px solid var(--border);padding-bottom:0.3rem;">📊 Pressure-Flow Results</p>
+                        <div class="form-row">
+                            <div class="form-group small"><label>Pdet@Qmax <small>(cmH₂O)</small></label><input type="number" id="pdetQmax" min="0" placeholder="Pdet" oninput="calcIndices()"></div>
+                            <div class="form-group small"><label>Qmax PFS <small>(mL/s)</small></label><input type="number" id="pfsQmax" step="0.1" min="0" placeholder="Qmax" oninput="calcIndices()"></div>
+                            <div class="form-group small"><label>BOOI</label><input type="text" id="booi" readonly placeholder="Auto" style="background:#e2e8f0;"></div>
+                            <div class="form-group small"><label>BCI</label><input type="text" id="bci" readonly placeholder="Auto" style="background:#e2e8f0;"></div>
+                        </div>
+                        <div id="bciInterp" class="interp" style="margin-bottom:0.5rem;"></div>
+                        
+                        <p style="font-size:0.85rem;font-weight:600;color:var(--primary);margin:0.75rem 0 0.5rem;border-bottom:1px solid var(--border);padding-bottom:0.3rem;">🎯 Obstruction Assessment</p>
+                        <div class="form-row">
+                            <div class="form-group"><label>Obstruction Grade</label>
+                                <select id="obstructionGrade">
+                                    <option value="">Select...</option>
+                                    <option value="unobstructed">Unobstructed (BOOI &lt;20)</option>
+                                    <option value="equivocal">Equivocal (BOOI 20-40)</option>
+                                    <option value="obstructedMild">Obstructed - Mild (BOOI 40-60)</option>
+                                    <option value="obstructedMod">Obstructed - Moderate (BOOI 60-100)</option>
+                                    <option value="obstructedSevere">Obstructed - Severe (BOOI &gt;100)</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label>Detrusor Contractility</label>
+                                <select id="contractility" onchange="checkAlerts()">
+                                    <option value="">Select...</option>
+                                    <option value="strong">Strong (BCI &gt;150)</option>
+                                    <option value="normal">Normal (BCI 100-150)</option>
+                                    <option value="weak">Weak (BCI 50-100)</option>
+                                    <option value="veryWeak">Very weak/Underactive (BCI &lt;50)</option>
+                                    <option value="acontractile">Acontractile detrusor</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <p style="font-size:0.85rem;font-weight:600;color:var(--primary);margin:0.75rem 0 0.5rem;border-bottom:1px solid var(--border);padding-bottom:0.3rem;">💧 Filling Phase</p>
+                        <div class="form-row">
+                            <div class="form-group small"><label>FDV <small>(mL)</small></label><input type="number" id="fdv" min="0" placeholder="First desire"></div>
+                            <div class="form-group small"><label>SDV <small>(mL)</small></label><input type="number" id="sdv" min="0" placeholder="Strong desire"></div>
+                            <div class="form-group small"><label>MCC <small>(mL)</small></label><input type="number" id="mcc" min="0" placeholder="Max capacity"></div>
+                            <div class="form-group small"><label>Compliance</label><input type="number" id="compliance" step="0.1" min="0" placeholder="mL/cmH₂O"></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Bladder Sensation</label>
+                                <select id="bladderSensation">
+                                    <option value="">Select...</option>
+                                    <option value="normal">Normal</option>
+                                    <option value="increased">Increased/Hypersensitive</option>
+                                    <option value="reduced">Reduced/Hyposensitive</option>
+                                    <option value="absent">Absent</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label>Compliance Assessment</label>
+                                <select id="complianceInterp" onchange="checkAlerts()">
+                                    <option value="">Select...</option>
+                                    <option value="normal">Normal (&gt;40)</option>
+                                    <option value="reduced">Reduced (20-40)</option>
+                                    <option value="low">Low (&lt;20) - upper tract risk</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <p style="font-size:0.85rem;font-weight:600;color:var(--primary);margin:0.75rem 0 0.5rem;border-bottom:1px solid var(--border);padding-bottom:0.3rem;">⚡ Detrusor Overactivity</p>
+                        <div class="form-row">
+                            <div class="form-group"><label>DO Present?</label>
+                                <select id="detrusorOA">
+                                    <option value="">Select...</option>
+                                    <option value="none">None - stable bladder</option>
+                                    <option value="phasic">Phasic DO</option>
+                                    <option value="terminal">Terminal DO</option>
+                                    <option value="continuous">Continuous DO</option>
+                                    <option value="highPressure">High pressure DO (&gt;40)</option>
+                                </select>
+                            </div>
+                            <div class="form-group"><label>DO Incontinence?</label>
+                                <select id="doIncontinence">
+                                    <option value="">Select...</option>
+                                    <option value="no">No</option>
+                                    <option value="yes">Yes</option>
+                                </select>
+                            </div>
+                            <div class="form-group small"><label>DO Amplitude</label><input type="number" id="doAmplitude" min="0" placeholder="cmH₂O"></div>
+                        </div>
+                        
+                        <p style="font-size:0.85rem;font-weight:600;color:var(--primary);margin:0.75rem 0 0.5rem;border-bottom:1px solid var(--border);padding-bottom:0.3rem;">📝 Voiding Phase</p>
+                        <div class="form-row">
+                            <div class="form-group"><label>Voiding Pattern</label>
+                                <select id="voidingMechanism">
+                                    <option value="">Select...</option>
+                                    <option value="normal">Normal detrusor void</option>
+                                    <option value="sustained">Sustained contraction</option>
+                                    <option value="straining">Abdominal straining</option>
+                                    <option value="intermittent">Intermittent</option>
+                                    <option value="prolonged">Prolonged</option>
+                                    <option value="incomplete">Incomplete emptying</option>
+                                    <option value="acontractile">Cannot void</option>
+                                </select>
+                            </div>
+                            <div class="form-group small"><label>PVR <small>(mL)</small></label><input type="number" id="udsPVR" min="0" placeholder="PVR"></div>
+                        </div>
+                        
+                        <p style="font-size:0.85rem;font-weight:600;color:var(--primary);margin:0.75rem 0 0.5rem;border-bottom:1px solid var(--border);padding-bottom:0.3rem;">✅ Overall Diagnosis</p>
+                        <div class="form-row">
+                            <div class="form-group full"><label>UDS Conclusion</label>
+                                <select id="udsDiagnosis">
+                                    <option value="">Select diagnosis...</option>
+                                    <option value="boo">BOO confirmed - good detrusor</option>
+                                    <option value="booSevere">Severe/High pressure BOO</option>
+                                    <option value="booDO">BOO + Detrusor Overactivity</option>
+                                    <option value="booDU">BOO + Detrusor Underactivity</option>
+                                    <option value="unobstructed">Unobstructed - normal</option>
+                                    <option value="doOnly">DO without obstruction</option>
+                                    <option value="du">Detrusor Underactivity only</option>
+                                    <option value="acontractile">Acontractile detrusor</option>
+                                    <option value="lowCompliance">Low compliance bladder</option>
+                                    <option value="sensory">Sensory urgency</option>
+                                    <option value="mixed">Mixed/Complex</option>
+                                    <option value="inconclusive">Inconclusive</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group full"><label>Additional UDS Notes</label><textarea id="udsNotes" rows="2" placeholder="Other findings, video-UDS results, etc."></textarea></div>
+                        </div>
+                    </div>
+                    <div id="udsAlert" class="alert alert-warning hidden"><span class="icon">⚠️</span><div><strong>Detrusor Underactivity:</strong> Surgical outcomes may be compromised. See Underactive Bladder tab.</div></div>
+                    <div id="lowComplianceAlert" class="alert alert-danger hidden"><span class="icon">⚠️</span><div><strong>Low compliance:</strong> Risk to upper tracts. Consider augmentation if medical Rx fails.</div></div>
+                </div>
+            </div>
+
+            <!-- Cystoscopy -->
+            <div class="section">
+                <div class="section-header"><span class="icon">🔍</span> Cystoscopy <small style="opacity:0.8;margin-left:0.5rem;">(if performed)</small></div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group medium"><label>Cystoscopy done?</label>
+                            <select id="cystoscopyDone" onchange="document.getElementById('cystoDetails').style.display = this.value === 'yes' ? 'block' : 'none';"><option value="no">No</option><option value="yes">Yes</option></select>
+                        </div>
+                    </div>
+                    <div id="cystoDetails" style="display:none;">
+                        <div class="form-row">
+                            <div class="form-group full">
+                                <label>Cystoscopy Findings</label>
+                                <textarea id="cystoFindings" rows="5" style="width:100%;min-height:120px;" placeholder="Describe cystoscopy findings:
+
+URETHRA: (normal / stricture / meatal stenosis / false passage)
+
+PROSTATE: (size / lateral lobes / median lobe / bladder neck)
+
+BLADDER: (mucosa / trabeculation / diverticula / stones / capacity)
+
+URETERIC ORIFICES: (normal / abnormal / efflux)
+
+OTHER FINDINGS:"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label>Bladder tumour/suspicious lesion?</label>
+                                <select id="bladderTumour" onchange="checkAlerts()"><option value="no">No</option><option value="yes">Yes</option></select>
+                            </div>
+                            <div class="form-group"><label>Urethral stricture?</label>
+                                <select id="urethralStricture"><option value="no">No</option><option value="yes">Yes</option></select>
+                            </div>
+                            <div class="form-group"><label>Bladder stones?</label>
+                                <select id="cystoStones" onchange="checkAlerts()"><option value="no">No</option><option value="yes">Yes</option></select>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="cystoTumourAlert" class="alert alert-danger hidden"><span class="icon">⚠️</span><div><strong>Bladder tumour identified:</strong> Proceed with TURBT and bladder cancer pathway. LUTS management is secondary.</div></div>
+                </div>
+            </div>
+
+            <!-- Generate Recommendation Button -->
+            <div class="action-bar">
+                <button class="btn btn-primary" onclick="generateRecommendation()">⚡ Generate Treatment Recommendation</button>
+                <button class="btn btn-secondary" onclick="clearAll()">🗑️ Clear All</button>
+                <button class="btn btn-secondary" onclick="window.print()">🖨️ Print</button>
+            </div>
+
+            <!-- Recommendation Output -->
+            <div id="recommendationOutput" class="hidden">
+                <div class="summary-bar" id="summaryBar"></div>
+                <div class="recommendation-box">
+                    <h3><span class="icon">💡</span> Treatment Recommendation</h3>
+                    <div id="recContent"></div>
+                </div>
+                <div id="warningsBox" class="hidden" style="margin-top:0.75rem;">
+                    <div class="alert alert-warning"><span class="icon">⚠️</span><div id="warnContent"></div></div>
+                </div>
+                <div id="actionsBox" class="hidden" style="margin-top:0.75rem;">
+                    <div class="alert alert-danger"><span class="icon">🚨</span><div id="actionsContent"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TREATMENT OPTIONS TAB -->
+        <div id="treatment" class="tab-content">
+            <div class="section">
+                <div class="section-header"><span class="icon">💊</span> Pharmacological Treatment Options</div>
+                <div class="section-body">
+                    <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:0.75rem;"><strong>First-line medical therapy</strong> - offer to all men with moderate-severe LUTS before considering surgery (unless absolute indications for surgery).</p>
+                    
+                    <h4 style="font-size:0.9rem;color:var(--primary);margin:0.75rem 0 0.5rem;">Alpha-1 Adrenoceptor Antagonists</h4>
+                    <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:0.5rem;">First-line. Rapid onset (days). Equivalent efficacy across class.</p>
+                    <div class="drug-grid">
+                        <div class="drug-card"><div class="name">Tamsulosin MR</div><div class="dose">400mcg OD after food</div><div class="info">Most uroselective. First-line choice. IFIS risk - inform ophthalmologist.</div></div>
+                        <div class="drug-card"><div class="name">Alfuzosin MR</div><div class="dose">10mg OD after food</div><div class="info">Good uroselectivity. Less IFIS than tamsulosin.</div></div>
+                        <div class="drug-card"><div class="name">Silodosin</div><div class="dose">8mg OD (4mg if eGFR 30-50)</div><div class="info">Most α1A selective. Higher retrograde ejaculation (28%).</div></div>
+                        <div class="drug-card"><div class="name">Doxazosin MR</div><div class="dose">4-8mg OD</div><div class="info">Non-selective. Useful if concurrent hypertension.</div></div>
+                    </div>
+                    
+                    <h4 style="font-size:0.9rem;color:var(--primary);margin:1rem 0 0.5rem;">5-Alpha Reductase Inhibitors</h4>
+                    <p style="font-size:0.8rem;color:var(--text-light);margin-bottom:0.5rem;">For prostate ≥30mL. Disease-modifying. 3-6 months for effect. Halves PSA.</p>
+                    <div class="drug-grid">
+                        <div class="drug-card"><div class="name">Finasteride</div><div class="dose">5mg OD</div><div class="info">Type II 5AR. ↓DHT 70%. 57% ↓AUR, 55% ↓surgery @4yrs.</div></div>
+                        <div class="drug-card"><div class="name">Dutasteride</div><div class="dose">500mcg OD</div><div class="info">Dual 5AR. ↓DHT 90%. Long half-life (5 weeks).</div></div>
+                    </div>
+                    
+                    <h4 style="font-size:0.9rem;color:var(--primary);margin:1rem 0 0.5rem;">Combination Therapy</h4>
+                    <div class="drug-grid">
+                        <div class="drug-card"><div class="name">Combodart</div><div class="dose">Tamsulosin 400mcg + Dutasteride 500mcg OD</div><div class="info">For mod-severe LUTS AND prostate &gt;40mL. CombAT: superior @4yrs.</div></div>
+                        <div class="drug-card"><div class="name">Vesomni</div><div class="dose">Tamsulosin 400mcg + Solifenacin 6mg OD</div><div class="info">Persistent storage symptoms despite alpha-blocker. Check PVR.</div></div>
+                    </div>
+                    
+                    <h4 style="font-size:0.9rem;color:var(--primary);margin:1rem 0 0.5rem;">OAB / Storage Symptoms</h4>
+                    <div class="drug-grid">
+                        <div class="drug-card"><div class="name">Mirabegron</div><div class="dose">50mg OD (25mg if eGFR 15-29)</div><div class="info">Beta-3 agonist. No anticholinergic SE; avoids anticholinergic burden in elderly. Check BP.</div></div>
+                        <div class="drug-card"><div class="name">Solifenacin</div><div class="dose">5-10mg OD</div><div class="info">M3 selective antimuscarinic. Monitor PVR in BOO.</div></div>
+                        <div class="drug-card"><div class="name">Vibegron</div><div class="dose">75mg OD</div><div class="info">Beta-3 agonist. Check UK licensing/formulary availability before use; BP effect and dosing per SmPC.</div></div>
+                    </div>
+                    
+                    <h4 style="font-size:0.9rem;color:var(--primary);margin:1rem 0 0.5rem;">PDE5 Inhibitor</h4>
+                    <div class="drug-grid">
+                        <div class="drug-card"><div class="name">Tadalafil</div><div class="dose">5mg OD</div><div class="info">Licensed for LUTS and ED. IPSS ↓22-37%. Nitrate contraindication.</div></div>
+                    </div>
+                    
+                    <h4 style="font-size:0.9rem;color:var(--primary);margin:1rem 0 0.5rem;">Nocturia</h4>
+                    <div class="drug-grid">
+                        <div class="drug-card"><div class="name">Desmopressin</div><div class="dose">25-50mcg SL nocte</div><div class="info">For nocturnal polyuria. Check Na+ baseline, day 3, 7, then monthly. Caution &gt;65y.</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header"><span class="icon">🏥</span> Surgical Treatment Options</div>
+                <div class="section-body">
+                    <p style="font-size:0.85rem;color:var(--text-light);margin-bottom:0.75rem;"><strong>Surgery indicated for:</strong> Failed/intolerant of medical therapy, urinary retention, recurrent UTI, bladder stones, renal impairment from BOO, or patient preference.</p>
+                    
+                    <h4 style="font-size:0.9rem;color:var(--primary);margin:0.75rem 0 0.5rem;">By Prostate Size</h4>
+                    
+                    <p style="font-size:0.8rem;font-weight:600;color:var(--text);margin:0.75rem 0 0.4rem;">Small Prostate (&lt;30mL)</p>
+                    <div class="surgery-grid">
+                        <div class="surgery-card">
+                            <div class="header"><span class="name">TUIP / BNI</span><span class="badge badge-gold">First choice</span></div>
+                            <div class="details">Bladder neck incision. Day case. Lower morbidity than TURP.<br><span class="pros">✓ Preserves ejaculation in some</span><br><span class="cons">✗ Limited to small prostates</span></div>
+                        </div>
+                    </div>
+                    
+                    <p style="font-size:0.8rem;font-weight:600;color:var(--text);margin:0.75rem 0 0.4rem;">Medium Prostate (30-80mL)</p>
+                    <div class="surgery-grid">
+                        <div class="surgery-card">
+                            <div class="header"><span class="name">TURP</span><span class="badge badge-gold">Reference standard</span></div>
+                            <div class="details">Bipolar preferred. IPSS ↓70%. Stay 1-3d.<br><span class="pros">✓ Established, widely available, long-term data</span><br><span class="cons">✗ Blood loss, RE 65%, re-TURP 10-15% @8y</span></div>
+                            <div class="risks">Risks: RE, transfusion 2-5%, TUR syndrome 1% (mono), stricture 4-7%</div>
+                        </div>
+                        <div class="surgery-card">
+                            <div class="header"><span class="name">HoLEP</span><span class="badge badge-gold">Gold standard</span></div>
+                            <div class="details">Enucleation any size. IPSS ↓70-80%. Stay 1-2d.<br><span class="pros">✓ Size-independent, low blood loss, safe on anticoag, durable</span><br><span class="cons">✗ Learning curve 50+, limited availability</span></div>
+                            <div class="risks">Risks: RE 75-90%, SUI 1-2%, stricture 2-4%, re-treat 1-5% @5y</div>
+                        </div>
+                        <div class="surgery-card">
+                            <div class="header"><span class="name">GreenLight PVP</span><span class="badge badge-alt">Alternative</span></div>
+                            <div class="details">Laser vaporisation. Best &lt;80mL. Day case possible.<br><span class="pros">✓ Excellent haemostasis, safe on anticoag</span><br><span class="cons">✗ No histology, higher re-treatment, expensive</span></div>
+                        </div>
+                        <div class="surgery-card">
+                            <div class="header"><span class="name">UroLift</span><span class="badge badge-new">Ejaculation-sparing</span></div>
+                            <div class="details">30-70mL, NO median lobe. IPSS ↓40-50%. Day case/LA.<br><span class="pros">✓ Preserves ejaculation & erection, no catheter</span><br><span class="cons">✗ Size/anatomy limited, less effective, re-treat 13% @5y</span></div>
+                        </div>
+                        <div class="surgery-card">
+                            <div class="header"><span class="name">Rezūm</span><span class="badge badge-new">Ejaculation-sparing</span></div>
+                            <div class="details">30-80mL, CAN treat median lobe. IPSS ↓47%.<br><span class="pros">✓ Preserves ejaculation &gt;90%, day case</span><br><span class="cons">✗ Catheter 3-7d, delayed improvement</span></div>
+                        </div>
+                    </div>
+                    
+                    <p style="font-size:0.8rem;font-weight:600;color:var(--text);margin:0.75rem 0 0.4rem;">Large Prostate (&gt;80mL)</p>
+                    <div class="surgery-grid">
+                        <div class="surgery-card">
+                            <div class="header"><span class="name">HoLEP / ThuLEP</span><span class="badge badge-gold">Gold standard</span></div>
+                            <div class="details">Enucleation - size independent. GIRFT benchmark for large prostates.<br><span class="pros">✓ Complete adenoma removal, durable, histology</span></div>
+                        </div>
+                        <div class="surgery-card">
+                            <div class="header"><span class="name">Aquablation</span><span class="badge badge-new">Emerging</span></div>
+                            <div class="details">Robotic waterjet. 30-150mL. IPSS ↓60%.<br><span class="pros">✓ Reproducible, short op time, better ejac preservation</span><br><span class="cons">✗ High cost, bleeding risk, no histology</span></div>
+                        </div>
+                        <div class="surgery-card">
+                            <div class="header"><span class="name">Open/Robotic Simple Prostatectomy</span><span class="badge badge-alt">Alternative</span></div>
+                            <div class="details">For &gt;80-100mL where HoLEP unavailable. Stay 3-7d.<br><span class="pros">✓ Complete removal, can treat stones/diverticula</span><br><span class="cons">✗ Higher morbidity, longer recovery</span></div>
+                        </div>
+                        <div class="surgery-card">
+                            <div class="header"><span class="name">PAE</span><span class="badge badge-new">NICE IPG</span></div>
+                            <div class="details">Prostatic artery embolisation. &gt;40mL. Specialist centres.<br><span class="pros">✓ No GA, preserves ejaculation, day case</span><br><span class="cons">✗ Less effective than TURP, re-treat 20% @3y</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- UNDERACTIVE BLADDER TAB -->
+        <div id="underactive" class="tab-content">
+            <div class="section">
+                <div class="section-header" style="background:var(--warning);"><span class="icon">⚠️</span> Underactive Bladder / Detrusor Underactivity</div>
+                <div class="section-body">
+                    <div class="alert alert-info"><span class="icon">ℹ️</span><div><strong>ICS Definition:</strong><br><strong>UAB:</strong> Symptom complex suggesting impaired voiding.<br><strong>DU:</strong> UDS diagnosis - detrusor contraction of reduced strength and/or duration resulting in prolonged/incomplete emptying. <strong>BCI &lt;100</strong></div></div>
+                    
+                    <h4 style="font-size:0.9rem;color:var(--primary);margin:1rem 0 0.5rem;">Diagnostic Features</h4>
+                    <p style="font-size:0.85rem;"><strong>Clinical:</strong> Slow stream, hesitancy, straining to void, incomplete emptying, low voiding frequency</p>
+                    <p style="font-size:0.85rem;margin-top:0.4rem;"><strong>UDS findings:</strong></p>
+                    <ul style="font-size:0.8rem;margin-left:1.5rem;color:var(--text-light);">
+                        <li>BCI (Bladder Contractility Index) &lt;100</li>
+                        <li>Pdet at Qmax &lt;40 cmH₂O with Qmax &lt;12 mL/s</li>
+                        <li>Prolonged or sustained detrusor contraction</li>
+                        <li>Voiding by abdominal straining</li>
+                        <li>High PVR despite low-pressure voiding</li>
+                    </ul>
+                    
+                    <div class="alert alert-warning" style="margin-top:1rem;"><span class="icon">⚠️</span><div><strong>Differentiating DU from BOO:</strong><br>BOO = High Pdet + Low Qmax | DU = Low Pdet + Low Qmax<br>Mixed picture (BOO + DU) has poorest surgical outcomes.</div></div>
+                    
+                    <h4 style="font-size:0.9rem;color:var(--primary);margin:1rem 0 0.5rem;">Aetiology</h4>
+                    <ul style="font-size:0.8rem;margin-left:1.5rem;color:var(--text-light);">
+                        <li>Ageing-related detrusor changes</li>
+                        <li>Diabetic cystopathy</li>
+                        <li>Neurological disease (Parkinson's, MS, etc.)</li>
+                        <li>Iatrogenic (post pelvic surgery)</li>
+                        <li>Medication-induced (anticholinergics, opioids, CCBs)</li>
+                        <li>Idiopathic</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header"><span class="icon">💊</span> Conservative & Medical Management</div>
+                <div class="section-body">
+                    <h4 style="font-size:0.9rem;color:var(--primary);margin-bottom:0.5rem;">First-Line Measures</h4>
+                    <ul style="font-size:0.8rem;margin-left:1.5rem;color:var(--text-light);">
+                        <li><strong>Timed voiding:</strong> Regular voiding schedule every 3-4 hours</li>
+                        <li><strong>Double voiding:</strong> Void, wait 30 seconds, void again</li>
+                        <li><strong>Triggered voiding:</strong> Suprapubic tapping, running water</li>
+                        <li><strong>Optimise glycaemic control</strong> if diabetic</li>
+                        <li><strong>Medication review:</strong> Stop/reduce bladder-suppressing drugs</li>
+                        <li><strong>Constipation management</strong></li>
+                    </ul>
+                    
+                    <h4 style="font-size:0.9rem;color:var(--primary);margin:1rem 0 0.5rem;">Pharmacological (Limited Evidence)</h4>
+                    <div class="drug-grid">
+                        <div class="drug-card"><div class="name">Alpha-Blocker Trial</div><div class="dose">Tamsulosin 400mcg OD</div><div class="info">May help if any element of BOO. Reduces outlet resistance.</div></div>
+                        <div class="drug-card"><div class="name">Bethanechol</div><div class="dose">10-50mg TDS-QDS (off-label)</div><div class="info">Muscarinic agonist. Limited evidence. Rarely used. CI: asthma, cardiac.</div></div>
+                    </div>
+                    <div class="alert alert-warning" style="margin-top:0.75rem;"><span class="icon">⚠️</span><div><strong>EAU Statement:</strong> No drug treatment can currently be recommended for underactive bladder based on available evidence.</div></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header"><span class="icon">🏥</span> Interventional Management</div>
+                <div class="section-body">
+                    <div class="surgery-grid">
+                        <div class="surgery-card">
+                            <div class="header"><span class="name">CISC</span><span class="badge badge-gold">First-Line</span></div>
+                            <div class="details">Clean Intermittent Self-Catheterisation. Gold standard for chronic retention due to DU.<br><span class="pros">✓ Complete emptying, prevents UTI/stones, protects upper tracts</span><br><span class="cons">✗ Requires dexterity/cognition, UTI risk, patient acceptance</span></div>
+                        </div>
+                        <div class="surgery-card">
+                            <div class="header"><span class="name">Sacral Neuromodulation</span><span class="badge badge-new">Emerging</span></div>
+                            <div class="details">S3 nerve stimulation. Some evidence for non-obstructive retention.<br><span class="pros">✓ May restore voiding, reversible, test phase available</span><br><span class="cons">✗ Variable response 30-50%, high cost, device complications</span></div>
+                        </div>
+                        <div class="surgery-card">
+                            <div class="header"><span class="name">Indwelling Catheter</span><span class="badge badge-alt">Last Resort</span></div>
+                            <div class="details">For patients unable to perform CISC. SPC preferred over urethral long-term.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header" style="background:var(--danger);"><span class="icon">⚠️</span> Surgery in DU: Critical Counselling</div>
+                <div class="section-body">
+                    <div class="alert alert-danger"><span class="icon">🚨</span><div><strong>Surgery to relieve BOO in patients with concurrent DU has significantly reduced success rates.</strong><br><br>Patient MUST be counselled that:<ul style="margin:0.5rem 0 0 1.5rem;"><li>Symptoms may not improve or may worsen</li><li>Urinary retention may persist post-operatively</li><li>CISC may be required long-term (up to 30%)</li><li>Storage symptoms may emerge or worsen</li><li>Second procedure success rates are even lower</li></ul></div></div>
+                    
+                    <h4 style="font-size:0.9rem;color:var(--primary);margin:1rem 0 0.5rem;">Prognostic Factors</h4>
+                    <table style="width:100%;font-size:0.8rem;border-collapse:collapse;">
+                        <tr style="background:var(--bg);"><th style="padding:0.4rem;text-align:left;border-bottom:2px solid var(--border);">Factor</th><th style="padding:0.4rem;border-bottom:2px solid var(--border);">Better Prognosis</th><th style="padding:0.4rem;border-bottom:2px solid var(--border);">Worse Prognosis</th></tr>
+                        <tr><td style="padding:0.4rem;border-bottom:1px solid var(--border);">BOOI</td><td style="padding:0.4rem;border-bottom:1px solid var(--border);">&gt;40 (obstructed)</td><td style="padding:0.4rem;border-bottom:1px solid var(--border);">&lt;20 (unobstructed)</td></tr>
+                        <tr><td style="padding:0.4rem;border-bottom:1px solid var(--border);">BCI</td><td style="padding:0.4rem;border-bottom:1px solid var(--border);">&gt;100</td><td style="padding:0.4rem;border-bottom:1px solid var(--border);">&lt;50</td></tr>
+                        <tr><td style="padding:0.4rem;border-bottom:1px solid var(--border);">PVR</td><td style="padding:0.4rem;border-bottom:1px solid var(--border);">&lt;300mL</td><td style="padding:0.4rem;border-bottom:1px solid var(--border);">&gt;500mL</td></tr>
+                        <tr><td style="padding:0.4rem;">Duration of retention</td><td style="padding:0.4rem;">Shorter</td><td style="padding:0.4rem;">Prolonged</td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function toggleCheck(el) {
+            el.closest('.checkbox-item').classList.toggle('selected', el.checked);
+        }
+
+        // Score interpretations
+        function updateIPSS() {
+            const score = parseInt(document.getElementById('ipssScore').value);
+            const el = document.getElementById('ipssBadge');
+            if (isNaN(score)) { el.innerHTML = '-'; return; }
+            if (score <= 7) el.innerHTML = '<span class="score-badge badge-mild">Mild (0-7)</span>';
+            else if (score <= 19) el.innerHTML = '<span class="score-badge badge-moderate">Moderate (8-19)</span>';
+            else el.innerHTML = '<span class="score-badge badge-severe">Severe (20-35)</span>';
+        }
+
+        function updateSHIM() {
+            const score = parseInt(document.getElementById('shimScore').value);
+            const el = document.getElementById('shimBadge');
+            if (isNaN(score)) { el.innerHTML = '-'; return; }
+            if (score >= 22) el.innerHTML = '<span class="score-badge badge-mild">Normal</span>';
+            else if (score >= 17) el.innerHTML = '<span class="score-badge badge-mild">Mild ED</span>';
+            else if (score >= 12) el.innerHTML = '<span class="score-badge badge-moderate">Moderate ED</span>';
+            else el.innerHTML = '<span class="score-badge badge-severe">Severe ED</span>';
+        }
+
+        function updateQmax() {
+            const val = parseFloat(document.getElementById('qmax').value);
+            const el = document.getElementById('qmaxInterp');
+            if (isNaN(val)) { el.innerHTML = '-'; return; }
+            if (val > 15) el.innerHTML = '<span class="interp good">✓ Likely unobstructed (&gt;15 mL/s)</span>';
+            else if (val >= 10) el.innerHTML = '<span class="interp warn">⚠ Equivocal (10-15 mL/s)</span>';
+            else el.innerHTML = '<span class="interp bad">⚠ Suggestive of BOO (&lt;10 mL/s)</span>';
+        }
+
+        function updatePVR() {
+            const val = parseInt(document.getElementById('pvr').value);
+            const el = document.getElementById('pvrInterp');
+            if (isNaN(val)) { el.innerHTML = '-'; return; }
+            if (val < 50) el.innerHTML = '<span class="interp good">✓ Normal (&lt;50mL)</span>';
+            else if (val < 100) el.innerHTML = '<span class="interp good">✓ Acceptable (50-100mL)</span>';
+            else if (val < 300) el.innerHTML = '<span class="interp warn">⚠ Elevated (100-300mL) - monitor</span>';
+            else el.innerHTML = '<span class="interp bad">⚠ Significant (&gt;300mL) - investigate</span>';
+        }
+
+        function calcPSADensity() {
+            const psa = parseFloat(document.getElementById('psa').value);
+            const vol = parseFloat(document.getElementById('prostateVol').value);
+            const densityEl = document.getElementById('psaDensity');
+            const interpEl = document.getElementById('psaDensityInterp');
+            
+            if (!isNaN(psa) && !isNaN(vol) && vol > 0) {
+                const density = psa / vol;
+                densityEl.value = density.toFixed(3);
+                if (density < 0.10) interpEl.innerHTML = '<span class="interp good">✓ Normal (&lt;0.10)</span>';
+                else if (density < 0.15) interpEl.innerHTML = '<span class="interp warn">⚠ Borderline (0.10-0.15)</span>';
+                else {
+                    interpEl.innerHTML = '<span class="interp bad">⚠ Elevated (&gt;0.15) - consider PCa investigation</span>';
+                    document.getElementById('psaAlert').classList.remove('hidden');
+                }
+            } else {
+                densityEl.value = '';
+                interpEl.innerHTML = '-';
+            }
+            checkAlerts();
+        }
+
+        function toggleUDS() {
+            const show = document.getElementById('udsPerformed').value === 'yes';
+            document.getElementById('udsDetails').style.display = show ? 'block' : 'none';
+        }
+
+        function toggleCysto() {
+            const show = document.getElementById('cystoscopyDone').value === 'yes';
+            document.getElementById('cystoDetails').style.display = show ? 'block' : 'none';
+        }
+
+        function toggleNoMeds() {
+            const noMeds = document.getElementById('noMeds').checked;
+            document.querySelectorAll('.med-option input').forEach(el => {
+                if (noMeds) {
+                    el.checked = false;
+                    el.closest('.checkbox-item').classList.remove('selected');
+                }
+            });
+        }
+
+        function calcIndices() {
+            const pdet = parseFloat(document.getElementById('pdetQmax').value);
+            const qmax = parseFloat(document.getElementById('pfsQmax').value);
+            if (!isNaN(pdet) && !isNaN(qmax)) {
+                const booi = pdet - (2 * qmax);
+                const bci = pdet + (5 * qmax);
+                document.getElementById('booi').value = booi.toFixed(0);
+                document.getElementById('bci').value = bci.toFixed(0);
+                
+                let interpText = '';
+                if (booi < 20) interpText += '<span class="interp good">BOOI: Unobstructed</span> ';
+                else if (booi <= 40) interpText += '<span class="interp warn">BOOI: Equivocal</span> ';
+                else interpText += '<span class="interp bad">BOOI: Obstructed</span> ';
+                
+                if (bci > 150) interpText += '<span class="interp good">BCI: Strong</span>';
+                else if (bci >= 100) interpText += '<span class="interp warn">BCI: Normal</span>';
+                else interpText += '<span class="interp bad">BCI: Weak (DU)</span>';
+                
+                document.getElementById('bciInterp').innerHTML = interpText;
+                
+                if (bci < 100) {
+                    document.getElementById('udsAlert').classList.remove('hidden');
+                    document.getElementById('contractility').value = 'weak';
+                } else {
+                    document.getElementById('udsAlert').classList.add('hidden');
+                }
+            }
+        }
+
+        function checkAlerts() {
+            // Haematuria alert
+            document.getElementById('haematuriaAlert').classList.toggle('hidden', !document.getElementById('haematuria').checked);
+            
+            // LTC alert
+            const hasLTC = document.getElementById('hasLTC').value !== 'no';
+            document.getElementById('ltcDurationGroup').style.display = hasLTC ? 'block' : 'none';
+            document.getElementById('ltcAlert').classList.toggle('hidden', !hasLTC);
+            
+            // DRE alert
+            const dre = document.getElementById('dreFindings').value;
+            document.getElementById('dreAlert').classList.toggle('hidden', !['nodule','hard','suspicious'].includes(dre));
+            
+            // PSA alert
+            const psa = parseFloat(document.getElementById('psa').value);
+            const density = parseFloat(document.getElementById('psaDensity').value);
+            const age = parseInt(document.getElementById('age').value) || 70;
+            const psaHighForAge = (age < 50 && psa > 2.5) || (age < 60 && psa > 3.5) || (age < 70 && psa > 4.5) || psa > 6.5;
+            document.getElementById('psaAlert').classList.toggle('hidden', !(psaHighForAge || density > 0.15));
+            
+            // Cysto tumour alert
+            const bladderTumour = document.getElementById('bladderTumour').value;
+            document.getElementById('cystoTumourAlert').classList.toggle('hidden', bladderTumour !== 'yes');
+            
+            // Low compliance alert
+            const complianceInterp = document.getElementById('complianceInterp').value;
+            document.getElementById('lowComplianceAlert').classList.toggle('hidden', complianceInterp !== 'low');
+        }
+
+        function generateRecommendation() {
+            // Gather data
+            const age = parseInt(document.getElementById('age').value) || null;
+            const ipss = parseInt(document.getElementById('ipssScore').value) || null;
+            const qol = parseInt(document.getElementById('ipssQol').value) || null;
+            const prostateVol = parseInt(document.getElementById('prostateVol').value) || null;
+            const qmax = parseFloat(document.getElementById('qmax').value) || null;
+            const pvr = parseInt(document.getElementById('pvr').value) || null;
+            const whoStatus = document.getElementById('whoStatus').value;
+            const frailty = document.getElementById('frailtyScore').value;
+            const shimScore = parseInt(document.getElementById('shimScore').value) || null;
+            const morphology = document.getElementById('prostateMorphology').value;
+            const psa = parseFloat(document.getElementById('psa').value) || null;
+            const psaDensity = parseFloat(document.getElementById('psaDensity').value) || null;
+            
+            const hasLTC = document.getElementById('hasLTC').value !== 'no';
+            const ltcDuration = document.getElementById('ltcDuration').value;
+            const obstructionGrade = document.getElementById('obstructionGrade').value;
+            const contractility = document.getElementById('contractility').value;
+            const flowPattern = document.getElementById('flowPattern').value;
+            
+            const onMeds = !document.getElementById('noMeds').checked && (document.getElementById('onAlpha').checked || document.getElementById('on5ARI').checked || document.getElementById('onCombo').checked);
+            const hasRedFlags = document.querySelectorAll('.red-flag:checked').length > 0;
+            const hasHaematuria = document.getElementById('haematuria').checked;
+            const hasRetention = document.getElementById('retention').checked;
+            const hasStones = document.getElementById('bladderStones').checked;
+            const hasRenalImpairment = document.getElementById('renalImpairment').checked;
+            const hasRecurrentUTI = document.getElementById('recurrentUTI').checked;
+            
+            const dreFindings = document.getElementById('dreFindings').value;
+            const hasMedianLobe = morphology === 'medianLobe' || morphology === 'trilobar';
+
+            // Build summary
+            let summary = [];
+            if (age) summary.push({label:'Age', value:age+'y'});
+            if (ipss !== null) summary.push({label:'IPSS', value:ipss+'/35'});
+            if (prostateVol) summary.push({label:'Prostate', value:prostateVol+'mL'});
+            if (qmax) summary.push({label:'Qmax', value:qmax+'mL/s'});
+            if (pvr !== null) summary.push({label:'PVR', value:pvr+'mL'});
+            if (whoStatus && frailty) summary.push({label:'Fitness', value:'WHO'+whoStatus+'/CFS'+frailty});
+            
+            document.getElementById('summaryBar').innerHTML = summary.map(s => 
+                '<div class="summary-item"><div class="label">'+s.label+'</div><div class="value">'+s.value+'</div></div>'
+            ).join('');
+
+            let recs = [], warns = [], actions = [];
+
+            // URGENT ACTIONS
+            if (hasHaematuria) actions.push('<strong>Haematuria:</strong> Offer cystoscopy and CT urogram to exclude malignancy.');
+            if (['nodule','hard','suspicious'].includes(dreFindings) || psaDensity > 0.15) {
+                actions.push('<strong>Suspected prostate cancer:</strong> Offer MRI prostate and consider prostate biopsy.');
+            }
+            if (document.getElementById('bladderTumour').value === 'yes') {
+                actions.push('<strong>Bladder tumour:</strong> Arrange TURBT. Bladder cancer pathway takes priority.');
+            }
+
+            // DETERMINE TREATMENT PATH
+            let recommendSurgery = false;
+            let surgeryReasons = [];
+
+            // Absolute surgical indications
+            if (hasRetention) { recommendSurgery = true; surgeryReasons.push('urinary retention'); }
+            if (hasStones) { recommendSurgery = true; surgeryReasons.push('bladder stones'); }
+            if (hasRenalImpairment) { recommendSurgery = true; surgeryReasons.push('renal impairment from BOO'); }
+            if (hasRecurrentUTI) { recommendSurgery = true; surgeryReasons.push('recurrent UTI'); }
+            if (hasLTC) { recommendSurgery = true; surgeryReasons.push('long-term catheter - aim for catheter-free status'); }
+
+            // Relative surgical indications
+            if (ipss !== null && ipss >= 20 && onMeds) {
+                recommendSurgery = true;
+                surgeryReasons.push('severe symptoms (IPSS ≥20) despite medical treatment');
+            }
+            if (pvr !== null && pvr >= 300) {
+                recommendSurgery = true;
+                surgeryReasons.push('significant post-void residual (≥300mL)');
+            }
+            if (qmax !== null && qmax < 10 && (obstructionGrade === 'obstructed' || flowPattern === 'plateau')) {
+                if (onMeds || ipss >= 15) {
+                    recommendSurgery = true;
+                    surgeryReasons.push('objective obstruction (Qmax <10, obstructed pattern)');
+                }
+            }
+
+            // Frailty consideration
+            const isFragile = parseInt(frailty) >= 6 || parseInt(whoStatus) >= 3;
+            if (isFragile) {
+                warns.push('<strong>High frailty/poor performance status:</strong> Consider conservative or minimally invasive options. Discuss goals of care.');
+            }
+
+            // Underactive bladder warning
+            if (contractility === 'weak') {
+                warns.push('<strong>Detrusor underactivity (BCI <100):</strong> Surgical outcomes compromised. Patient may need CISC post-op. See Underactive Bladder tab.');
+            }
+
+            // GENERATE RECOMMENDATIONS
+            if (ipss === null) {
+                recs.push({type:'', title:'Incomplete Data', desc:'Please enter IPSS score to generate treatment recommendation.'});
+            } else if (recommendSurgery) {
+                // SURGICAL RECOMMENDATION
+                recs.push({type:'action', title:'⚡ SURGICAL TREATMENT RECOMMENDED', desc:'Indications: ' + surgeryReasons.join(', ')});
+                
+                // Surgery by prostate size
+                if (prostateVol) {
+                    if (prostateVol < 30) {
+                        recs.push({type:'', title:'Recommended: TUIP / Bladder Neck Incision', desc:'Small prostate (<30mL). Lower morbidity, may preserve ejaculation.'});
+                    } else if (prostateVol <= 80) {
+                        recs.push({type:'', title:'Recommended: TURP (bipolar) or HoLEP', desc:'Medium prostate (30-80mL). HoLEP if available (gold standard).'});
+                        
+                        if (age && age < 65) {
+                            if (!hasMedianLobe && prostateVol <= 70) {
+                                recs.push({type:'secondary', title:'Alternative: UroLift', desc:'Ejaculation-sparing option. 30-70mL, no median lobe. Less effective than TURP.'});
+                            }
+                            recs.push({type:'secondary', title:'Alternative: Rezūm', desc:'Ejaculation-sparing. 30-80mL, can treat median lobe. Catheter required 3-7 days.'});
+                        }
+                        
+                        if (document.getElementById('anticoag').checked) {
+                            recs.push({type:'secondary', title:'On anticoagulation: Consider GreenLight or HoLEP', desc:'Better haemostasis. Can often continue anticoagulation.'});
+                        }
+                    } else {
+                        recs.push({type:'', title:'Recommended: HoLEP / ThuLEP (Enucleation)', desc:'Large prostate (>80mL). GIRFT benchmark. Complete adenoma removal.'});
+                        if (prostateVol >= 100) {
+                            recs.push({type:'secondary', title:'Alternative: Aquablation', desc:'30-150mL. Better ejaculatory preservation. Limited availability.'});
+                        }
+                        recs.push({type:'secondary', title:'If HoLEP unavailable: Open/Robotic Simple Prostatectomy', desc:'For very large prostates where enucleation not available.'});
+                    }
+                } else {
+                    recs.push({type:'secondary', title:'Enter prostate volume', desc:'Required to recommend specific surgical procedure.'});
+                }
+            } else {
+                // MEDICAL TREATMENT
+                if (ipss <= 7) {
+                    recs.push({type:'', title:'Conservative Management (Watchful Waiting)', desc:'Mild symptoms (IPSS 0-7). Lifestyle advice: fluid management, reduce caffeine/alcohol, bladder training. Annual review.'});
+                } else {
+                    // Moderate-severe, not yet on meds or not meeting surgical threshold
+                    if (!onMeds) {
+                        recs.push({type:'', title:'First-Line: Alpha-Blocker', desc:'<span class="dose">Tamsulosin MR 400mcg OD</span> (or Alfuzosin 10mg OD). Rapid onset. Review in 4-6 weeks.'});
+                        
+                        if (prostateVol && prostateVol >= 30) {
+                            recs.push({type:'secondary', title:'Add 5-Alpha Reductase Inhibitor', desc:'Prostate ≥30mL. <span class="dose">Dutasteride 500mcg OD</span> or <span class="dose">Combodart</span> (combination). 3-6 month onset.'});
+                        }
+                    } else {
+                        recs.push({type:'', title:'Medical Treatment Ongoing', desc:'Patient currently on pharmacological treatment. If symptoms persist/progress, consider surgical options.'});
+                        if (ipss >= 15) {
+                            recs.push({type:'secondary', title:'Consider Surgical Referral', desc:'Moderate-severe symptoms despite medication. Discuss surgical options with patient.'});
+                        }
+                    }
+                    
+                    // Additional medications
+                    if (document.getElementById('storage').checked) {
+                        recs.push({type:'secondary', title:'Storage symptoms: Add OAB medication', desc:'<span class="dose">Mirabegron 50mg OD</span> (preferred in elderly) or <span class="dose">Solifenacin 5mg OD</span>. Check PVR.'});
+                    }
+                    
+                    if (shimScore && shimScore < 22) {
+                        recs.push({type:'secondary', title:'Concurrent ED: Consider Tadalafil', desc:'<span class="dose">Tadalafil 5mg OD</span>. Licensed for LUTS and ED. Check nitrate contraindication.'});
+                    }
+                    
+                    if (document.getElementById('nocturiaSx').checked) {
+                        recs.push({type:'secondary', title:'Nocturia: Consider Desmopressin', desc:'If nocturnal polyuria confirmed. <span class="dose">25-50mcg SL nocte</span>. Check Na+ levels. Caution >65y.'});
+                    }
+                }
+            }
+
+            // Render output
+            document.getElementById('recContent').innerHTML = recs.map(r => 
+                '<div class="treatment-item '+(r.type||'')+'">' +
+                '<h4>'+r.title+'</h4>' +
+                '<p>'+r.desc+'</p>' +
+                '</div>'
+            ).join('');
+
+            if (warns.length) {
+                document.getElementById('warnContent').innerHTML = warns.join('<br><br>');
+                document.getElementById('warningsBox').classList.remove('hidden');
+            } else {
+                document.getElementById('warningsBox').classList.add('hidden');
+            }
+
+            if (actions.length) {
+                document.getElementById('actionsContent').innerHTML = '<strong>Urgent Actions Required:</strong><br>' + actions.join('<br>');
+                document.getElementById('actionsBox').classList.remove('hidden');
+            } else {
+                document.getElementById('actionsBox').classList.add('hidden');
+            }
+
+            document.getElementById('recommendationOutput').classList.remove('hidden');
+            document.getElementById('recommendationOutput').scrollIntoView({behavior: 'smooth'});
+        }
+
+        function clearAll() {
+            if (!confirm('Clear all entered data?')) return;
+            document.querySelectorAll('input[type="number"], input[type="text"], textarea').forEach(el => el.value = '');
+            document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+            document.querySelectorAll('.checkbox-item').forEach(el => { el.classList.remove('selected'); el.querySelector('input').checked = false; });
+            document.querySelectorAll('.alert').forEach(el => el.classList.add('hidden'));
+            document.getElementById('ipssBadge').innerHTML = '-';
+            document.getElementById('shimBadge').innerHTML = '-';
+            document.getElementById('qmaxInterp').innerHTML = '-';
+            document.getElementById('pvrInterp').innerHTML = '-';
+            document.getElementById('psaDensityInterp').innerHTML = '-';
+            document.getElementById('bciInterp').innerHTML = '';
+            document.getElementById('udsDetails').style.display = 'none';
+            document.getElementById('cystoDetails').style.display = 'none';
+            document.getElementById('ltcDurationGroup').style.display = 'none';
+            document.getElementById('recommendationOutput').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

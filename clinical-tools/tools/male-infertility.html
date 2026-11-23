@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Male Infertility Clinical Decision Support Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --nhs-blue: #005eb8; --nhs-dark-blue: #003087; --nhs-green: #007f3b;
+            --nhs-orange: #ed8b00; --nhs-red: #da291c; --grey-1: #4c6272;
+            --grey-4: #d8dde0; --grey-5: #f0f4f5; --white: #ffffff; --text-color: #212b32;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--grey-5); color: var(--text-color); line-height: 1.6; }
+        .header { background: linear-gradient(135deg, var(--nhs-blue) 0%, var(--nhs-dark-blue) 100%); color: white; padding: 1.5rem 2rem; }
+        .header h1 { font-size: 1.75rem; font-weight: 600; margin-bottom: 0.25rem; }
+        .header p { font-size: 0.9rem; opacity: 0.9; }
+        .guidelines-badge { display: inline-flex; gap: 0.5rem; margin-top: 0.75rem; flex-wrap: wrap; }
+        .badge { background: rgba(255,255,255,0.2); padding: 0.25rem 0.75rem; border-radius: 100px; font-size: 0.75rem; font-weight: 500; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; background: var(--white); padding: 0.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .tab { padding: 0.75rem 1.5rem; border: none; background: transparent; color: var(--grey-1); font-size: 0.9rem; font-weight: 500; cursor: pointer; border-radius: 8px; transition: all 0.2s; }
+        .tab:hover { background: var(--grey-5); }
+        .tab.active { background: var(--nhs-blue); color: white; }
+        .panel { display: none; animation: fadeIn 0.3s ease; }
+        .panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .card { background: var(--white); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid var(--grey-4); }
+        .card-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; padding-bottom: 1rem; border-bottom: 2px solid var(--grey-5); }
+        .card-header h2 { font-size: 1.1rem; font-weight: 600; color: var(--nhs-dark-blue); }
+        .card-icon { width: 40px; height: 40px; background: var(--grey-5); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-weight: 500; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .form-group input, .form-group select { width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--grey-4); border-radius: 8px; font-size: 0.95rem; font-family: inherit; }
+        .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--nhs-blue); box-shadow: 0 0 0 3px rgba(0,94,184,0.1); }
+        .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+        .checkbox-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.75rem; }
+        .checkbox-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; background: var(--grey-5); border-radius: 8px; cursor: pointer; }
+        .checkbox-item:hover { background: var(--grey-4); }
+        .checkbox-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--nhs-blue); }
+        .checkbox-item label { cursor: pointer; font-size: 0.9rem; }
+        .btn { padding: 0.875rem 1.75rem; border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; }
+        .btn-primary { background: var(--nhs-blue); color: white; }
+        .btn-primary:hover { background: var(--nhs-dark-blue); }
+        .btn-secondary { background: var(--grey-5); color: var(--text-color); }
+        .btn-success { background: var(--nhs-green); color: white; }
+        .diagnosis-box { background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%); border: 1px solid #41b6e6; border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
+        .diagnosis-title { font-weight: 600; color: var(--nhs-dark-blue); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .treatment-box { background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid var(--nhs-green); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
+        .warning-box { background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1px solid var(--nhs-orange); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
+        .alert-box { background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%); border: 1px solid var(--nhs-red); border-radius: 10px; padding: 1.25rem; margin-bottom: 1rem; }
+        .supplement-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .supplement-table th, .supplement-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid var(--grey-4); font-size: 0.9rem; }
+        .supplement-table th { background: var(--grey-5); font-weight: 600; color: var(--nhs-dark-blue); }
+        .evidence-level { display: inline-block; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; }
+        .evidence-a { background: var(--nhs-green); color: white; }
+        .evidence-b { background: var(--nhs-blue); color: white; }
+        .evidence-c { background: var(--nhs-orange); color: white; }
+        .reference-values { background: var(--grey-5); padding: 1rem; border-radius: 8px; font-size: 0.85rem; }
+        .reference-values h4 { color: var(--nhs-dark-blue); margin-bottom: 0.5rem; }
+        .meter-container { margin: 1rem 0; }
+        .meter-label { display: flex; justify-content: space-between; margin-bottom: 0.25rem; font-size: 0.85rem; }
+        .meter { height: 8px; background: var(--grey-4); border-radius: 4px; overflow: hidden; }
+        .meter-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+        .meter-fill.normal { background: var(--nhs-green); }
+        .meter-fill.low { background: var(--nhs-orange); }
+        .meter-fill.critical { background: var(--nhs-red); }
+        .action-buttons { display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; }
+        .hidden { display: none !important; }
+        .info-text { font-size: 0.85rem; color: var(--grey-1); margin-top: 0.25rem; }
+        .timeline-item { display: flex; gap: 1rem; margin-bottom: 1rem; }
+        .timeline-marker { width: 24px; height: 24px; background: var(--nhs-blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.75rem; font-weight: 600; flex-shrink: 0; }
+        .timeline-content { flex: 1; padding-bottom: 1rem; border-bottom: 1px solid var(--grey-4); }
+        .timeline-content h4 { color: var(--nhs-dark-blue); font-size: 0.95rem; margin-bottom: 0.25rem; }
+        .timeline-content p { font-size: 0.85rem; color: var(--grey-1); }
+        @media (max-width: 768px) { .container { padding: 1rem; } .grid-2 { grid-template-columns: 1fr; } .tabs { flex-direction: column; } }
+        @media print { .no-print { display: none !important; } .card { break-inside: avoid; } }
+    </style>
+</head>
+<body>
+<div class="ud-update" style="margin:12px auto;max-width:1100px;padding:10px 14px;border-left:4px solid #0a7;background:#effaf6;font:13px/1.45 system-ui,sans-serif;color:#124"><strong>Updated 23 Nov 2026 – what changed</strong><ul style="margin:6px 0 0 18px;padding:0"><li>Guideline references moved to EAU 2026 and NICE NG257 (Mar 2026; replaces CG156)</li><li>Quoted NICE CG156 wording retained as a paraphrase – check against NG257 for female-pathway changes before relying on it</li><li>Antioxidant stance unchanged (weak recommendation); confirm against EAU 2026 text</li></ul><em>Decision support only; verify against current local and national guidance.</em></div>
+    <header class="header">
+        <h1>🩺 Male Infertility Clinical Decision Support Tool</h1>
+        <p>Evidence-based assessment, diagnosis, and treatment recommendations</p>
+        <div class="guidelines-badge">
+            <span class="badge">EAU 2026</span>
+            <span class="badge">AUA/ASRM 2024</span>
+            <span class="badge">NICE</span>
+            <span class="badge">WHO 6th Ed</span>
+            <span class="badge">BNF</span>
+            <span class="badge">GIRFT</span>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="tabs no-print">
+            <button class="tab active" onclick="showTab('history')">📋 History</button>
+            <button class="tab" onclick="showTab('examination')">🔍 Examination</button>
+            <button class="tab" onclick="showTab('investigations')">🧪 Investigations</button>
+            <button class="tab" onclick="showTab('female')">👩 Female Partner</button>
+            <button class="tab" onclick="showTab('results')">📊 Results</button>
+            <button class="tab" onclick="showTab('treatment')">💊 Treatment</button>
+            <button class="tab" onclick="showTab('supplements')">🌿 Supplements</button>
+        </div>
+        
+        <!-- HISTORY TAB -->
+        <div id="history" class="panel active">
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon">👤</div><h2>Patient Demographics</h2></div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="age">Age (years)</label><input type="number" id="age" min="18" max="80" placeholder="Enter age"></div>
+                        <div class="form-group"><label for="bmi">BMI (kg/m²)</label><input type="number" id="bmi" step="0.1" placeholder="Enter BMI"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="duration">Duration of Infertility (months)</label><input type="number" id="duration" min="0" placeholder="Months trying"></div>
+                        <div class="form-group"><label for="infertility-type">Type</label><select id="infertility-type"><option value="">Select...</option><option value="primary">Primary</option><option value="secondary">Secondary</option></select></div>
+                    </div>
+                    <div class="form-group"><label for="partner-age">Partner's Age</label><input type="number" id="partner-age" min="18" max="60" placeholder="Partner's age"></div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header"><div class="card-icon">🏥</div><h2>Medical History</h2></div>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item"><input type="checkbox" id="cryptorchidism"><label for="cryptorchidism">Cryptorchidism</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="varicocele"><label for="varicocele">Varicocele</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="testicular-tumor"><label for="testicular-tumor">Testicular tumor</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="inguinal-surgery"><label for="inguinal-surgery">Inguinal surgery</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="infection"><label for="infection">Genital infection</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="mumps"><label for="mumps">Mumps orchitis</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="chemotherapy"><label for="chemotherapy">Chemo/Radiotherapy</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="diabetes"><label for="diabetes">Diabetes</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="hypogonadism"><label for="hypogonadism">Hypogonadism</label></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon">⚠️</div><h2>Symptoms</h2></div>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item"><input type="checkbox" id="testicular-pain"><label for="testicular-pain">Testicular pain</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="scrotal-swelling"><label for="scrotal-swelling">Scrotal swelling</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="erectile-dysfunction"><label for="erectile-dysfunction">Erectile dysfunction</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="ejaculatory-dysfunction"><label for="ejaculatory-dysfunction">Ejaculatory dysfunction</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="low-libido"><label for="low-libido">Reduced libido</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="gynecomastia"><label for="gynecomastia">Gynecomastia</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="fatigue"><label for="fatigue">Fatigue</label></div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header"><div class="card-icon">🚬</div><h2>Lifestyle</h2></div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="smoking">Smoking</label><select id="smoking"><option value="never">Never</option><option value="former">Former</option><option value="current">Current</option></select></div>
+                        <div class="form-group"><label for="alcohol">Alcohol</label><select id="alcohol"><option value="none">None</option><option value="moderate">Moderate</option><option value="heavy">Heavy</option></select></div>
+                    </div>
+                    <div class="form-group"><label for="occupation">Occupational Exposure</label><select id="occupation"><option value="none">None</option><option value="heat">Heat</option><option value="chemicals">Chemicals</option><option value="radiation">Radiation</option></select></div>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item"><input type="checkbox" id="anabolic-steroids"><label for="anabolic-steroids">Anabolic steroids</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="hot-baths"><label for="hot-baths">Hot baths/saunas</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="testosterone"><label for="testosterone">Testosterone use</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="finasteride"><label for="finasteride">Finasteride</label></div>
+                    </div>
+                </div>
+            </div>
+            <div class="action-buttons"><button class="btn btn-primary" onclick="showTab('examination')">Continue to Examination →</button></div>
+        </div>
+        
+        <!-- EXAMINATION TAB -->
+        <div id="examination" class="panel">
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon">🔬</div><h2>General Examination</h2></div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="height">Height (cm)</label><input type="number" id="height" placeholder="Height"></div>
+                        <div class="form-group"><label for="weight">Weight (kg)</label><input type="number" id="weight" step="0.1" placeholder="Weight"></div>
+                    </div>
+                    <div class="form-group"><label for="virilization">Virilization</label><select id="virilization"><option value="normal">Normal</option><option value="reduced">Reduced</option><option value="absent">Absent</option></select></div>
+                    <div class="checkbox-group"><div class="checkbox-item"><input type="checkbox" id="exam-gynecomastia"><label for="exam-gynecomastia">Gynecomastia present</label></div></div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header"><div class="card-icon">🩺</div><h2>Scrotal Examination</h2></div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="left-testis-vol">Left Testis (ml)</label><input type="number" id="left-testis-vol" step="0.5" placeholder="15-25ml"></div>
+                        <div class="form-group"><label for="right-testis-vol">Right Testis (ml)</label><input type="number" id="right-testis-vol" step="0.5" placeholder="15-25ml"></div>
+                    </div>
+                    <div class="form-group"><label for="testis-consistency">Consistency</label><select id="testis-consistency"><option value="normal">Normal</option><option value="soft">Soft</option><option value="hard">Hard</option></select></div>
+                    <div class="form-group"><label for="varicocele-grade">Varicocele Grade</label><select id="varicocele-grade"><option value="none">Not detected</option><option value="subclinical">Subclinical</option><option value="grade1">Grade I</option><option value="grade2">Grade II</option><option value="grade3">Grade III</option></select></div>
+                    <div class="form-group"><label for="varicocele-side">Side</label><select id="varicocele-side"><option value="none">N/A</option><option value="left">Left</option><option value="right">Right</option><option value="bilateral">Bilateral</option></select></div>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item"><input type="checkbox" id="vas-palpable" checked><label for="vas-palpable">Vas palpable bilaterally</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="testicular-mass"><label for="testicular-mass">Testicular mass</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="epididymal-abnormality"><label for="epididymal-abnormality">Epididymal abnormality</label></div>
+                    </div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="showTab('history')">← Back</button>
+                <button class="btn btn-primary" onclick="showTab('investigations')">Continue →</button>
+            </div>
+        </div>
+        
+        <!-- INVESTIGATIONS TAB -->
+        <div id="investigations" class="panel">
+            <div class="card">
+                <div class="card-header"><div class="card-icon">🧫</div><h2>Semen Analysis (WHO 6th Edition 2021)</h2></div>
+                <div class="reference-values" style="margin-bottom:1.5rem;">
+                    <h4>Reference Values (5th percentile)</h4>
+                    <p>Volume ≥1.4ml | Concentration ≥16 M/ml | Total ≥39 M | Motility ≥42% | Progressive ≥30% | Morphology ≥4%</p>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label for="semen-volume">Volume (ml)</label><input type="number" id="semen-volume" step="0.1" placeholder="≥1.4"></div>
+                    <div class="form-group"><label for="sperm-concentration">Concentration (M/ml)</label><input type="number" id="sperm-concentration" step="0.1" placeholder="≥16"></div>
+                    <div class="form-group"><label for="total-count">Total Count (M)</label><input type="number" id="total-count" step="0.1" placeholder="≥39"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label for="total-motility">Total Motility (%)</label><input type="number" id="total-motility" min="0" max="100" placeholder="≥42"></div>
+                    <div class="form-group"><label for="progressive-motility">Progressive (%)</label><input type="number" id="progressive-motility" min="0" max="100" placeholder="≥30"></div>
+                    <div class="form-group"><label for="morphology">Morphology (%)</label><input type="number" id="morphology" min="0" max="100" placeholder="≥4"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label for="vitality">Vitality (%)</label><input type="number" id="vitality" min="0" max="100" placeholder="≥54"></div>
+                </div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon">🧬</div><h2>DNA Fragmentation</h2></div>
+                    <div class="form-group"><label for="sdf-test">SDF Test?</label><select id="sdf-test" onchange="toggleSdfResult()"><option value="no">Not performed</option><option value="yes">Yes</option></select></div>
+                    <div id="sdf-result-group" class="form-group hidden"><label for="sdf-result">DFI (%)</label><input type="number" id="sdf-result" min="0" max="100" placeholder="<15 normal"></div>
+                    <div class="reference-values"><h4>Interpretation</h4><p>&lt;15% Normal | 15-30% Borderline | &gt;30% High</p></div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header"><div class="card-icon">🔬</div><h2>Hormones</h2></div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="fsh">FSH (IU/L)</label><input type="number" id="fsh" step="0.1" placeholder="1.5-12.4"></div>
+                        <div class="form-group"><label for="lh">LH (IU/L)</label><input type="number" id="lh" step="0.1" placeholder="1.7-8.6"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="total-testosterone">Testosterone (nmol/L)</label><input type="number" id="total-testosterone" step="0.1" placeholder="8.6-29"></div>
+                        <div class="form-group"><label for="prolactin">Prolactin (mIU/L)</label><input type="number" id="prolactin" step="1" placeholder="<400"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon">🧬</div><h2>Genetic Testing</h2></div>
+                    <div class="form-group"><label for="karyotype">Karyotype</label><select id="karyotype"><option value="not-done">Not done</option><option value="normal">46,XY Normal</option><option value="klinefelter">47,XXY Klinefelter</option><option value="other">Other</option></select></div>
+                    <div class="form-group"><label for="y-microdeletion">Y-Microdeletion</label><select id="y-microdeletion"><option value="not-done">Not done</option><option value="negative">Negative</option><option value="azfa">AZFa</option><option value="azfb">AZFb</option><option value="azfc">AZFc</option></select></div>
+                    <div class="form-group"><label for="cftr">CFTR Mutation</label><select id="cftr"><option value="not-done">Not done</option><option value="negative">Negative</option><option value="positive">Positive</option></select></div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header"><div class="card-icon">📷</div><h2>Imaging</h2></div>
+                    <div class="form-group"><label for="scrotal-uss">Scrotal USS</label><select id="scrotal-uss"><option value="not-done">Not done</option><option value="normal">Normal</option><option value="varicocele">Varicocele</option><option value="mass">Mass</option><option value="atrophic">Atrophic</option></select></div>
+                    <div class="form-group"><label for="trus">TRUS</label><select id="trus"><option value="not-done">Not done</option><option value="normal">Normal</option><option value="ejac-duct-obstruction">EDO</option></select></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header"><div class="card-icon">🦠</div><h2>Infection Screen</h2></div>
+                <div class="checkbox-group">
+                    <div class="checkbox-item"><input type="checkbox" id="leukocytes"><label for="leukocytes">Leukocytospermia</label></div>
+                    <div class="checkbox-item"><input type="checkbox" id="positive-culture"><label for="positive-culture">Positive culture</label></div>
+                    <div class="checkbox-item"><input type="checkbox" id="chlamydia"><label for="chlamydia">Chlamydia positive</label></div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="showTab('examination')">← Back</button>
+                <button class="btn btn-success" onclick="analyzeResults()">🔍 Analyze Results</button>
+            </div>
+        </div>
+        
+        <!-- FEMALE PARTNER TAB -->
+        <div id="female" class="panel">
+            <div class="card">
+                <div class="card-header"><div class="card-icon">👩</div><h2>Female Partner Assessment</h2></div>
+                <div class="diagnosis-box">
+                    <p><strong>NICE NG257 (Mar 2026, replaces CG156):</strong> "Both partners should be assessed simultaneously. Female factors contribute to ~40% of infertility cases, with combined male+female factors in ~20%."</p>
+                </div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon">📋</div><h2>Demographics & History</h2></div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="f-age">Age (years)</label><input type="number" id="f-age" min="18" max="55" placeholder="Partner's age"></div>
+                        <div class="form-group"><label for="f-bmi">BMI (kg/m²)</label><input type="number" id="f-bmi" step="0.1" placeholder="18.5-24.9 optimal"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="f-gravidity">Gravidity (total pregnancies)</label><input type="number" id="f-gravidity" min="0" placeholder="0"></div>
+                        <div class="form-group"><label for="f-parity">Parity (deliveries ≥24wks)</label><input type="number" id="f-parity" min="0" placeholder="0"></div>
+                    </div>
+                    <div class="form-group"><label for="f-miscarriages">Previous Miscarriages</label><input type="number" id="f-miscarriages" min="0" placeholder="Number"></div>
+                    <div class="form-group"><label for="f-prev-fertility-tx">Previous Fertility Treatment?</label><select id="f-prev-fertility-tx"><option value="none">None</option><option value="clomid">Clomifene/Letrozole</option><option value="iui">IUI</option><option value="ivf">IVF/ICSI</option></select></div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header"><div class="card-icon">🩸</div><h2>Menstrual History</h2></div>
+                    <div class="form-row">
+                        <div class="form-group"><label for="f-cycle-length">Cycle Length (days)</label><input type="number" id="f-cycle-length" min="21" max="45" placeholder="21-35 normal"></div>
+                        <div class="form-group"><label for="f-cycle-regularity">Cycle Regularity</label><select id="f-cycle-regularity"><option value="regular">Regular (±2 days)</option><option value="irregular">Irregular</option><option value="absent">Absent/Amenorrhoea</option></select></div>
+                    </div>
+                    <div class="form-group"><label for="f-lmp">Age at Menarche</label><input type="number" id="f-lmp" min="8" max="18" placeholder="Years"></div>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item"><input type="checkbox" id="f-dysmenorrhoea"><label for="f-dysmenorrhoea">Dysmenorrhoea (painful periods)</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-menorrhagia"><label for="f-menorrhagia">Menorrhagia (heavy periods)</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-intermenstrual"><label for="f-intermenstrual">Intermenstrual bleeding</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-postcoital"><label for="f-postcoital">Postcoital bleeding</label></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-header"><div class="card-icon">🏥</div><h2>Medical History</h2></div>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item"><input type="checkbox" id="f-pcos"><label for="f-pcos">PCOS (diagnosed)</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-endometriosis"><label for="f-endometriosis">Endometriosis</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-fibroids"><label for="f-fibroids">Uterine fibroids</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-pid"><label for="f-pid">Pelvic inflammatory disease</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-ectopic"><label for="f-ectopic">Previous ectopic pregnancy</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-tubal-surgery"><label for="f-tubal-surgery">Tubal/pelvic surgery</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-thyroid"><label for="f-thyroid">Thyroid disorder</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-diabetes"><label for="f-diabetes">Diabetes</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-hyperprolactin"><label for="f-hyperprolactin">Hyperprolactinaemia</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-poi"><label for="f-poi">Premature ovarian insufficiency</label></div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header"><div class="card-icon">⚠️</div><h2>Symptoms & Risk Factors</h2></div>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item"><input type="checkbox" id="f-hirsutism"><label for="f-hirsutism">Hirsutism</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-acne"><label for="f-acne">Acne</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-galactorrhoea"><label for="f-galactorrhoea">Galactorrhoea</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-hot-flushes"><label for="f-hot-flushes">Hot flushes</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-pelvic-pain"><label for="f-pelvic-pain">Chronic pelvic pain</label></div>
+                        <div class="checkbox-item"><input type="checkbox" id="f-dyspareunia"><label for="f-dyspareunia">Dyspareunia (painful intercourse)</label></div>
+                    </div>
+                    <div class="form-row" style="margin-top:1rem;">
+                        <div class="form-group"><label for="f-smoking">Smoking</label><select id="f-smoking"><option value="never">Never</option><option value="former">Former</option><option value="current">Current</option></select></div>
+                        <div class="form-group"><label for="f-alcohol">Alcohol</label><select id="f-alcohol"><option value="none">None</option><option value="moderate">Moderate</option><option value="heavy">Heavy</option></select></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header"><div class="card-icon">🧪</div><h2>Female Investigations</h2></div>
+                <div class="reference-values" style="margin-bottom:1.5rem;">
+                    <h4>NICE Recommended Initial Investigations</h4>
+                    <p>Day 2-5 hormones (FSH, LH, E2) | Mid-luteal progesterone (Day 21) | AMH | Pelvic USS | Tubal patency test if indicated</p>
+                </div>
+                
+                <h4 style="margin-bottom:1rem;color:var(--nhs-dark-blue);">Ovarian Reserve</h4>
+                <div class="form-row">
+                    <div class="form-group"><label for="f-amh">AMH (pmol/L)</label><input type="number" id="f-amh" step="0.1" placeholder="Normal 7-21"><span class="info-text">&lt;5.4 low, 5.4-25 normal, &gt;25 high (PCOS)</span></div>
+                    <div class="form-group"><label for="f-afc">AFC (Antral Follicle Count)</label><input type="number" id="f-afc" placeholder="Total both ovaries"><span class="info-text">&lt;5 low, 5-15 normal, &gt;15 high</span></div>
+                </div>
+                
+                <h4 style="margin:1.5rem 0 1rem;color:var(--nhs-dark-blue);">Day 2-5 Hormones</h4>
+                <div class="form-row">
+                    <div class="form-group"><label for="f-fsh">FSH (IU/L)</label><input type="number" id="f-fsh" step="0.1" placeholder="3-10 normal"><span class="info-text">&gt;10 reduced reserve</span></div>
+                    <div class="form-group"><label for="f-lh">LH (IU/L)</label><input type="number" id="f-lh" step="0.1" placeholder="2-10 normal"></div>
+                    <div class="form-group"><label for="f-e2">Estradiol (pmol/L)</label><input type="number" id="f-e2" placeholder="&lt;200 normal"></div>
+                </div>
+                
+                <h4 style="margin:1.5rem 0 1rem;color:var(--nhs-dark-blue);">Other Hormones</h4>
+                <div class="form-row">
+                    <div class="form-group"><label for="f-progesterone">Day 21 Progesterone (nmol/L)</label><input type="number" id="f-progesterone" step="0.1" placeholder="&gt;30 confirms ovulation"></div>
+                    <div class="form-group"><label for="f-prolactin">Prolactin (mIU/L)</label><input type="number" id="f-prolactin" placeholder="&lt;500 normal"></div>
+                    <div class="form-group"><label for="f-tsh">TSH (mIU/L)</label><input type="number" id="f-tsh" step="0.01" placeholder="0.5-2.5 optimal"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label for="f-testosterone">Testosterone (nmol/L)</label><input type="number" id="f-testosterone" step="0.1" placeholder="&lt;2.5 normal"></div>
+                    <div class="form-group"><label for="f-shbg">SHBG (nmol/L)</label><input type="number" id="f-shbg" step="0.1" placeholder="Low in PCOS"></div>
+                </div>
+                
+                <h4 style="margin:1.5rem 0 1rem;color:var(--nhs-dark-blue);">Imaging & Tubal Assessment</h4>
+                <div class="form-row">
+                    <div class="form-group"><label for="f-pelvic-uss">Pelvic Ultrasound</label><select id="f-pelvic-uss"><option value="not-done">Not done</option><option value="normal">Normal</option><option value="pco">Polycystic ovaries</option><option value="cyst">Ovarian cyst</option><option value="fibroid">Fibroids</option><option value="endometrioma">Endometrioma</option><option value="hydrosalpinx">Hydrosalpinx</option></select></div>
+                    <div class="form-group"><label for="f-tubal-test">Tubal Patency Test</label><select id="f-tubal-test"><option value="not-done">Not done</option><option value="hycosi-normal">HyCoSy - Patent</option><option value="hycosi-blocked">HyCoSy - Blocked</option><option value="hsg-normal">HSG - Patent</option><option value="hsg-blocked">HSG - Blocked</option><option value="lap-normal">Laparoscopy - Patent</option><option value="lap-blocked">Laparoscopy - Blocked</option></select></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header"><div class="card-icon">📊</div><h2>Female Factor Assessment</h2></div>
+                <div id="female-assessment-content">
+                    <p style="color:var(--grey-1);">Complete the female partner information above, then click "Analyze Female Factors".</p>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-success" onclick="analyzeFemaleFactors()">🔍 Analyze Female Factors</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header"><div class="card-icon">💊</div><h2>Female Treatment Options (NICE/ESHRE Guidelines)</h2></div>
+                
+                <div class="treatment-box">
+                    <div class="diagnosis-title">🥚 Ovulation Induction (Anovulatory Infertility)</div>
+                    <table class="supplement-table">
+                        <thead><tr><th>Drug</th><th>Dose</th><th>Indication</th><th>Evidence</th></tr></thead>
+                        <tbody>
+                            <tr><td><b>Letrozole</b></td><td>2.5-7.5mg days 2-6</td><td>First-line for PCOS (NICE 2024)</td><td><span class="evidence-level evidence-a">A</span></td></tr>
+                            <tr><td><b>Clomifene</b></td><td>50-150mg days 2-6</td><td>Second-line / non-PCOS anovulation</td><td><span class="evidence-level evidence-a">A</span></td></tr>
+                            <tr><td><b>Metformin</b></td><td>500mg TDS</td><td>Adjunct in PCOS (BMI &gt;25)</td><td><span class="evidence-level evidence-b">B</span></td></tr>
+                            <tr><td><b>Gonadotropins</b></td><td>FSH 50-75 IU daily</td><td>Clomifene-resistant PCOS</td><td><span class="evidence-level evidence-a">A</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="treatment-box">
+                    <div class="diagnosis-title">🔧 Tubal Factor</div>
+                    <ul style="margin-left:1.25rem;margin-top:0.5rem;">
+                        <li><b>Mild tubal disease:</b> Consider tubal surgery or proceed to IVF</li>
+                        <li><b>Bilateral tubal blockage:</b> IVF is treatment of choice</li>
+                        <li><b>Hydrosalpinx:</b> Salpingectomy before IVF (improves success rates)</li>
+                        <li><b>Proximal tubal obstruction:</b> Consider tubal cannulation</li>
+                    </ul>
+                </div>
+                
+                <div class="treatment-box">
+                    <div class="diagnosis-title">🎯 Endometriosis</div>
+                    <ul style="margin-left:1.25rem;margin-top:0.5rem;">
+                        <li><b>Minimal-mild:</b> Laparoscopic ablation may improve pregnancy rates</li>
+                        <li><b>Moderate-severe:</b> Consider surgery before IVF or proceed directly to IVF</li>
+                        <li><b>Endometrioma:</b> Cystectomy if &gt;4cm before IVF (balance against ovarian reserve)</li>
+                        <li><b>Medical suppression</b> (GnRH agonist) NOT recommended for fertility</li>
+                    </ul>
+                </div>
+                
+                <div class="treatment-box">
+                    <div class="diagnosis-title">🔬 Diminished Ovarian Reserve</div>
+                    <ul style="margin-left:1.25rem;margin-top:0.5rem;">
+                        <li><b>Counselling:</b> Time-sensitive - earlier treatment recommended</li>
+                        <li><b>IVF:</b> May require higher gonadotropin doses</li>
+                        <li><b>Consider:</b> Donor oocytes if very low reserve or poor response</li>
+                        <li><b>DHEA/CoQ10:</b> Limited evidence but sometimes used empirically</li>
+                    </ul>
+                </div>
+                
+                <div class="diagnosis-box">
+                    <div class="diagnosis-title">📋 Unexplained Infertility Pathway</div>
+                    <p style="margin-top:0.5rem;"><b>NICE Recommendation:</b></p>
+                    <ol style="margin-left:1.5rem;margin-top:0.5rem;">
+                        <li>Expectant management 12 months if woman &lt;36 years (cumulative pregnancy rate 50%)</li>
+                        <li>IUI (unstimulated or stimulated) - limited evidence but may offer 3-6 cycles</li>
+                        <li>IVF if no conception after 2 years or woman ≥36 years</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header"><div class="card-icon">🌿</div><h2>Female Preconception Supplements</h2></div>
+                <table class="supplement-table">
+                    <thead><tr><th>Supplement</th><th>Dose</th><th>Timing</th><th>Evidence</th><th>Notes</th></tr></thead>
+                    <tbody>
+                        <tr><td><b>Folic Acid</b></td><td>400μg daily (5mg if high risk)</td><td>3 months preconception</td><td><span class="evidence-level evidence-a">A</span></td><td>Neural tube defect prevention - ESSENTIAL</td></tr>
+                        <tr><td><b>Vitamin D</b></td><td>10-25μg (400-1000 IU) daily</td><td>Continuous</td><td><span class="evidence-level evidence-b">B</span></td><td>Check levels, supplement if &lt;50nmol/L</td></tr>
+                        <tr><td><b>Iodine</b></td><td>150μg daily</td><td>Preconception onwards</td><td><span class="evidence-level evidence-b">B</span></td><td>Fetal brain development</td></tr>
+                        <tr><td><b>Omega-3 (DHA)</b></td><td>200-300mg daily</td><td>Preconception onwards</td><td><span class="evidence-level evidence-b">B</span></td><td>Fetal brain/eye development</td></tr>
+                        <tr><td><b>CoQ10</b></td><td>200-600mg daily</td><td>3 months preconception</td><td><span class="evidence-level evidence-c">C</span></td><td>May improve oocyte quality (limited evidence)</td></tr>
+                        <tr><td><b>DHEA</b></td><td>25mg TDS</td><td>8-12 weeks pre-IVF</td><td><span class="evidence-level evidence-c">C</span></td><td>Diminished ovarian reserve only - specialist use</td></tr>
+                        <tr><td><b>Myo-inositol</b></td><td>2-4g daily</td><td>3 months preconception</td><td><span class="evidence-level evidence-b">B</span></td><td>PCOS - improves oocyte quality</td></tr>
+                    </tbody>
+                </table>
+                <div class="warning-box" style="margin-top:1rem;">
+                    <strong>⚠️ Important:</strong> Avoid Vitamin A supplements &gt;700μg/day (teratogenic). Avoid unpasteurised dairy, raw fish, high-mercury fish, liver products.
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header"><div class="card-icon">🏃‍♀️</div><h2>Female Lifestyle Recommendations</h2></div>
+                <div class="grid-2">
+                    <div class="treatment-box">
+                        <div class="diagnosis-title">✅ Recommendations</div>
+                        <ul style="margin-left:1.25rem;margin-top:0.5rem;">
+                            <li><b>BMI 19-25:</b> Optimal for conception</li>
+                            <li><b>Folic acid:</b> Start 3 months before conception</li>
+                            <li><b>Regular intercourse:</b> Every 2-3 days throughout cycle</li>
+                            <li><b>Moderate exercise:</b> 150 min/week</li>
+                            <li><b>Cervical screening:</b> Up to date</li>
+                            <li><b>Rubella immunity:</b> Check and vaccinate if needed</li>
+                            <li><b>Reduce caffeine:</b> &lt;200mg/day</li>
+                        </ul>
+                    </div>
+                    <div class="alert-box">
+                        <div class="diagnosis-title">❌ Avoid</div>
+                        <ul style="margin-left:1.25rem;margin-top:0.5rem;">
+                            <li><b>Smoking:</b> Reduces fertility by 50%, increases miscarriage</li>
+                            <li><b>Alcohol:</b> Avoid completely when trying to conceive</li>
+                            <li><b>Recreational drugs:</b> All harmful to fertility</li>
+                            <li><b>Extreme exercise:</b> Can cause anovulation</li>
+                            <li><b>Underweight (BMI &lt;19):</b> Causes anovulation</li>
+                            <li><b>Obesity (BMI &gt;30):</b> Reduces fertility, IVF success</li>
+                            <li><b>NSAIDs:</b> May inhibit ovulation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="showTab('investigations')">← Back to Male Investigations</button>
+                <button class="btn btn-primary" onclick="showTab('results')">View Combined Results →</button>
+            </div>
+        </div>
+        
+        <!-- RESULTS TAB -->
+        <div id="results" class="panel">
+            <div id="results-content">
+                <div class="card"><div class="card-header"><div class="card-icon">📊</div><h2>Results Analysis</h2></div>
+                <p style="color:var(--grey-1);">Complete the assessments then click "Analyze Results".</p></div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="showTab('investigations')">← Back</button>
+                <button class="btn btn-primary" onclick="showTab('treatment')">View Treatment →</button>
+            </div>
+        </div>
+        
+        <!-- TREATMENT TAB -->
+        <div id="treatment" class="panel">
+            <div id="treatment-content">
+                <div class="card"><div class="card-header"><div class="card-icon">💊</div><h2>Treatment Plan</h2></div>
+                <p style="color:var(--grey-1);">Complete assessment to generate recommendations.</p></div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="showTab('results')">← Back</button>
+                <button class="btn btn-primary" onclick="showTab('supplements')">View Supplements →</button>
+            </div>
+        </div>
+        
+        <!-- SUPPLEMENTS TAB -->
+        <div id="supplements" class="panel">
+            <div class="card">
+                <div class="card-header"><div class="card-icon">🌿</div><h2>Nutritional Supplements</h2></div>
+                <div class="warning-box"><strong>⚠️ EAU:</strong> "Do not routinely treat idiopathic infertility with antioxidants" (Weak recommendation). Consider in selected cases with oxidative stress.</div>
+                <table class="supplement-table">
+                    <thead><tr><th>Supplement</th><th>Dose</th><th>Duration</th><th>Evidence</th><th>Benefits</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>Coenzyme Q10</strong></td><td>200-400mg/day</td><td>3-6 months</td><td><span class="evidence-level evidence-b">B</span></td><td>Motility, concentration, antioxidant</td></tr>
+                        <tr><td><strong>Zinc</strong></td><td>25-66mg/day</td><td>3-6 months</td><td><span class="evidence-level evidence-b">B</span></td><td>Testosterone, count, motility</td></tr>
+                        <tr><td><strong>Selenium</strong></td><td>100-200μg/day</td><td>3-6 months</td><td><span class="evidence-level evidence-b">B</span></td><td>Morphology, sperm structure</td></tr>
+                        <tr><td><strong>L-Carnitine</strong></td><td>1-2g/day</td><td>3-6 months</td><td><span class="evidence-level evidence-b">B</span></td><td>Energy, motility, morphology</td></tr>
+                        <tr><td><strong>Vitamin E</strong></td><td>400 IU/day</td><td>3-6 months</td><td><span class="evidence-level evidence-b">B</span></td><td>Antioxidant, DNA protection</td></tr>
+                        <tr><td><strong>Vitamin C</strong></td><td>500-1000mg/day</td><td>3-6 months</td><td><span class="evidence-level evidence-c">C</span></td><td>Synergistic antioxidant</td></tr>
+                        <tr><td><strong>Folic Acid</strong></td><td>400-500μg/day</td><td>3-6 months</td><td><span class="evidence-level evidence-c">C</span></td><td>DNA synthesis</td></tr>
+                        <tr><td><strong>NAC</strong></td><td>600mg/day</td><td>3-6 months</td><td><span class="evidence-level evidence-b">B</span></td><td>Glutathione precursor</td></tr>
+                        <tr><td><strong>Omega-3 (DHA)</strong></td><td>1-2g/day</td><td>3-6 months</td><td><span class="evidence-level evidence-b">B</span></td><td>Membrane integrity</td></tr>
+                        <tr><td><strong>Profertil®</strong></td><td>As directed</td><td>3-6 months</td><td><span class="evidence-level evidence-b">B</span></td><td>Combination formula</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="card">
+                <div class="card-header"><div class="card-icon">🥗</div><h2>Dietary Recommendations</h2></div>
+                <div class="grid-2">
+                    <div class="treatment-box">
+                        <div class="diagnosis-title">✅ INCLUDE</div>
+                        <ul style="margin-left:1.25rem;margin-top:0.5rem;">
+                            <li>Fatty fish (salmon, mackerel)</li><li>Nuts & seeds (walnuts, pumpkin)</li>
+                            <li>Leafy greens (spinach, kale)</li><li>Tomatoes (lycopene)</li>
+                            <li>Berries (antioxidants)</li><li>Eggs (vitamin D, choline)</li>
+                            <li>Lean meats (zinc, carnitine)</li><li>Oysters (zinc)</li>
+                        </ul>
+                    </div>
+                    <div class="alert-box">
+                        <div class="diagnosis-title">❌ AVOID/LIMIT</div>
+                        <ul style="margin-left:1.25rem;margin-top:0.5rem;">
+                            <li>Processed meats</li><li>Trans fats</li>
+                            <li>High-sugar foods</li><li>Excessive soy</li>
+                            <li>Alcohol (&lt;14 units/week)</li><li>Caffeine (&lt;300mg/day)</li>
+                            <li>BPA-containing packaging</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header"><div class="card-icon">🏃</div><h2>Lifestyle (EAU Grade A)</h2></div>
+                <div class="diagnosis-box"><p><strong>EAU 2024:</strong> "Inform infertile men about detrimental effects of obesity, low physical activity, smoking, and high alcohol intake on sperm quality."</p></div>
+                <div class="timeline-item"><div class="timeline-marker">1</div><div class="timeline-content"><h4>BMI 18.5-24.9</h4><p>Obesity reduces sperm quality. Target 5-10% weight loss if overweight.</p></div></div>
+                <div class="timeline-item"><div class="timeline-marker">2</div><div class="timeline-content"><h4>Stop Smoking</h4><p>Reduces concentration 13-17%, motility 10%, increases DNA fragmentation.</p></div></div>
+                <div class="timeline-item"><div class="timeline-marker">3</div><div class="timeline-content"><h4>Exercise 150 min/week</h4><p>Moderate activity improves testosterone. Avoid excessive endurance training.</p></div></div>
+                <div class="timeline-item"><div class="timeline-marker">4</div><div class="timeline-content"><h4>Reduce Scrotal Heat</h4><p>Avoid hot baths, saunas, laptops on lap. Wear loose boxer shorts.</p></div></div>
+                <div class="timeline-item"><div class="timeline-marker">5</div><div class="timeline-content"><h4>Sleep 7-9 hours</h4><p>Chronic stress/poor sleep affects hormonal balance.</p></div></div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="showTab('treatment')">← Back</button>
+                <button class="btn btn-primary" onclick="window.print()">🖨️ Print Report</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+        
+        function toggleSdfResult() {
+            document.getElementById('sdf-result-group').classList.toggle('hidden', document.getElementById('sdf-test').value !== 'yes');
+        }
+        
+        function analyzeFemaleFactors() {
+            const f = {
+                age: parseFloat(document.getElementById('f-age').value) || null,
+                bmi: parseFloat(document.getElementById('f-bmi').value) || null,
+                cycleLength: parseInt(document.getElementById('f-cycle-length').value) || null,
+                cycleRegularity: document.getElementById('f-cycle-regularity').value,
+                miscarriages: parseInt(document.getElementById('f-miscarriages').value) || 0,
+                pcos: document.getElementById('f-pcos').checked,
+                endometriosis: document.getElementById('f-endometriosis').checked,
+                fibroids: document.getElementById('f-fibroids').checked,
+                pid: document.getElementById('f-pid').checked,
+                ectopic: document.getElementById('f-ectopic').checked,
+                tubalSurgery: document.getElementById('f-tubal-surgery').checked,
+                thyroid: document.getElementById('f-thyroid').checked,
+                poi: document.getElementById('f-poi').checked,
+                hyperprolactin: document.getElementById('f-hyperprolactin').checked,
+                hirsutism: document.getElementById('f-hirsutism').checked,
+                galactorrhoea: document.getElementById('f-galactorrhoea').checked,
+                smoking: document.getElementById('f-smoking').value,
+                amh: parseFloat(document.getElementById('f-amh').value) || null,
+                afc: parseInt(document.getElementById('f-afc').value) || null,
+                fsh: parseFloat(document.getElementById('f-fsh').value) || null,
+                lh: parseFloat(document.getElementById('f-lh').value) || null,
+                progesterone: parseFloat(document.getElementById('f-progesterone').value) || null,
+                prolactin: parseFloat(document.getElementById('f-prolactin').value) || null,
+                tsh: parseFloat(document.getElementById('f-tsh').value) || null,
+                pelvicUss: document.getElementById('f-pelvic-uss').value,
+                tubalTest: document.getElementById('f-tubal-test').value
+            };
+            
+            let html = '';
+            const fdx = [];
+            const frec = [];
+            
+            // Age assessment
+            if (f.age !== null) {
+                if (f.age >= 40) {
+                    fdx.push({c:'Advanced Maternal Age (≥40)',s:'Significant',d:'Significantly reduced fertility, higher miscarriage risk. Consider early IVF referral.'});
+                } else if (f.age >= 35) {
+                    fdx.push({c:'Maternal Age 35-39',s:'Moderate',d:'Fertility declining. Recommend investigation after 6 months trying.'});
+                }
+            }
+            
+            // BMI assessment
+            if (f.bmi !== null) {
+                if (f.bmi < 19) {
+                    fdx.push({c:'Underweight (BMI <19)',s:'Moderate',d:'Associated with anovulation. Weight gain recommended.'});
+                    frec.push('Nutritional counselling for healthy weight gain');
+                } else if (f.bmi >= 30) {
+                    fdx.push({c:'Obesity (BMI ≥30)',s:'Moderate',d:'Reduces fertility and IVF success. Associated with PCOS, anovulation.'});
+                    frec.push('Weight loss programme - target BMI 19-25');
+                }
+            }
+            
+            // Ovulatory assessment
+            if (f.cycleRegularity === 'irregular' || f.cycleRegularity === 'absent') {
+                fdx.push({c:'Anovulation/Oligo-ovulation',s:'Significant',d:'Irregular or absent cycles indicate ovulatory dysfunction.'});
+                frec.push('Ovulation induction likely required');
+            }
+            
+            if (f.progesterone !== null && f.progesterone < 30) {
+                fdx.push({c:'Anovulation (Progesterone <30)',s:'Significant',d:'Day 21 progesterone <30 nmol/L indicates no ovulation.'});
+            }
+            
+            // PCOS
+            if (f.pcos || (f.pelvicUss === 'pco' && (f.cycleRegularity === 'irregular' || f.hirsutism))) {
+                fdx.push({c:'Polycystic Ovary Syndrome',s:'Significant',d:'Rotterdam criteria: oligo/anovulation + polycystic ovaries ± hyperandrogenism'});
+                frec.push('First-line: Letrozole 2.5-7.5mg days 2-6');
+                frec.push('Consider Metformin if BMI >25');
+                frec.push('Myo-inositol supplementation 2-4g daily');
+            }
+            
+            // Ovarian reserve
+            if (f.amh !== null) {
+                if (f.amh < 5.4) {
+                    fdx.push({c:'Diminished Ovarian Reserve (Low AMH)',s:'Significant',d:'AMH <5.4 pmol/L indicates reduced egg reserve. Time-sensitive.'});
+                    frec.push('Urgent fertility clinic referral');
+                    frec.push('Consider CoQ10 200-600mg, DHEA 25mg TDS (specialist supervision)');
+                } else if (f.amh > 25) {
+                    fdx.push({c:'High AMH (>25)',s:'Moderate',d:'May indicate PCOS. Higher OHSS risk with stimulation.'});
+                }
+            }
+            
+            if (f.fsh !== null && f.fsh > 10) {
+                fdx.push({c:'Elevated Day 2-5 FSH',s:'Significant',d:'FSH >10 IU/L suggests reduced ovarian reserve.'});
+            }
+            
+            if (f.afc !== null && f.afc < 5) {
+                fdx.push({c:'Low Antral Follicle Count',s:'Significant',d:'AFC <5 indicates poor ovarian reserve.'});
+            }
+            
+            // Tubal factor
+            if (f.tubalTest && f.tubalTest.includes('blocked')) {
+                fdx.push({c:'Tubal Factor Infertility',s:'Significant',d:'Blocked tubes - IVF is treatment of choice.'});
+                frec.push('IVF referral');
+                if (f.pelvicUss === 'hydrosalpinx') {
+                    frec.push('Consider salpingectomy before IVF');
+                }
+            }
+            
+            if (f.pid || f.ectopic || f.tubalSurgery) {
+                if (!f.tubalTest || f.tubalTest === 'not-done') {
+                    frec.push('Tubal patency test recommended (HyCoSy or HSG)');
+                }
+            }
+            
+            // Endometriosis
+            if (f.endometriosis) {
+                fdx.push({c:'Endometriosis',s:'Moderate',d:'Associated with reduced fertility. Consider laparoscopy or proceed to IVF.'});
+                frec.push('Laparoscopic assessment/treatment or proceed to IVF');
+            }
+            
+            // Fibroids
+            if (f.fibroids || f.pelvicUss === 'fibroid') {
+                fdx.push({c:'Uterine Fibroids',s:'Moderate',d:'Submucosal fibroids may affect implantation. Consider hysteroscopy.'});
+                frec.push('MRI to assess fibroid location if not clear on USS');
+            }
+            
+            // Thyroid
+            if (f.thyroid || (f.tsh !== null && (f.tsh < 0.5 || f.tsh > 2.5))) {
+                fdx.push({c:'Thyroid Dysfunction',s:'Moderate',d:'TSH should be 0.5-2.5 mIU/L for optimal fertility.'});
+                frec.push('Optimise TSH to 0.5-2.5 before conception');
+            }
+            
+            // Hyperprolactinaemia
+            if (f.hyperprolactin || f.galactorrhoea || (f.prolactin !== null && f.prolactin > 500)) {
+                fdx.push({c:'Hyperprolactinaemia',s:'Moderate',d:'Elevated prolactin inhibits ovulation.'});
+                frec.push('Cabergoline 0.25-0.5mg twice weekly');
+                if (f.prolactin > 1000) frec.push('MRI pituitary to exclude prolactinoma');
+            }
+            
+            // POI
+            if (f.poi) {
+                fdx.push({c:'Premature Ovarian Insufficiency',s:'Significant',d:'Menopause before age 40. Donor eggs likely required.'});
+                frec.push('Discuss donor oocyte IVF');
+            }
+            
+            // Recurrent miscarriage
+            if (f.miscarriages >= 3) {
+                fdx.push({c:'Recurrent Pregnancy Loss',s:'Significant',d:'≥3 consecutive miscarriages - requires investigation.'});
+                frec.push('Recurrent miscarriage clinic referral');
+                frec.push('Check: Antiphospholipid antibodies, thrombophilia screen, karyotype both partners');
+            }
+            
+            // Lifestyle
+            if (f.smoking === 'current') {
+                fdx.push({c:'Active Smoker',s:'Moderate',d:'Smoking reduces fertility by ~50% and increases miscarriage risk.'});
+                frec.push('Smoking cessation - URGENT');
+            }
+            
+            // Build output
+            html += '<h4 style="color:var(--nhs-dark-blue);margin-bottom:1rem;">Female Factor Diagnoses</h4>';
+            
+            if (fdx.length === 0) {
+                html += '<div class="diagnosis-box"><div class="diagnosis-title">✅ No significant female factors identified</div><p>Continue with standard fertility workup. Ensure folic acid supplementation.</p></div>';
+            } else {
+                fdx.forEach(x => {
+                    const box = x.s==='Significant'?'warning-box':'diagnosis-box';
+                    const ico = x.s==='Significant'?'⚠️':'📋';
+                    html += `<div class="${box}"><div class="diagnosis-title">${ico} ${x.c}</div><p>${x.d}</p></div>`;
+                });
+            }
+            
+            if (frec.length > 0) {
+                html += '<h4 style="color:var(--nhs-dark-blue);margin:1.5rem 0 1rem;">Recommendations</h4>';
+                html += `<div class="treatment-box"><ul style="margin-left:1.25rem;">${frec.map(r=>`<li>${r}</li>`).join('')}</ul></div>`;
+            }
+            
+            // Essential recommendations
+            html += '<h4 style="color:var(--nhs-dark-blue);margin:1.5rem 0 1rem;">Essential Preconception Care</h4>';
+            html += `<div class="diagnosis-box"><ul style="margin-left:1.25rem;">
+                <li><b>Folic acid 400μg daily</b> (5mg if BMI>30, diabetes, epilepsy, previous NTD)</li>
+                <li><b>Vitamin D 10μg daily</b></li>
+                <li><b>Rubella immunity check</b></li>
+                <li><b>Cervical screening</b> up to date</li>
+                <li><b>Regular intercourse</b> every 2-3 days throughout cycle</li>
+            </ul></div>`;
+            
+            // Further investigations needed
+            const invNeeded = [];
+            if (!f.amh && !f.afc) invNeeded.push('AMH and/or AFC (ovarian reserve)');
+            if (!f.progesterone && f.cycleRegularity !== 'absent') invNeeded.push('Day 21 progesterone (confirm ovulation)');
+            if ((f.pid || f.ectopic || f.endometriosis) && (!f.tubalTest || f.tubalTest === 'not-done')) invNeeded.push('Tubal patency test');
+            if (!f.tsh) invNeeded.push('TSH');
+            if (f.galactorrhoea && !f.prolactin) invNeeded.push('Prolactin');
+            
+            if (invNeeded.length > 0) {
+                html += '<h4 style="color:var(--nhs-dark-blue);margin:1.5rem 0 1rem;">Investigations Still Needed</h4>';
+                html += `<div class="warning-box"><ul style="margin-left:1.25rem;">${invNeeded.map(i=>`<li>${i}</li>`).join('')}</ul></div>`;
+            }
+            
+            document.getElementById('female-assessment-content').innerHTML = html;
+        }
+        
+        function collectData() {
+            return {
+                age: parseFloat(document.getElementById('age').value) || null,
+                bmi: parseFloat(document.getElementById('bmi').value) || null,
+                duration: parseInt(document.getElementById('duration').value) || null,
+                cryptorchidism: document.getElementById('cryptorchidism').checked,
+                smoking: document.getElementById('smoking').value,
+                alcohol: document.getElementById('alcohol').value,
+                anabolicSteroids: document.getElementById('anabolic-steroids').checked,
+                hotBaths: document.getElementById('hot-baths').checked,
+                testosterone: document.getElementById('testosterone').checked,
+                varicoceleGrade: document.getElementById('varicocele-grade').value,
+                varicoceleSide: document.getElementById('varicocele-side').value,
+                vasPalpable: document.getElementById('vas-palpable').checked,
+                testicularMass: document.getElementById('testicular-mass').checked,
+                semenVolume: parseFloat(document.getElementById('semen-volume').value) || null,
+                spermConcentration: parseFloat(document.getElementById('sperm-concentration').value) || null,
+                totalMotility: parseFloat(document.getElementById('total-motility').value) || null,
+                progressiveMotility: parseFloat(document.getElementById('progressive-motility').value) || null,
+                morphology: parseFloat(document.getElementById('morphology').value) || null,
+                sdfTest: document.getElementById('sdf-test').value,
+                sdfResult: parseFloat(document.getElementById('sdf-result').value) || null,
+                fsh: parseFloat(document.getElementById('fsh').value) || null,
+                lh: parseFloat(document.getElementById('lh').value) || null,
+                totalTestosterone: parseFloat(document.getElementById('total-testosterone').value) || null,
+                prolactin: parseFloat(document.getElementById('prolactin').value) || null,
+                karyotype: document.getElementById('karyotype').value,
+                yMicrodeletion: document.getElementById('y-microdeletion').value,
+                cftr: document.getElementById('cftr').value,
+                leukocytes: document.getElementById('leukocytes').checked,
+                positiveCulture: document.getElementById('positive-culture').checked,
+                chlamydia: document.getElementById('chlamydia').checked
+            };
+        }
+        
+        function generateDiagnoses(d) {
+            const dx = [], sa = [];
+            if (d.spermConcentration === 0) sa.push('Azoospermia');
+            else if (d.spermConcentration !== null && d.spermConcentration < 16) sa.push(d.spermConcentration < 5 ? 'Severe Oligozoospermia' : 'Oligozoospermia');
+            if (d.totalMotility !== null && d.totalMotility < 42) sa.push('Asthenozoospermia');
+            if (d.morphology !== null && d.morphology < 4) sa.push('Teratozoospermia');
+            
+            if (sa.length >= 3) dx.push({c:'OAT Syndrome',s:'Significant',d:'Combined sperm abnormality'});
+            else if (sa.length > 0) dx.push({c:sa.join(' + '),s:sa.includes('Severe Oligozoospermia')?'Significant':'Moderate',d:'Semen abnormality'});
+            
+            if (d.semenVolume !== null && d.semenVolume < 1.4 && d.spermConcentration === 0) {
+                dx.push({c:d.vasPalpable?'Obstructive Azoospermia':'Suspected CBAVD',s:'Significant',d:'Low volume azoospermia'});
+            }
+            
+            if (d.varicoceleGrade && d.varicoceleGrade !== 'none' && d.varicoceleGrade !== 'subclinical') {
+                dx.push({c:`Clinical Varicocele (${d.varicoceleGrade.replace('grade','Grade ')})`,s:d.varicoceleGrade==='grade3'?'Significant':'Moderate',d:`${d.varicoceleSide} - correctable cause`});
+            }
+            
+            if (d.fsh !== null && d.fsh > 12) dx.push({c:'Elevated FSH',s:'Significant',d:'Primary testicular failure'});
+            
+            if (d.totalTestosterone !== null && d.totalTestosterone < 8) {
+                if (d.fsh !== null && d.lh !== null && d.fsh < 2 && d.lh < 2) dx.push({c:'Hypogonadotropic Hypogonadism',s:'Significant',d:'Pituitary/hypothalamic cause'});
+                else dx.push({c:'Hypogonadism',s:'Moderate',d:'Low testosterone'});
+            }
+            
+            if (d.prolactin !== null && d.prolactin > 400) dx.push({c:'Hyperprolactinaemia',s:d.prolactin>1000?'Significant':'Moderate',d:'Suppresses gonadotropins'});
+            if (d.karyotype === 'klinefelter') dx.push({c:'Klinefelter Syndrome',s:'Significant',d:'47,XXY'});
+            if (d.yMicrodeletion !== 'not-done' && d.yMicrodeletion !== 'negative') dx.push({c:`Y-Microdeletion (${d.yMicrodeletion.toUpperCase()})`,s:'Significant',d:d.yMicrodeletion==='azfc'?'May retrieve with micro-TESE':'Poor prognosis'});
+            if (d.cryptorchidism) dx.push({c:'History of Cryptorchidism',s:'Moderate',d:'Associated with reduced fertility'});
+            if (d.sdfTest === 'yes' && d.sdfResult !== null && d.sdfResult > 30) dx.push({c:'High DNA Fragmentation',s:'Significant',d:'SDF >30%'});
+            if (d.leukocytes || d.positiveCulture || d.chlamydia) dx.push({c:'Genital Infection',s:'Moderate',d:'Requires treatment'});
+            if (d.testicularMass) dx.push({c:'Testicular Mass - URGENT',s:'Urgent',d:'Exclude malignancy'});
+            if (d.testosterone) dx.push({c:'Exogenous Testosterone',s:'Significant',d:'Suppresses spermatogenesis'});
+            if (dx.length === 0 && sa.length > 0) dx.push({c:'Idiopathic Male Infertility',s:'Moderate',d:'No specific cause found'});
+            
+            return dx;
+        }
+        
+        function generateTreatments(d, dx) {
+            const tx = {med:[],surg:[],art:[],inv:[],life:[],ref:[]};
+            
+            if (d.testicularMass) tx.ref.push({u:'Urgent',s:'2WW Urology',r:'Exclude malignancy'});
+            if (d.prolactin !== null && d.prolactin > 1000) { tx.ref.push({u:'Urgent',s:'Endocrinology',r:'Hyperprolactinaemia'}); tx.inv.push('MRI Pituitary'); }
+            
+            const hasVaricocele = dx.some(x => x.c.includes('Varicocele'));
+            if (hasVaricocele && d.spermConcentration !== null && d.spermConcentration < 16) {
+                tx.surg.push({p:'Microsurgical Varicocelectomy',i:'Clinical varicocele + abnormal semen',e:'Grade A',d:'Gold standard. 33-44% pregnancy rate.',po:'Repeat SA at 3-6 months'});
+            }
+            
+            if (dx.some(x => x.c.includes('Hypogonadotropic'))) {
+                tx.med.push({dr:'hCG',do:'1500-2000 IU 2-3x/week',du:'3-6 months',i:'Hypogonadotropic hypogonadism',e:'Grade A',n:'Add FSH if no response'});
+            }
+            
+            if (d.testosterone) {
+                tx.med.push({dr:'STOP Testosterone',do:'Discontinue',du:'Recovery 6-12mo',i:'Suppresses spermatogenesis',e:'Grade A',n:'Bridge with clomifene'});
+                tx.med.push({dr:'Clomifene',do:'25-50mg daily',du:'3-6 months',i:'Bridge therapy',e:'Grade B',n:'Monitor hormones'});
+            }
+            
+            if (d.totalTestosterone !== null && d.totalTestosterone < 12 && !d.testosterone && !dx.some(x => x.c.includes('Hypogonadotropic'))) {
+                tx.med.push({dr:'Clomifene',do:'25mg alternate days',du:'3-6 months',i:'Low testosterone',e:'Grade B',n:'Off-label SERM'});
+            }
+            
+            if (d.prolactin !== null && d.prolactin > 400 && d.prolactin <= 1000) {
+                tx.med.push({dr:'Cabergoline',do:'0.25-0.5mg 2x/week',du:'Until normalised',i:'Hyperprolactinaemia',e:'Grade A',n:'Check at 4-6 weeks'});
+            }
+            
+            if (dx.some(x => x.c.includes('Infection'))) {
+                tx.med.push({dr:'Doxycycline',do:'100mg BD',du:'2-4 weeks',i:'MAGI',e:'Grade A',n:'Treat partner'});
+            }
+            
+            if (d.spermConcentration !== null) {
+                if (d.spermConcentration === 0) {
+                    const obs = dx.some(x => x.c.includes('Obstructive') || x.c.includes('CBAVD'));
+                    tx.surg.push({p:obs?'MESA/PESA':'Micro-TESE',i:obs?'Obstructive azoospermia':'NOA',e:'Grade A',d:obs?'High retrieval rates':'40-60% retrieval'});
+                    tx.art.push({t:'ICSI with surgical sperm',i:'Azoospermia',n:'Coordinate with IVF'});
+                } else if (d.spermConcentration < 5) {
+                    tx.art.push({t:'IVF-ICSI',i:'Severe oligozoospermia',n:'ICSI recommended'});
+                } else if (d.spermConcentration < 15) {
+                    tx.art.push({t:'IUI (3-6 cycles) or IVF',i:'Moderate oligozoospermia',n:'IUI if TMC >5M'});
+                }
+            }
+            
+            if (d.spermConcentration !== null && d.spermConcentration < 10 && d.karyotype === 'not-done') tx.inv.push('Karyotype');
+            if (d.spermConcentration !== null && d.spermConcentration < 5 && d.yMicrodeletion === 'not-done') tx.inv.push('Y-microdeletion');
+            if (d.spermConcentration === 0 && !d.vasPalpable && d.cftr === 'not-done') tx.inv.push('CFTR testing');
+            if (d.sdfTest === 'no' && dx.some(x => x.c.includes('Idiopathic'))) tx.inv.push('DNA fragmentation');
+            
+            if (d.smoking === 'current') tx.life.push('Stop smoking');
+            if (d.alcohol === 'heavy') tx.life.push('Reduce alcohol');
+            if (d.bmi !== null && d.bmi > 30) tx.life.push('Weight loss');
+            if (d.hotBaths) tx.life.push('Avoid heat exposure');
+            if (d.anabolicSteroids) tx.life.push('Stop steroids');
+            
+            return tx;
+        }
+        
+        function analyzeResults() {
+            const d = collectData();
+            const dx = generateDiagnoses(d);
+            const tx = generateTreatments(d, dx);
+            
+            // Display Results
+            let html = '<div class="card"><div class="card-header"><div class="card-icon">📊</div><h2>Semen Analysis</h2></div>';
+            [{n:'Volume',v:d.semenVolume,r:1.4,u:'ml'},{n:'Concentration',v:d.spermConcentration,r:16,u:'M/ml'},{n:'Motility',v:d.totalMotility,r:42,u:'%'},{n:'Morphology',v:d.morphology,r:4,u:'%'}].forEach(p => {
+                if (p.v !== null) {
+                    const pct = Math.min((p.v/(p.r*2))*100,100);
+                    const st = p.v >= p.r ? 'normal' : (p.v >= p.r*0.5 ? 'low' : 'critical');
+                    html += `<div class="meter-container"><div class="meter-label"><span><b>${p.n}:</b> ${p.v} ${p.u}</span><span>(≥${p.r}) ${p.v>=p.r?'Normal':'Low'}</span></div><div class="meter"><div class="meter-fill ${st}" style="width:${pct}%"></div></div></div>`;
+                }
+            });
+            html += '</div>';
+            
+            html += '<div class="card"><div class="card-header"><div class="card-icon">🔍</div><h2>Diagnoses</h2></div>';
+            if (dx.length === 0) html += '<div class="diagnosis-box"><div class="diagnosis-title">✅ No significant abnormality</div></div>';
+            else dx.forEach(x => {
+                const box = x.s==='Urgent'?'alert-box':(x.s==='Significant'?'warning-box':'diagnosis-box');
+                const ico = x.s==='Urgent'?'🚨':(x.s==='Significant'?'⚠️':'📋');
+                html += `<div class="${box}"><div class="diagnosis-title">${ico} ${x.c}</div><p>${x.d}</p></div>`;
+            });
+            html += '</div>';
+            
+            if (d.fsh !== null || d.totalTestosterone !== null) {
+                html += '<div class="card"><div class="card-header"><div class="card-icon">🧪</div><h2>Hormones</h2></div><div class="form-row">';
+                if (d.fsh !== null) html += `<div class="diagnosis-box"><b>FSH:</b> ${d.fsh} (${d.fsh>12?'High':'Normal'})</div>`;
+                if (d.totalTestosterone !== null) html += `<div class="diagnosis-box"><b>Testosterone:</b> ${d.totalTestosterone} (${d.totalTestosterone<8?'Low':'Normal'})</div>`;
+                html += '</div></div>';
+            }
+            
+            document.getElementById('results-content').innerHTML = html;
+            
+            // Display Treatments
+            html = '';
+            if (tx.ref.length > 0) {
+                html += '<div class="card"><div class="card-header"><div class="card-icon">🚨</div><h2>Urgent Referrals</h2></div>';
+                tx.ref.forEach(r => html += `<div class="alert-box"><div class="diagnosis-title">⚠️ ${r.s}</div><p>${r.r}</p></div>`);
+                html += '</div>';
+            }
+            
+            if (tx.inv.length > 0) html += `<div class="card"><div class="card-header"><div class="card-icon">🔬</div><h2>Further Investigations</h2></div><div class="diagnosis-box"><ul style="margin-left:1.25rem;">${tx.inv.map(i=>`<li>${i}</li>`).join('')}</ul></div></div>`;
+            
+            if (tx.surg.length > 0) {
+                html += '<div class="card"><div class="card-header"><div class="card-icon">🔪</div><h2>Surgical Options</h2></div>';
+                tx.surg.forEach(s => html += `<div class="treatment-box"><div class="diagnosis-title">🏥 ${s.p}</div><p><b>Indication:</b> ${s.i}</p><p><b>Evidence:</b> <span class="evidence-level evidence-a">${s.e}</span></p><p>${s.d}</p>${s.po?`<p><b>Post-op:</b> ${s.po}</p>`:''}</div>`);
+                html += '</div>';
+            }
+            
+            if (tx.med.length > 0) {
+                html += '<div class="card"><div class="card-header"><div class="card-icon">💊</div><h2>Medical Treatment</h2></div><table class="supplement-table"><thead><tr><th>Drug</th><th>Dose</th><th>Duration</th><th>Indication</th><th>Evidence</th></tr></thead><tbody>';
+                tx.med.forEach(m => html += `<tr><td><b>${m.dr}</b><br><small>${m.n||''}</small></td><td>${m.do}</td><td>${m.du}</td><td>${m.i}</td><td><span class="evidence-level ${m.e.includes('A')?'evidence-a':'evidence-b'}">${m.e}</span></td></tr>`);
+                html += '</tbody></table></div>';
+            }
+            
+            if (tx.art.length > 0) {
+                html += '<div class="card"><div class="card-header"><div class="card-icon">👶</div><h2>ART Options</h2></div>';
+                tx.art.forEach(a => html += `<div class="diagnosis-box"><div class="diagnosis-title">🔬 ${a.t}</div><p><b>Indication:</b> ${a.i}</p><p>${a.n}</p></div>`);
+                html += '<div class="reference-values"><h4>NHS Access</h4><p>NICE: 3 IVF cycles for eligible couples. Check local CCG criteria.</p></div></div>';
+            }
+            
+            if (tx.life.length > 0) html += `<div class="card"><div class="card-header"><div class="card-icon">🏃</div><h2>Lifestyle Changes (EAU Grade A)</h2></div><div class="warning-box"><ul style="margin-left:1.25rem;">${tx.life.map(l=>`<li>${l}</li>`).join('')}</ul></div></div>`;
+            
+            if (dx.some(x => x.c.includes('Idiopathic') || x.c.includes('OAT') || x.c.includes('zoospermia'))) {
+                html += `<div class="card"><div class="card-header"><div class="card-icon">🌿</div><h2>Antioxidant Therapy</h2></div>
+                <div class="diagnosis-box"><p>Consider 3-6 months supplementation.</p></div>
+                <table class="supplement-table"><thead><tr><th>Supplement</th><th>Dose</th><th>Target</th></tr></thead><tbody>
+                <tr><td>CoQ10</td><td>200-400mg</td><td>Motility</td></tr>
+                <tr><td>Zinc</td><td>25-66mg</td><td>Count</td></tr>
+                <tr><td>Selenium</td><td>100-200μg</td><td>Morphology</td></tr>
+                <tr><td>L-Carnitine</td><td>1-2g</td><td>Energy</td></tr>
+                <tr><td>Vit E+C</td><td>400IU+1g</td><td>Antioxidant</td></tr>
+                </tbody></table>
+                <p style="margin-top:1rem;font-size:0.9rem;color:var(--grey-1);">Spermatogenesis ~74 days. Reassess at 3 months.</p></div>`;
+            }
+            
+            html += `<div class="card"><div class="card-header"><div class="card-icon">📅</div><h2>Follow-up</h2></div>
+            <div class="timeline-item"><div class="timeline-marker">1</div><div class="timeline-content"><h4>6-8 Weeks</h4><p>Hormone check if treatment started</p></div></div>
+            <div class="timeline-item"><div class="timeline-marker">2</div><div class="timeline-content"><h4>3 Months</h4><p>Repeat semen analysis</p></div></div>
+            <div class="timeline-item"><div class="timeline-marker">3</div><div class="timeline-content"><h4>6 Months</h4><p>Full reassessment. Consider ART if no improvement.</p></div></div></div>`;
+            
+            html += `<div class="card"><div class="card-header"><div class="card-icon">📚</div><h2>Guidelines</h2></div>
+            <div class="reference-values"><ul style="margin-left:1rem;line-height:1.8;">
+            <li><b>EAU 2026</b> - Sexual & Reproductive Health</li>
+            <li><b>AUA/ASRM 2024</b> - Male Infertility</li>
+            <li><b>WHO 6th Ed 2021</b> - Semen Analysis</li>
+            <li><b>NICE NG257 (2026)</b> - Fertility (replaces CG156)</li>
+            <li><b>BNF</b> - Drug Dosing</li>
+            </ul></div></div>`;
+            
+            document.getElementById('treatment-content').innerHTML = html;
+            showTab('results');
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const w = document.getElementById('weight'), h = document.getElementById('height'), b = document.getElementById('bmi');
+            function calcBMI() { if (w.value && h.value) b.value = (w.value / ((h.value/100)**2)).toFixed(1); }
+            w.addEventListener('change', calcBMI);
+            h.addEventListener('change', calcBMI);
+        });
+    </script>
+</body>
+</html>

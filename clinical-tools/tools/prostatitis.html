@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prostatitis Clinical Decision Support | Urology Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0f4c75;
+            --primary-light: #1b6ca8;
+            --accent: #00a8cc;
+            --success: #06a77d;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --bg-primary: #f8f9fa;
+            --bg-secondary: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #5a6c7d;
+            --border: #dde2e6;
+            --shadow-sm: 0 2px 4px rgba(15, 76, 117, 0.08);
+            --shadow-md: 0 4px 12px rgba(15, 76, 117, 0.12);
+            --shadow-lg: 0 8px 24px rgba(15, 76, 117, 0.16);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 30px 40px;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .classification-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-button {
+            flex: 1;
+            min-width: 140px;
+            padding: 14px 20px;
+            border: 2px solid var(--border);
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .tab-button:hover {
+            border-color: var(--accent);
+            background: rgba(0, 168, 204, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .tab-button.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 168, 204, 0.1);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: var(--bg-primary);
+            border-radius: 6px;
+            transition: background 0.2s ease;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(0, 168, 204, 0.08);
+        }
+
+        input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            cursor: pointer;
+            accent-color: var(--primary);
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--bg-primary);
+            border-radius: 10px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .results-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+        }
+
+        .alert {
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+            font-weight: 500;
+        }
+
+        .alert-info {
+            background: #e3f2fd;
+            border-color: #2196f3;
+            color: #1565c0;
+        }
+
+        .alert-warning {
+            background: #fff3e0;
+            border-color: var(--warning);
+            color: #e65100;
+        }
+
+        .alert-success {
+            background: #e8f5e9;
+            border-color: var(--success);
+            color: #2e7d32;
+        }
+
+        .treatment-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .treatment-section h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .treatment-section h3::before {
+            content: "▸";
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .medication-item {
+            background: var(--bg-primary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 3px solid var(--accent);
+        }
+
+        .medication-name {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .medication-dose {
+            font-family: 'IBM Plex Mono', monospace;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .medication-note {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .evidence-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .badge-eau {
+            background: #4a90e2;
+            color: white;
+        }
+
+        .badge-nice {
+            background: #50c878;
+            color: white;
+        }
+
+        .badge-bnf {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .badge-girft {
+            background: #9b59b6;
+            color: white;
+        }
+
+        .investigation-list {
+            list-style: none;
+        }
+
+        .investigation-list li {
+            padding: 12px;
+            background: white;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            border-left: 3px solid var(--success);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .investigation-list li::before {
+            content: "✓";
+            color: var(--success);
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .red-flag {
+            background: #ffebee;
+            border-left-color: var(--danger);
+            padding: 16px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid var(--danger);
+        }
+
+        .red-flag-title {
+            color: var(--danger);
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .duration-info {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .complementary-therapies {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 2px solid #fb923c;
+        }
+
+        .complementary-therapies h4 {
+            color: #ea580c;
+            margin-bottom: 12px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 40px;
+        }
+
+        .footer-brand {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .classification-tabs {
+                flex-direction: column;
+            }
+            
+            .tab-button {
+                width: 100%;
+            }
+
+            header {
+                padding: 20px 25px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .score-number {
+            font-size: 48px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .score-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .category-guide {
+            display: grid;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .category-card {
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .category-header {
+            padding: 15px 20px;
+            font-weight: 700;
+            font-size: 16px;
+            color: white;
+        }
+
+        .category-header.cat1 {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        .category-header.cat2 {
+            background: linear-gradient(135deg, #f39c12 0%, #d68910 100%);
+        }
+
+        .category-header.cat3 {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        }
+
+        .category-header.cat4 {
+            background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+        }
+
+        .category-content {
+            padding: 20px;
+        }
+
+        .category-content ul {
+            margin: 10px 0 15px 20px;
+            line-height: 1.8;
+        }
+
+        .category-content strong {
+            color: var(--primary);
+        }
+
+        .category-tip {
+            background: var(--bg-primary);
+            padding: 12px 15px;
+            border-radius: 6px;
+            border-left: 3px solid var(--accent);
+            font-weight: 600;
+            color: var(--primary);
+            margin-top: 10px;
+        }
+
+        .pain-question {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid var(--border);
+        }
+
+        .pain-question label {
+            color: var(--primary);
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+        .pain-slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #27ae60, #f39c12, #e74c3c);
+            outline: none;
+            -webkit-appearance: none;
+            flex: 1;
+        }
+
+        .pain-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .pain-slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            border: none;
+        }
+
+        .pain-input {
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+<div class="ud-update" style="margin:12px auto;max-width:1100px;padding:10px 14px;border-left:4px solid #0a7;background:#effaf6;font:13px/1.45 system-ui,sans-serif;color:#124"><strong>Updated 23 Nov 2026 – what changed</strong><ul style="margin:6px 0 0 18px;padding:0"><li>Aligned references to EAU 2026 and removed mis-citation of NICE NG110 (pyelonephritis)</li><li>Added MHRA fluoroquinolone restriction and counselling points; FQs reframed as culture-guided option</li><li>Clinician to confirm local antimicrobial policy for trimethoprim/other first-line agents</li></ul><em>Decision support only; verify against current local and national guidance.</em></div>
+    <div class="container">
+        <header>
+            <h1>🔬 Prostatitis Clinical Decision Support</h1>
+            <p class="subtitle">Evidence-based diagnostic and treatment tool | EAU 2026 · NICE · BNF · MHRA · GIRFT</p>
+        </header>
+
+        <div class="card" style="margin-bottom: 25px;">
+            <h2 class="card-title">🎯 How to Determine the Category</h2>
+            
+            <div class="category-guide">
+                <div class="category-card">
+                    <div class="category-header cat1">Category I: Acute Bacterial Prostatitis</div>
+                    <div class="category-content">
+                        <strong>✓ Use this if patient has:</strong>
+                        <ul>
+                            <li>Sudden onset (hours to days)</li>
+                            <li>Fever, chills, or feeling systemically unwell</li>
+                            <li>Severe pelvic/perineal pain</li>
+                            <li>Acute urinary symptoms (dysuria, frequency, urgency)</li>
+                            <li><strong>Positive urine culture</strong></li>
+                        </ul>
+                        <div class="category-tip">💡 This is a medical emergency if septic</div>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <div class="category-header cat2">Category II: Chronic Bacterial Prostatitis</div>
+                    <div class="category-content">
+                        <strong>✓ Use this if patient has:</strong>
+                        <ul>
+                            <li>Symptoms for ≥3 months</li>
+                            <li>Recurrent urinary tract infections (same organism)</li>
+                            <li>Pelvic pain/discomfort (less severe than acute)</li>
+                            <li><strong>Positive urine/prostatic fluid culture</strong></li>
+                            <li>Symptoms improve with antibiotics but return when stopped</li>
+                        </ul>
+                        <div class="category-tip">💡 Bacteria proven in prostate - needs prolonged antibiotics</div>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <div class="category-header cat3">Category III: CP/CPPS (Most Common - 90-95%)</div>
+                    <div class="category-content">
+                        <strong>✓ Use this if patient has:</strong>
+                        <ul>
+                            <li>Chronic pelvic pain for ≥3 months</li>
+                            <li>Lower urinary tract symptoms (LUTS)</li>
+                            <li><strong>Negative urine cultures (no bacteria)</strong></li>
+                            <li>No history of recurrent UTIs</li>
+                            <li>Pain in pelvis, perineum, genitals, or lower back</li>
+                        </ul>
+                        <div class="category-tip">💡 Diagnosis of exclusion - no infection found, needs multimodal therapy</div>
+                    </div>
+                </div>
+
+                <div class="category-card">
+                    <div class="category-header cat4">Category IV: Asymptomatic</div>
+                    <div class="category-content">
+                        <strong>✓ Use this if patient has:</strong>
+                        <ul>
+                            <li><strong>NO symptoms at all</strong></li>
+                            <li>Inflammation found incidentally on:</li>
+                            <li style="margin-left: 20px;">- Prostate biopsy (done for elevated PSA)</li>
+                            <li style="margin-left: 20px;">- Semen analysis (investigating infertility)</li>
+                            <li style="margin-left: 20px;">- Other investigations</li>
+                        </ul>
+                        <div class="category-tip">💡 Usually needs NO treatment - just observation</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info" style="margin-top: 20px;">
+                <strong>Quick Decision Tree:</strong><br>
+                <strong>1.</strong> Is patient symptomatic? → NO = Category IV<br>
+                <strong>2.</strong> Are symptoms acute (&lt;6 weeks) with fever? → YES = Category I<br>
+                <strong>3.</strong> Is urine/prostatic culture positive? → YES = Category II<br>
+                <strong>4.</strong> Chronic symptoms (&gt;3 months) with negative cultures? → Category III
+            </div>
+        </div>
+
+        <div class="classification-tabs">
+            <button class="tab-button active" onclick="switchTab('cat1')">Category I<br>Acute Bacterial</button>
+            <button class="tab-button" onclick="switchTab('cat2')">Category II<br>Chronic Bacterial</button>
+            <button class="tab-button" onclick="switchTab('cat3')">Category III<br>CP/CPPS</button>
+            <button class="tab-button" onclick="switchTab('cat4')">Category IV<br>Asymptomatic</button>
+        </div>
+
+        <div class="main-grid">
+            <!-- Left Panel: Patient Assessment -->
+            <div class="card">
+                <h2 class="card-title">📋 Patient Assessment</h2>
+                
+                <div class="form-group">
+                    <label>Patient Age</label>
+                    <input type="number" id="patientAge" placeholder="Enter age in years">
+                </div>
+
+                <div class="form-group">
+                    <label>Duration of Symptoms</label>
+                    <select id="symptomDuration">
+                        <option value="">Select duration</option>
+                        <option value="acute">&lt; 6 weeks (Acute)</option>
+                        <option value="chronic">≥ 3 months (Chronic)</option>
+                    </select>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Clinical Symptoms</div>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="symptom" value="pelvic-pain">
+                            Pelvic/perineal pain
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="symptom" value="dysuria">
+                            Dysuria
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="symptom" value="frequency">
+                            Urinary frequency
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="symptom" value="urgency">
+                            Urinary urgency
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="symptom" value="nocturia">
+                            Nocturia
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="symptom" value="weak-stream">
+                            Weak urinary stream
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="symptom" value="ejaculatory-pain">
+                            Ejaculatory pain
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="symptom" value="erectile-dysfunction">
+                            Erectile dysfunction
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="symptom" value="fever">
+                            Fever/chills
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="symptom" value="malaise">
+                            General malaise
+                        </label>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">🔍 NIH-CPSI Pain Assessment (Complete All Questions)</div>
+                    
+                    <div class="pain-question">
+                        <label><strong>Question 1:</strong> In the last week, have you experienced pain or discomfort in any of these areas?</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" class="pain-location" value="1">
+                                Area between rectum and testicles (perineum)
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" class="pain-location" value="1">
+                                Testicles
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" class="pain-location" value="1">
+                                Tip of penis (not urinating)
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" class="pain-location" value="1">
+                                Below waist, pubic or bladder area
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="pain-question">
+                        <label><strong>Question 2:</strong> Have you experienced any of the following?</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-item">
+                                <input type="checkbox" class="pain-type" value="1">
+                                Pain or burning during urination
+                            </label>
+                            <label class="checkbox-item">
+                                <input type="checkbox" class="pain-type" value="1">
+                                Pain or discomfort during or after sexual climax (ejaculation)
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="pain-question">
+                        <label><strong>Question 3:</strong> How often have you had pain/discomfort in the last week?</label>
+                        <select id="painFrequency" class="pain-input" onchange="calculatePainScore()">
+                            <option value="0">Never (0)</option>
+                            <option value="1">Rarely (1)</option>
+                            <option value="2">Sometimes (2)</option>
+                            <option value="3">Often (3)</option>
+                            <option value="4">Usually (4)</option>
+                            <option value="5">Always (5)</option>
+                        </select>
+                    </div>
+
+                    <div class="pain-question">
+                        <label><strong>Question 4:</strong> On a scale of 0-10, how would you rate your AVERAGE pain over the last week?</label>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <input type="range" id="painSeverity" min="0" max="10" value="0" class="pain-slider" oninput="updatePainValue(this.value); calculatePainScore()">
+                            <span id="painValue" style="font-weight: 700; font-size: 24px; color: var(--primary); min-width: 40px;">0</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-top: 5px;">
+                            <span>No pain</span>
+                            <span>Pain as bad as you can imagine</span>
+                        </div>
+                    </div>
+
+                    <div class="score-display" id="painScoreDisplay" style="display: none;">
+                        <div class="score-label">NIH-CPSI Pain Domain Score</div>
+                        <div class="score-number" id="totalPainScore">0</div>
+                        <div class="score-label" id="painSeverityText">Out of 21 points</div>
+                    </div>
+
+                    <div class="alert alert-info" style="margin-top: 15px;">
+                        <strong>Pain Score Interpretation:</strong><br>
+                        0-7 = Mild | 8-14 = Moderate | 15-21 = Severe
+                    </div>
+                </div>
+
+                <div class="section">
+                    <div class="section-title">Red Flag Symptoms</div>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="redflag" value="sepsis">
+                            Signs of sepsis
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="redflag" value="retention">
+                            Acute urinary retention
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="redflag" value="haematuria">
+                            Visible haematuria
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="redflag" value="immunocompromised">
+                            Immunocompromised
+                        </label>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="generateRecommendations()" style="width: 100%; margin-top: 20px;">
+                    Generate Clinical Recommendations
+                </button>
+            </div>
+
+            <!-- Right Panel: Recommendations -->
+            <div class="results-panel">
+                <h2 class="card-title">🎯 Clinical Recommendations</h2>
+                <div id="recommendationsOutput">
+                    <div class="alert alert-info">
+                        Complete the patient assessment on the left to generate evidence-based diagnostic and treatment recommendations.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Content Sections -->
+        <div id="cat1" class="tab-content active card">
+            <h2 class="card-title">Category I: Acute Bacterial Prostatitis</h2>
+            
+            <div class="alert alert-warning">
+                <strong>⚠️ Clinical Emergency:</strong> May present with sepsis. Consider hospital admission for severe cases.
+            </div>
+
+            <div class="section">
+                <div class="section-title">Essential Investigations <span class="evidence-badge badge-eau">EAU</span></div>
+                <ul class="investigation-list">
+                    <li>Digital rectal examination (gentle - avoid vigorous massage)</li>
+                    <li>Urine dipstick and microscopy</li>
+                    <li>Midstream urine culture and sensitivity</li>
+                    <li>Blood cultures if febrile/systemically unwell</li>
+                    <li>FBC, CRP, U&E</li>
+                    <li>PSA (defer if possible - elevated in acute inflammation)</li>
+                </ul>
+            </div>
+
+            <div class="treatment-section">
+                <h3>First-line Antibiotic Therapy <span class="evidence-badge badge-nice">NICE</span><span class="evidence-badge badge-bnf">BNF</span></h3>
+                
+                <div class="medication-item">
+                    <div class="medication-note" style="border-left:4px solid #c60;padding:8px 10px;margin:8px 0;background:#fff6ec"><strong>MHRA fluoroquinolone restriction (2019, reinforced Jan 2024):</strong> use only when other commonly recommended antibiotics are inappropriate (e.g. resistance, intolerance, failure). Counsel on tendon, neuropsychiatric and long-lasting adverse effects; avoid in those with prior serious FQ reactions; caution in older patients and with corticosteroids. Prostatic penetration still makes FQs a key option in prostatitis – base choice on culture and local policy.</div><div class="medication-name">Ciprofloxacin (Option if other agents inappropriate – see MHRA note)</div>
+                    <div class="medication-dose">500mg BD PO for 14 days (acute uncomplicated)</div>
+                    <div class="medication-dose">500mg BD PO for 28 days (severe/complicated)</div>
+                    <div class="medication-note">Excellent prostatic penetration. Check for quinolone resistance locally.</div>
+                </div>
+
+                <div class="medication-item">
+                    <div class="medication-name">Levofloxacin (Alternative)</div>
+                    <div class="medication-dose">500mg OD PO for 14-28 days</div>
+                    <div class="medication-note">Alternative fluoroquinolone with good penetration.</div>
+                </div>
+
+                <div class="medication-item">
+                    <div class="medication-name">Trimethoprim (If quinolones contraindicated)</div>
+                    <div class="medication-dose">200mg BD PO for 14-28 days</div>
+                    <div class="medication-note">Lower resistance rates in some areas. Good prostatic penetration.</div>
+                </div>
+
+                <div class="medication-item">
+                    <div class="medication-name">Co-amoxiclav (If Gram-positive suspected)</div>
+                    <div class="medication-dose">625mg TDS PO for 14-28 days</div>
+                    <div class="medication-note">Consider if enterococcal infection suspected or culture-proven.</div>
+                </div>
+            </div>
+
+            <div class="treatment-section">
+                <h3>Severe Cases Requiring Admission <span class="evidence-badge badge-eau">EAU</span></h3>
+                
+                <div class="medication-item">
+                    <div class="medication-name">Gentamicin + Amoxicillin (IV)</div>
+                    <div class="medication-dose">Gentamicin 5-7mg/kg OD IV + Amoxicillin 1g TDS IV</div>
+                    <div class="medication-note">For sepsis/severely unwell. Switch to oral when improving (minimum 2 weeks total).</div>
+                </div>
+
+                <div class="medication-item">
+                    <div class="medication-name">Ceftriaxone (Alternative IV)</div>
+                    <div class="medication-dose">2g OD IV</div>
+                    <div class="medication-note">Alternative broad-spectrum option. Poor oral bioavailability requires prolonged IV.</div>
+                </div>
+            </div>
+
+            <div class="treatment-section">
+                <h3>Supportive Management</h3>
+                <ul class="investigation-list">
+                    <li>Analgesia: Paracetamol 1g QDS + Ibuprofen 400mg TDS (if no contraindications)</li>
+                    <li>Alpha-blocker: Tamsulosin 400mcg OD (for urinary symptoms, continue 4-6 weeks)</li>
+                    <li>Adequate hydration (encourage oral fluids)</li>
+                    <li>Stool softeners if constipated (avoid straining)</li>
+                    <li>Catheterization: Suprapubic if urinary retention (avoid urethral catheter if possible)</li>
+                </ul>
+            </div>
+
+            <div class="red-flag">
+                <div class="red-flag-title">🚨 RED FLAGS - Immediate Hospital Referral</div>
+                <ul>
+                    <li>Sepsis (fever >38°C, tachycardia, hypotension)</li>
+                    <li>Acute urinary retention requiring catheterization</li>
+                    <li>Inability to tolerate oral medications</li>
+                    <li>Immunocompromised patients</li>
+                    <li>Prostatic abscess suspected (fluctuant prostate on DRE)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="cat2" class="tab-content card">
+            <h2 class="card-title">Category II: Chronic Bacterial Prostatitis</h2>
+
+            <div class="alert alert-info">
+                <strong>Definition:</strong> Recurrent UTIs caused by prostatic focus of infection. Symptoms ≥3 months.
+            </div>
+
+            <div class="section">
+                <div class="section-title">Diagnostic Investigations <span class="evidence-badge badge-eau">EAU</span></div>
+                <ul class="investigation-list">
+                    <li>4-glass Meares-Stamey test (gold standard) or 2-glass pre/post-massage urine test</li>
+                    <li>Expressed prostatic secretions (EPS) microscopy and culture</li>
+                    <li>Midstream urine culture (MSU) - repeated samples</li>
+                    <li>PSA (often mildly elevated)</li>
+                    <li>Consider transrectal ultrasound (TRUS) if recurrent/resistant</li>
+                    <li>Urodynamics if voiding dysfunction suspected</li>
+                </ul>
+            </div>
+
+            <div class="treatment-section">
+                <h3>First-line Prolonged Antibiotic Therapy <span class="evidence-badge badge-nice">NICE</span><span class="duration-info">4-6 weeks</span></h3>
+                
+                <div class="medication-item">
+                    <div class="medication-name">Ciprofloxacin (Option – guided by culture; see MHRA restriction)</div>
+                    <div class="medication-dose">500mg BD PO for 4-6 weeks</div>
+                    <div class="medication-note">Best prostatic penetration. Superior to other antibiotics for chronic bacterial prostatitis.</div>
+                </div>
+
+                <div class="medication-item">
+                    <div class="medication-name">Levofloxacin</div>
+                    <div class="medication-dose">500mg OD PO for 4-6 weeks</div>
+                    <div class="medication-note">Alternative fluoroquinolone. Once-daily dosing may improve compliance.</div>
+                </div>
+
+                <div class="medication-item">
+                    <div class="medication-name">Trimethoprim</div>
+                    <div class="medication-dose">200mg BD PO for 4-6 weeks</div>
+                    <div class="medication-note">Second-line. Use if fluoroquinolones contraindicated or organism sensitive.</div>
+                </div>
+
+                <div class="medication-item">
+                    <div class="medication-name">Doxycycline (For atypical organisms)</div>
+                    <div class="medication-dose">100mg BD PO for 4-6 weeks</div>
+                    <div class="medication-note">Consider for Chlamydia or Mycoplasma. Requires STI screening context.</div>
+                </div>
+            </div>
+
+            <div class="treatment-section">
+                <h3>Adjunctive Therapy <span class="evidence-badge badge-girft">GIRFT</span></h3>
+                
+                <div class="medication-item">
+                    <div class="medication-name">Alpha-blockers</div>
+                    <div class="medication-dose">Tamsulosin 400mcg OD or Alfuzosin 10mg OD</div>
+                    <div class="medication-note">Continue for 3-6 months. Improves voiding symptoms and may enhance antibiotic penetration.</div>
+                </div>
+
+                <div class="medication-item">
+                    <div class="medication-name">Anti-inflammatory</div>
+                    <div class="medication-dose">Ibuprofen 400mg TDS (with food) PRN</div>
+                    <div class="medication-note">For symptomatic relief. Limit to 2-4 weeks continuous use.</div>
+                </div>
+            </div>
+
+            <div class="treatment-section">
+                <h3>Management of Recurrent Infection</h3>
+                <ul class="investigation-list">
+                    <li>Culture-directed antibiotic therapy based on sensitivity</li>
+                    <li>Consider longer duration (3 months) for persistent infection</li>
+                    <li>Low-dose prophylactic antibiotics (e.g., Trimethoprim 100mg ON) after completing treatment</li>
+                    <li>Evaluate for bladder calculi or structural abnormalities (cystoscopy/TRUS)</li>
+                    <li>Consider urology referral for resistant cases</li>
+                </ul>
+            </div>
+
+            <div class="complementary-therapies">
+                <h4>🌿 Complementary Approaches (Limited evidence)</h4>
+                <ul style="margin-left: 20px; color: #7c2d12;">
+                    <li><strong>Quercetin:</strong> 500mg BD (anti-inflammatory bioflavonoid - some RCT evidence)</li>
+                    <li><strong>Saw Palmetto:</strong> 320mg daily (traditional use, mixed evidence)</li>
+                    <li><strong>Pelvic floor physiotherapy:</strong> May help if muscle dysfunction component</li>
+                    <li><strong>Hydration:</strong> Maintain good fluid intake (2L/day)</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="cat3" class="tab-content card">
+            <h2 class="card-title">Category III: Chronic Prostatitis/Chronic Pelvic Pain Syndrome (CP/CPPS)</h2>
+
+            <div class="alert alert-info">
+                <strong>Most Common Type:</strong> 90-95% of chronic prostatitis cases. No bacterial infection identified.
+                <br><strong>Subtypes:</strong> IIIa (inflammatory - white cells in EPS) | IIIb (non-inflammatory)
+            </div>
+
+            <div class="section">
+                <div class="section-title">Diagnostic Approach <span class="evidence-badge badge-eau">EAU</span></div>
+                <ul class="investigation-list">
+                    <li>Diagnosis of exclusion - rule out bacterial infection</li>
+                    <li>Urine culture (should be negative)</li>
+                    <li>Expressed prostatic secretions (EPS) - may show WBCs in IIIa</li>
+                    <li>NIH-Chronic Prostatitis Symptom Index (NIH-CPSI) - quantify symptoms</li>
+                    <li>Consider STI screen (Chlamydia, Gonorrhoea, Mycoplasma)</li>
+                    <li>PSA (usually normal or mildly elevated)</li>
+                    <li>Post-void residual urine volume</li>
+                    <li>Uroflowmetry ± urodynamics if voiding dysfunction</li>
+                </ul>
+            </div>
+
+            <div class="treatment-section">
+                <h3>Multimodal Management Strategy <span class="evidence-badge badge-nice">NICE</span><span class="evidence-badge badge-eau">EAU</span></h3>
+                
+                <div class="alert alert-warning">
+                    <strong>⚠️ Note:</strong> This is a challenging condition requiring individualized, multimodal approach. No single therapy is universally effective.
+                </div>
+
+                <h4 style="color: var(--primary); margin-top: 20px; margin-bottom: 15px;">1. Pharmacological Options</h4>
+
+                <div class="medication-item">
+                    <div class="medication-name">Alpha-blockers (First-line for LUTS)</div>
+                    <div class="medication-dose">Tamsulosin 400mcg OD or Alfuzosin 10mg OD</div>
+                    <div class="medication-note">Trial for 4-6 weeks initially. Continue if effective for 3-6 months. Best for newly diagnosed patients with LUTS.</div>
+                </div>
+
+                <div class="medication-item">
+                    <div class="medication-name">NSAIDs (Anti-inflammatory)</div>
+                    <div class="medication-dose">Ibuprofen 400mg TDS with food (max 2-4 weeks continuous)</div>
+                    <div class="medication-note">Or Naproxen 500mg BD. Limit duration due to GI/cardiovascular risks.</div>
+                </div>
+
+                <div class="medication-item">
+                    <div class="medication-name">Pregabalin (Neuropathic pain component)</div>
+                    <div class="medication-dose">Start 75mg BD, increase to 150-300mg BD as tolerated</div>
+                    <div class="medication-note">For patients with significant pelvic pain. Titrate slowly. May cause dizziness/sedation.</div>
+                </div>
+
+                <div class="medication-item">
+                    <div class="medication-name">Amitriptyline (Alternative for pain)</div>
+                    <div class="medication-dose">Start 10mg ON, increase to 25-75mg ON</div>
+                    <div class="medication-note">Low-dose tricyclic for chronic pain. May also help with sleep/bladder symptoms.</div>
+                </div>
+
+                <div class="medication-item">
+                    <div class="medication-name">Antibiotics (Trial in selected cases)</div>
+                    <div class="medication-dose">Doxycycline 100mg BD for 4-6 weeks OR Ciprofloxacin 500mg BD for 4-6 weeks</div>
+                    <div class="medication-note">Consider if atypical organisms suspected or inflammatory subtype (IIIa). Limited evidence but may benefit some patients.</div>
+                </div>
+
+                <div class="medication-item">
+                    <div class="medication-name">5-alpha reductase inhibitors (For enlarged prostate)</div>
+                    <div class="medication-dose">Finasteride 5mg OD</div>
+                    <div class="medication-note">Consider if prostate >40g and LUTS prominent. Requires 6-12 months trial. Sexual side effects possible.</div>
+                </div>
+            </div>
+
+            <div class="treatment-section">
+                <h3>2. Pelvic Floor Physiotherapy <span class="evidence-badge badge-eau">EAU</span></h3>
+                <ul class="investigation-list">
+                    <li><strong>Myofascial trigger point release:</strong> Specialist pelvic physio assessment</li>
+                    <li><strong>Pelvic floor relaxation exercises:</strong> Paradoxical pelvic floor tension common</li>
+                    <li><strong>Biofeedback therapy:</strong> To retrain pelvic floor muscles</li>
+                    <li><strong>Course:</strong> Typically 8-12 sessions over 3-6 months</li>
+                    <li><strong>Evidence:</strong> Moderate-quality evidence for symptom improvement</li>
+                </ul>
+            </div>
+
+            <div class="complementary-therapies">
+                <h4>🌿 Complementary & Alternative Therapies</h4>
+                
+                <div style="margin-bottom: 15px;">
+                    <strong>Quercetin + Bromelain</strong>
+                    <div style="margin-left: 15px; margin-top: 5px;">
+                        • Quercetin 500mg BD + Bromelain 250mg BD<br>
+                        • Natural anti-inflammatory bioflavonoid<br>
+                        • Some RCT evidence for symptom improvement<br>
+                        • Well-tolerated, minimal side effects
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <strong>Saw Palmetto (Serenoa repens)</strong>
+                    <div style="margin-left: 15px; margin-top: 5px;">
+                        • 320mg daily (standardized extract)<br>
+                        • Traditional herbal remedy<br>
+                        • Mixed evidence - some patients report benefit<br>
+                        • Generally safe
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <strong>Pollen Extract (Cernilton)</strong>
+                    <div style="margin-left: 15px; margin-top: 5px;">
+                        • 1-2 tablets TDS<br>
+                        • Some European evidence for symptom improvement<br>
+                        • Available OTC
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <strong>Lifestyle Modifications</strong>
+                    <div style="margin-left: 15px; margin-top: 5px;">
+                        • Avoid prolonged sitting - take regular breaks<br>
+                        • Avoid cycling/activities that pressure perineum<br>
+                        • Reduce caffeine and alcohol intake<br>
+                        • Stress management techniques (meditation, yoga)<br>
+                        • Regular gentle exercise<br>
+                        • Avoid constipation (adequate fibre/fluids)
+                    </div>
+                </div>
+
+                <div>
+                    <strong>Other Complementary Approaches</strong>
+                    <div style="margin-left: 15px; margin-top: 5px;">
+                        • Acupuncture (some evidence for pain relief)<br>
+                        • Magnesium supplements 400mg daily<br>
+                        • Omega-3 fatty acids (anti-inflammatory)<br>
+                        • Warm sitz baths for symptomatic relief
+                    </div>
+                </div>
+            </div>
+
+            <div class="treatment-section">
+                <h3>3. Psychological Support</h3>
+                <ul class="investigation-list">
+                    <li>Cognitive Behavioral Therapy (CBT) for chronic pain management</li>
+                    <li>Address anxiety and depression (common co-morbidities)</li>
+                    <li>Pain management programs if available</li>
+                    <li>Support groups/patient education</li>
+                </ul>
+            </div>
+
+            <div class="treatment-section">
+                <h3>Follow-up Strategy <span class="evidence-badge badge-girft">GIRFT</span></h3>
+                <ul class="investigation-list">
+                    <li>Review at 4-6 weeks with NIH-CPSI score reassessment</li>
+                    <li>Trial one intervention at a time to assess efficacy</li>
+                    <li>Consider urology referral if refractory to initial management</li>
+                    <li>Specialist pain clinic referral for severe, persistent pain</li>
+                    <li>Realistic expectation setting - aim for symptom improvement rather than cure</li>
+                </ul>
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>💡 Clinical Pearl:</strong> CP/CPPS is heterogeneous. What works for one patient may not work for another. 
+                Adopt a pragmatic, stepwise approach trialing different modalities. Combination therapy often more effective than monotherapy.
+            </div>
+        </div>
+
+        <div id="cat4" class="tab-content card">
+            <h2 class="card-title">Category IV: Asymptomatic Inflammatory Prostatitis</h2>
+
+            <div class="alert alert-info">
+                <strong>Definition:</strong> Incidental finding of prostatic inflammation without symptoms. Usually discovered during:
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Evaluation for infertility (semen analysis showing leukocytes)</li>
+                    <li>Elevated PSA investigation (prostate biopsy)</li>
+                    <li>Investigation for other urological conditions</li>
+                </ul>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Clinical Characteristics</div>
+                <ul class="investigation-list">
+                    <li><strong>No symptoms:</strong> No pain, no LUTS, no sexual dysfunction</li>
+                    <li><strong>Findings:</strong> Elevated WBC in prostatic secretions/semen or inflammation on biopsy</li>
+                    <li><strong>PSA:</strong> May be elevated due to inflammation</li>
+                    <li><strong>Prevalence:</strong> Common incidental finding</li>
+                </ul>
+            </div>
+
+            <div class="treatment-section">
+                <h3>Management Approach <span class="evidence-badge badge-eau">EAU</span></h3>
+                
+                <div class="alert alert-success">
+                    <strong>✓ Key Principle:</strong> Generally does NOT require treatment as patient is asymptomatic.
+                </div>
+
+                <h4 style="color: var(--primary); margin-top: 20px; margin-bottom: 15px;">Observation Strategy</h4>
+                <ul class="investigation-list">
+                    <li>Reassure patient - benign condition, no intervention needed</li>
+                    <li>No antibiotic therapy indicated</li>
+                    <li>No anti-inflammatory therapy needed</li>
+                    <li>Monitor PSA if initially elevated - expect normalization over time</li>
+                </ul>
+
+                <h4 style="color: var(--primary); margin-top: 20px; margin-bottom: 15px;">Special Scenarios Requiring Intervention</h4>
+                
+                <div class="medication-item">
+                    <div class="medication-name">1. Infertility Context</div>
+                    <div class="medication-note">
+                        If significant leukocytospermia affecting fertility:<br>
+                        • Consider trial of antibiotics (e.g., Doxycycline 100mg BD for 4 weeks)<br>
+                        • Antioxidant supplements<br>
+                        • Refer to fertility specialist for comprehensive evaluation
+                    </div>
+                </div>
+
+                <div class="medication-item">
+                    <div class="medication-name">2. Persistently Elevated PSA</div>
+                    <div class="medication-note">
+                        If PSA remains elevated after 6-12 weeks:<br>
+                        • Repeat PSA after 4-6 weeks (may normalize spontaneously)<br>
+                        • Consider MRI prostate if PSA remains elevated<br>
+                        • Standard prostate cancer screening pathway if age-appropriate<br>
+                        • Trial of antibiotics NOT recommended just to reduce PSA
+                    </div>
+                </div>
+
+                <div class="medication-item">
+                    <div class="medication-name">3. Recurrent UTIs (Uncommon)</div>
+                    <div class="medication-note">
+                        If patient develops recurrent UTIs:<br>
+                        • Treat as Category II chronic bacterial prostatitis<br>
+                        • Culture-directed antibiotic therapy<br>
+                        • Reclassify to symptomatic category
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Follow-up Recommendations <span class="evidence-badge badge-nice">NICE</span></div>
+                <ul class="investigation-list">
+                    <li><strong>No routine follow-up needed</strong> for asymptomatic patients</li>
+                    <li>If PSA elevated: Repeat PSA at 6 weeks and 3 months</li>
+                    <li>Patient education: Advise to report if symptoms develop</li>
+                    <li>No restrictions on lifestyle or activity</li>
+                    <li>Does not increase prostate cancer risk</li>
+                </ul>
+            </div>
+
+            <div class="alert alert-warning">
+                <strong>⚠️ Important:</strong> Do NOT treat asymptomatic patients with antibiotics "just in case" or to reduce PSA. 
+                This contributes to antibiotic resistance without clinical benefit.
+            </div>
+
+            <div class="treatment-section">
+                <h3>When to Refer to Urology</h3>
+                <ul class="investigation-list">
+                    <li>Persistently elevated PSA despite observation (>6 months)</li>
+                    <li>PSA continues to rise on serial measurements</li>
+                    <li>Abnormal DRE findings</li>
+                    <li>Patient develops symptoms (reclassify to appropriate category)</li>
+                    <li>Infertility workup requiring specialist input</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer>
+            <p><span class="footer-brand">Urology Digital</span> | Evidence-based Clinical Decision Support</p>
+            <p>Based on EAU 2026 Urological Infections &amp; Chronic Pelvic Pain guidelines, NICE antimicrobial prescribing/CKS, BNF, MHRA and GIRFT. Reviewed Nov 2026.</p>
+            <p style="margin-top: 10px; font-size: 12px;">
+                This tool is for educational and clinical decision support purposes. Always use clinical judgment and local guidelines.
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        function updatePainValue(value) {
+            document.getElementById('painValue').textContent = value;
+        }
+
+        function calculatePainScore() {
+            // Calculate pain locations (Q1)
+            const painLocations = document.querySelectorAll('.pain-location:checked').length;
+            
+            // Calculate pain types (Q2)
+            const painTypes = document.querySelectorAll('.pain-type:checked').length;
+            
+            // Get frequency (Q3)
+            const frequency = parseInt(document.getElementById('painFrequency').value) || 0;
+            
+            // Get severity (Q4)
+            const severity = parseInt(document.getElementById('painSeverity').value) || 0;
+            
+            // Calculate total pain score
+            // NIH-CPSI Pain Domain: Location(4) + Frequency(5) + Severity(10) + Dysuria/Ejaculatory pain(2) = 21 max
+            const totalScore = Math.min(painLocations, 4) + Math.min(painTypes, 2) + frequency + severity;
+            
+            // Display score
+            document.getElementById('totalPainScore').textContent = totalScore;
+            document.getElementById('painScoreDisplay').style.display = 'block';
+            
+            // Update severity text
+            let severityText = 'Out of 21 points - ';
+            if (totalScore <= 7) {
+                severityText += 'Mild Pain';
+            } else if (totalScore <= 14) {
+                severityText += 'Moderate Pain - Consider Multimodal Therapy';
+            } else {
+                severityText += 'Severe Pain - Specialist Referral Recommended';
+            }
+            document.getElementById('painSeverityText').textContent = severityText;
+            
+            return totalScore;
+        }
+
+        // Add event listeners to pain checkboxes
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.pain-location, .pain-type').forEach(checkbox => {
+                checkbox.addEventListener('change', calculatePainScore);
+            });
+        });
+
+        function switchTab(tabId) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.closest('.tab-button').classList.add('active');
+        }
+
+        function generateRecommendations() {
+            const age = document.getElementById('patientAge').value;
+            const duration = document.getElementById('symptomDuration').value;
+            const painScore = calculatePainScore(); // Get calculated score
+            
+            const symptoms = Array.from(document.querySelectorAll('input[name="symptom"]:checked'))
+                .map(cb => cb.value);
+            
+            const redFlags = Array.from(document.querySelectorAll('input[name="redflag"]:checked'))
+                .map(cb => cb.value);
+            
+            let output = '<div>';
+            
+            // Red flags check
+            if (redFlags.length > 0) {
+                output += '<div class="red-flag">';
+                output += '<div class="red-flag-title">🚨 RED FLAGS DETECTED - URGENT ACTION REQUIRED</div>';
+                output += '<ul style="margin-left: 20px;">';
+                if (redFlags.includes('sepsis')) {
+                    output += '<li><strong>Sepsis:</strong> Immediate hospital admission. IV antibiotics (Gentamicin + Amoxicillin). Fluid resuscitation. Urgent urology consult.</li>';
+                }
+                if (redFlags.includes('retention')) {
+                    output += '<li><strong>Urinary Retention:</strong> Suprapubic catheter preferred (avoid urethral). Consider admission if acute bacterial prostatitis.</li>';
+                }
+                if (redFlags.includes('haematuria')) {
+                    output += '<li><strong>Visible Haematuria:</strong> Requires urgent investigation. May indicate prostatic abscess or malignancy. 2-week wait referral.</li>';
+                }
+                if (redFlags.includes('immunocompromised')) {
+                    output += '<li><strong>Immunocompromised:</strong> Hospital admission advised. Broad-spectrum IV antibiotics. Risk of atypical/fungal infection.</li>';
+                }
+                output += '</ul></div>';
+            }
+            
+            // Generate recommendations based on symptoms
+            if (!age || !duration) {
+                output += '<div class="alert alert-warning">Please complete patient age and symptom duration to generate specific recommendations.</div>';
+            } else {
+                // Category suggestion based on inputs
+                let suggestedCategory = '';
+                if (duration === 'acute' && symptoms.includes('fever')) {
+                    suggestedCategory = '<div class="alert alert-warning"><strong>🎯 Suggested Category: I (Acute Bacterial Prostatitis)</strong><br>Based on acute onset with fever. Confirm with urine culture.</div>';
+                } else if (duration === 'chronic' && symptoms.length > 0) {
+                    suggestedCategory = '<div class="alert alert-info"><strong>🎯 Likely Category: II or III</strong><br>Chronic symptoms present. Category II if cultures positive, Category III (CP/CPPS) if cultures negative.</div>';
+                }
+                
+                output += suggestedCategory;
+                output += '<div class="alert alert-success"><strong>✓ Assessment Complete</strong> - Generating personalized recommendations...</div>';
+                
+                // Severity assessment
+                if (painScore > 0) {
+                    output += '<div class="score-display">';
+                    output += '<div class="score-label">NIH-CPSI Pain Score</div>';
+                    output += `<div class="score-number">${painScore}/21</div>`;
+                    if (painScore >= 0 && painScore <= 7) {
+                        output += '<div class="score-label">Mild Pain</div>';
+                    } else if (painScore >= 8 && painScore <= 14) {
+                        output += '<div class="score-label">Moderate Pain - Consider Multimodal Therapy</div>';
+                    } else if (painScore >= 15) {
+                        output += '<div class="score-label">Severe Pain - Specialist Referral Recommended</div>';
+                    }
+                    output += '</div>';
+                }
+                
+                // Symptom-based recommendations
+                output += '<div class="treatment-section">';
+                output += '<h3>Recommended Investigations</h3>';
+                output += '<ul class="investigation-list">';
+                
+                if (duration === 'acute' && (symptoms.includes('fever') || symptoms.includes('dysuria'))) {
+                    output += '<li><strong>Urgent:</strong> MSU culture, blood cultures, FBC, CRP, U&E</li>';
+                    output += '<li>DRE (gentle examination)</li>';
+                    output += '<li>Consider blood cultures if febrile</li>';
+                    output += '<li>PSA (defer if very acute - will be elevated)</li>';
+                } else if (duration === 'chronic') {
+                    output += '<li>Urine culture (pre/post prostatic massage)</li>';
+                    output += '<li>Expressed prostatic secretions (EPS) if available</li>';
+                    output += '<li>STI screen if sexually active</li>';
+                    output += '<li>PSA (if not done recently)</li>';
+                    output += '<li>Complete NIH-CPSI questionnaire</li>';
+                }
+                
+                output += '</ul></div>';
+                
+                // Treatment recommendations
+                output += '<div class="treatment-section">';
+                output += '<h3>Initial Management Plan</h3>';
+                
+                if (duration === 'acute') {
+                    output += '<div class="medication-item">';
+                    output += '<div class="medication-name">Antibiotic (culture-guided): Ciprofloxacin only if other agents inappropriate (MHRA)</div>';
+                    output += '<div class="medication-dose">500mg BD PO for 14 days (uncomplicated) or 28 days (complicated)</div>';
+                    output += '<div class="medication-note">Alternative: Trimethoprim 200mg BD if quinolone resistance/contraindication</div>';
+                    output += '</div>';
+                    
+                    if (symptoms.includes('pelvic-pain')) {
+                        output += '<div class="medication-item">';
+                        output += '<div class="medication-name">Analgesia</div>';
+                        output += '<div class="medication-dose">Paracetamol 1g QDS + Ibuprofen 400mg TDS (with food)</div>';
+                        output += '</div>';
+                    }
+                    
+                    if (symptoms.includes('frequency') || symptoms.includes('urgency') || symptoms.includes('weak-stream')) {
+                        output += '<div class="medication-item">';
+                        output += '<div class="medication-name">Alpha-blocker</div>';
+                        output += '<div class="medication-dose">Tamsulosin 400mcg OD (continue 4-6 weeks)</div>';
+                        output += '<div class="medication-note">Improves voiding symptoms. Start after acute phase settling.</div>';
+                        output += '</div>';
+                    }
+                } else if (duration === 'chronic') {
+                    output += '<div class="alert alert-info"><strong>Important:</strong> Need to differentiate Category II (bacterial) from Category III (CP/CPPS) based on cultures.</div>';
+                    
+                    output += '<div class="medication-item">';
+                    output += '<div class="medication-name">Alpha-blocker (First-line for LUTS)</div>';
+                    output += '<div class="medication-dose">Tamsulosin 400mcg OD for 4-6 week trial</div>';
+                    output += '<div class="medication-note">Continue for 3-6 months if effective. Best evidence for newly diagnosed patients.</div>';
+                    output += '</div>';
+                    
+                    if (painScore >= 8) {
+                        output += '<div class="medication-item">';
+                        output += '<div class="medication-name">Neuropathic Pain Agent (Moderate-Severe Pain)</div>';
+                        output += '<div class="medication-dose">Pregabalin: Start 75mg BD, titrate to 150-300mg BD</div>';
+                        output += '<div class="medication-note">OR Amitriptyline 10-25mg ON (start low, increase slowly)</div>';
+                        output += '</div>';
+                    }
+                    
+                    output += '<div class="medication-item">';
+                    output += '<div class="medication-name">Pelvic Floor Physiotherapy</div>';
+                    output += '<div class="medication-note">Refer to specialist pelvic physio - 8-12 sessions recommended. Good evidence for symptom improvement.</div>';
+                    output += '</div>';
+                    
+                    if (painScore >= 8) {
+                        output += '<div class="complementary-therapies" style="margin-top: 15px;">';
+                        output += '<h4>🌿 Consider Complementary Therapy</h4>';
+                        output += '<p style="margin: 10px 0;"><strong>Quercetin 500mg BD + Bromelain 250mg BD</strong> - Natural anti-inflammatory with RCT evidence</p>';
+                        output += '<p style="margin: 10px 0;"><strong>Lifestyle:</strong> Avoid prolonged sitting, reduce caffeine/alcohol, stress management</p>';
+                        output += '</div>';
+                    }
+                }
+                
+                output += '</div>';
+                
+                // Follow-up
+                output += '<div class="treatment-section">';
+                output += '<h3>Follow-up Plan</h3>';
+                output += '<ul class="investigation-list">';
+                if (duration === 'acute') {
+                    output += '<li>Review at 48-72 hours if not improving</li>';
+                    output += '<li>Repeat urine culture 4-6 weeks post-treatment completion</li>';
+                    output += '<li>Safety-net: Return immediately if fever spikes, retention, or worsening symptoms</li>';
+                    output += '<li>If recurs = investigate as Category II chronic bacterial</li>';
+                } else {
+                    output += '<li>Review at 4-6 weeks with repeat NIH-CPSI score</li>';
+                    output += '<li>If no bacterial growth = Category III (CP/CPPS) multimodal approach</li>';
+                    output += '<li>Consider urology referral if no improvement after 12 weeks</li>';
+                    output += '<li>Set realistic expectations - aim for symptom control not cure</li>';
+                }
+                output += '</ul></div>';
+            }
+            
+            output += '</div>';
+            
+            document.getElementById('recommendationsOutput').innerHTML = output;
+            
+            // Scroll to results
+            document.getElementById('recommendationsOutput').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Auto-calculate based on symptom changes
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                // Could add real-time updates here if desired
+            });
+        });
+    </script>
+</body>
+</html>

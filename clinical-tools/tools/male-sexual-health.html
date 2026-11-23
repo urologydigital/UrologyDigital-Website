@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Male Sexual Health Assessment Tool</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f4f8;color:#1a202c;line-height:1.6;font-size:14px}
+        .container{max-width:900px;margin:0 auto;padding:15px}
+        header{text-align:center;margin-bottom:20px;padding:20px;background:linear-gradient(135deg,#1a365d,#2c5282);border-radius:12px;color:#fff}
+        h1{font-size:1.4rem;margin-bottom:5px}
+        .subtitle{opacity:0.9;font-size:0.85rem}
+        .badges{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:12px}
+        .badge{background:rgba(255,255,255,0.2);color:#fff;padding:4px 12px;border-radius:20px;font-size:0.7rem;font-weight:600}
+        .tab-nav{display:flex;gap:4px;margin-bottom:15px;background:#fff;padding:6px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.08);flex-wrap:wrap}
+        .tab-btn{flex:1;min-width:120px;padding:10px 8px;font-size:0.8rem;font-weight:600;border:none;background:#f7fafc;cursor:pointer;border-radius:8px;color:#64748b;transition:all 0.2s}
+        .tab-btn:hover{background:#e2e8f0}
+        .tab-btn.active{color:#fff}
+        .tab-btn.active-ed{background:#2c5282}.tab-btn.active-ejac{background:#6b46c1}.tab-btn.active-hypo{background:#0d9488}
+        .tab-btn.active-shim{background:#1e40af}.tab-btn.active-pedt{background:#7c3aed}
+        .tab-content{display:none}.tab-content.active{display:block}
+        .section{background:#fff;border-radius:10px;padding:18px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+        .section-title{font-size:0.95rem;margin-bottom:15px;padding-bottom:10px;display:flex;align-items:center;gap:10px;border-bottom:2px solid #e2e8f0}
+        .section-title.ed{color:#2c5282;border-color:#bee3f8}.section-title.ejac{color:#6b46c1;border-color:#ddd6fe}
+        .section-title.hypo{color:#0d9488;border-color:#99f6e4}.section-title.shim{color:#1e40af;border-color:#bfdbfe}
+        .section-title.pedt{color:#7c3aed;border-color:#ddd6fe}
+        .num{color:#fff;min-width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700}
+        .num.ed{background:#2c5282}.num.ejac{background:#6b46c1}.num.hypo{background:#0d9488}
+        .form-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:12px}
+        .form-group{display:flex;flex-direction:column}
+        .form-group label{font-weight:500;margin-bottom:4px;font-size:0.8rem;color:#475569}
+        .req::after{content:'*';color:#dc2626;margin-left:2px}
+        input,select{padding:10px;border:1px solid #e2e8f0;border-radius:6px;font-size:0.85rem;font-family:inherit;transition:border 0.2s}
+        input:focus,select:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.1)}
+        .checkbox-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:6px}
+        .cb-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#f8fafc;border-radius:6px;cursor:pointer;font-size:0.8rem;border:1px solid #e2e8f0;transition:all 0.15s}
+        .cb-item:hover{background:#f1f5f9;border-color:#cbd5e1}
+        .cb-item input{width:16px;height:16px;cursor:pointer}
+        .cb-item.warn{background:#fef2f2;border-color:#fecaca}
+        .cb-item.warn:hover{background:#fee2e2}
+        .disorder-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px}
+        .disorder-btn{background:#f8fafc;border:2px solid #e2e8f0;border-radius:8px;padding:12px 8px;cursor:pointer;text-align:center;transition:all 0.2s}
+        .disorder-btn:hover{border-color:#8b5cf6;background:#faf5ff}
+        .disorder-btn.selected{border-color:#6b46c1;background:#f5f3ff;box-shadow:0 0 0 3px rgba(139,92,246,0.2)}
+        .disorder-btn h4{font-size:0.8rem;color:#1e293b;margin-bottom:2px}
+        .disorder-btn p{font-size:0.65rem;color:#64748b}
+        .score-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:10px}
+        .score-card{background:linear-gradient(135deg,#f8fafc,#f1f5f9);border:2px solid #e2e8f0;border-radius:10px;padding:15px;text-align:center}
+        .score-card.blue{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd}
+        .score-card.purple{background:linear-gradient(135deg,#faf5ff,#f3e8ff);border-color:#c4b5fd}
+        .score-card.teal{background:linear-gradient(135deg,#f0fdfa,#ccfbf1);border-color:#5eead4}
+        .score-card label{font-weight:600;font-size:0.85rem;color:#1e293b;display:block;margin-bottom:8px}
+        .score-card input,.score-card select{width:100%;max-width:120px;text-align:center;font-size:1.1rem;font-weight:600;margin:0 auto;display:block}
+        .score-card .hint{font-size:0.7rem;color:#64748b;margin-top:6px}
+        .btn{padding:10px 24px;font-size:0.85rem;font-weight:600;border:none;border-radius:8px;cursor:pointer;font-family:inherit;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px}
+        .btn-blue{background:#2563eb;color:#fff}.btn-blue:hover{background:#1d4ed8}
+        .btn-purple{background:#7c3aed;color:#fff}.btn-purple:hover{background:#6d28d9}
+        .btn-teal{background:#0d9488;color:#fff}.btn-teal:hover{background:#0f766e}
+        .btn-green{background:#16a34a;color:#fff}.btn-green:hover{background:#15803d}
+        .btn-gray{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}.btn-gray:hover{background:#e2e8f0}
+        .btn-group{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+        .hidden{display:none!important}
+        /* Questionnaire Styles */
+        .q-container{background:#fff;border-radius:10px;overflow:hidden;border:1px solid #e2e8f0}
+        .q-header{background:linear-gradient(135deg,#1e40af,#3b82f6);color:#fff;padding:15px 20px}
+        .q-header.purple{background:linear-gradient(135deg,#6d28d9,#8b5cf6)}
+        .q-header h2{font-size:1rem;margin-bottom:4px}
+        .q-header p{font-size:0.8rem;opacity:0.9}
+        .q-item{display:grid;grid-template-columns:auto 1fr auto;gap:15px;padding:15px 20px;border-bottom:1px solid #f1f5f9;align-items:center}
+        .q-item:last-child{border-bottom:none}
+        .q-item:nth-child(even){background:#f8fafc}
+        .q-num{width:28px;height:28px;background:#e0e7ff;color:#3730a3;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem}
+        .q-item.purple .q-num{background:#ede9fe;color:#5b21b6}
+        .q-text{font-size:0.85rem;color:#1e293b;font-weight:500}
+        .q-options{display:flex;gap:4px;flex-wrap:wrap}
+        .q-opt{display:flex;flex-direction:column;align-items:center;padding:8px 6px;min-width:50px;background:#f1f5f9;border:2px solid transparent;border-radius:6px;cursor:pointer;transition:all 0.15s}
+        .q-opt:hover{background:#e0e7ff;border-color:#a5b4fc}
+        .q-opt.selected{background:#4f46e5;border-color:#4f46e5}
+        .q-opt.selected .q-score{color:#fff}
+        .q-opt.selected .q-label{color:#c7d2fe}
+        .q-opt.purple:hover{background:#ede9fe;border-color:#c4b5fd}
+        .q-opt.purple.selected{background:#7c3aed;border-color:#7c3aed}
+        .q-score{font-weight:700;font-size:0.9rem;color:#3730a3}
+        .q-opt.purple .q-score{color:#6d28d9}
+        .q-label{font-size:0.6rem;color:#64748b;text-align:center;margin-top:2px}
+        .q-result{padding:20px;text-align:center;background:#f8fafc;border-top:2px solid #e2e8f0}
+        .q-result h3{font-size:0.9rem;color:#475569;margin-bottom:10px}
+        .q-result .score-val{font-size:2.5rem;font-weight:700;color:#1e40af}
+        .q-result.purple .score-val{color:#7c3aed}
+        .q-result .score-max{font-size:1rem;color:#94a3b8}
+        .q-result .interp{display:inline-block;margin-top:10px;padding:6px 16px;border-radius:20px;font-weight:600;font-size:0.85rem}
+        .interp.none{background:#dcfce7;color:#166534}.interp.mild{background:#fef9c3;color:#854d0e}
+        .interp.mod{background:#fed7aa;color:#9a3412}.interp.sev{background:#fecaca;color:#991b1b}
+        /* ED SHIM Questionnaire Styles */
+        .shim-questionnaire{border:2px solid #bfdbfe;border-radius:12px;overflow:hidden;background:#f8fafc}
+        .shim-q{padding:16px;border-bottom:1px solid #e2e8f0;background:#fff}
+        .shim-q:nth-child(odd){background:#f8fafc}
+        .shim-q:last-of-type{border-bottom:none}
+        .shim-q-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+        .shim-q-num{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;min-width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8rem;flex-shrink:0}
+        .shim-q-text{font-size:0.9rem;color:#1e293b;line-height:1.5;padding-top:6px}
+        .shim-q-text strong{color:#1e40af}
+        .shim-opts{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-start;padding-left:48px}
+        .shim-opt{display:flex;flex-direction:column;align-items:center;padding:10px 8px;min-width:70px;background:#fff;border:2px solid #e2e8f0;border-radius:10px;cursor:pointer;transition:all 0.2s;text-align:center}
+        .shim-opt:hover{border-color:#60a5fa;background:#eff6ff;transform:translateY(-2px)}
+        .shim-opt:has(input:checked){border-color:#2563eb;background:linear-gradient(135deg,#2563eb,#1d4ed8);box-shadow:0 4px 12px rgba(37,99,235,0.3)}
+        .shim-opt:has(input:checked) .shim-score{color:#fff}
+        .shim-opt:has(input:checked) .shim-label{color:#bfdbfe}
+        .shim-opt input{position:absolute;opacity:0;pointer-events:none}
+        .shim-score{font-weight:700;font-size:1.2rem;color:#2563eb;transition:color 0.2s}
+        .shim-label{font-size:0.65rem;color:#64748b;margin-top:4px;font-weight:500;transition:color 0.2s;line-height:1.2}
+        .shim-result-box{background:linear-gradient(135deg,#1e40af,#2563eb);padding:20px;text-align:center;color:#fff}
+        .shim-result-label{font-size:0.85rem;opacity:0.9;margin-bottom:5px}
+        .shim-result-score{font-size:3rem;font-weight:700;line-height:1}
+        .shim-result-max{font-size:1rem;opacity:0.8}
+        .shim-result-interp{margin-top:10px;display:inline-block;padding:6px 20px;border-radius:20px;font-weight:600;font-size:0.9rem;background:rgba(255,255,255,0.2)}
+        .shim-result-interp.none{background:#dcfce7;color:#166534}
+        .shim-result-interp.mild{background:#fef9c3;color:#854d0e}
+        .shim-result-interp.mod{background:#fed7aa;color:#9a3412}
+        .shim-result-interp.sev{background:#fecaca;color:#991b1b}
+        /* Report Styles */
+        .report{display:none;margin-top:15px}.report.show{display:block}
+        .rpt-header{color:#fff;padding:20px;border-radius:10px;text-align:center;margin-bottom:15px}
+        .rpt-header.ed{background:linear-gradient(135deg,#1e40af,#2563eb)}
+        .rpt-header.ejac{background:linear-gradient(135deg,#6d28d9,#8b5cf6)}
+        .rpt-header.hypo{background:linear-gradient(135deg,#0f766e,#14b8a6)}
+        .rpt-header h2{font-size:1.2rem;margin-bottom:5px}
+        .rpt-header .date{font-size:0.8rem;opacity:0.9}
+        .rpt-header .score-big{font-size:2.8rem;font-weight:700;margin:10px 0}
+        .rpt-header .score-row{display:flex;justify-content:center;gap:30px;margin:15px 0}
+        .rpt-header .score-box{background:rgba(255,255,255,0.15);padding:10px 20px;border-radius:8px}
+        .rpt-header .score-box .v{font-size:1.8rem;font-weight:700}
+        .rpt-header .score-box .l{font-size:0.75rem;opacity:0.9}
+        .rpt-header .sev-badge{display:inline-block;padding:5px 15px;border-radius:20px;font-weight:600;font-size:0.85rem;margin-top:5px}
+        .sev-badge.none{background:#dcfce7;color:#166534}.sev-badge.mild{background:#fef9c3;color:#854d0e}
+        .sev-badge.mod{background:#fed7aa;color:#9a3412}.sev-badge.sev{background:#fecaca;color:#991b1b}
+        .summary-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:8px;margin-bottom:15px}
+        .summary-item{background:#f8fafc;padding:10px;border-radius:6px;text-align:center}
+        .summary-item .l{font-size:0.65rem;color:#64748b;text-transform:uppercase}
+        .summary-item .v{font-weight:600;color:#1e293b;font-size:0.9rem}
+        .rpt-section{background:#fff;border-radius:8px;padding:15px;margin-bottom:12px;border-left:4px solid #3b82f6}
+        .rpt-section.alert{border-color:#dc2626;background:#fef2f2}
+        .rpt-section.warn{border-color:#f59e0b;background:#fffbeb}
+        .rpt-section.info{border-color:#0ea5e9;background:#f0f9ff}
+        .rpt-section.purple{border-color:#8b5cf6}.rpt-section.teal{border-color:#14b8a6}
+        .rpt-section.green{border-color:#22c55e}
+        .rpt-section h3{font-size:0.9rem;color:#1e293b;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+        .rpt-section ul{list-style:none}
+        .rpt-section li{padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:0.8rem}
+        .rpt-section li:last-child{border:none}
+        table{width:100%;border-collapse:collapse;font-size:0.8rem}
+        th,td{padding:8px 10px;text-align:left;border-bottom:1px solid #e2e8f0}
+        th{background:#f8fafc;font-weight:600;color:#1e293b}
+        .dose{background:#dcfce7;padding:2px 6px;border-radius:4px;font-weight:600;color:#166534;font-size:0.75rem}
+        .freq{background:#fef3c7;padding:2px 6px;border-radius:4px;color:#92400e;font-size:0.75rem}
+        .disclaimer{background:#fffbeb;border:1px solid #fde68a;padding:12px;border-radius:6px;font-size:0.75rem;color:#92400e;margin-top:15px}
+        .ref-box{background:#f1f5f9;padding:10px;border-radius:6px;font-size:0.7rem;color:#64748b;margin-top:12px}
+        /* Print Styles */
+        @media print{
+            body{background:#fff;font-size:11px}
+            .container{max-width:100%;padding:0}
+            header,.tab-nav,.btn-group,.no-print{display:none!important}
+            .section,.rpt-section{box-shadow:none;break-inside:avoid;border:1px solid #e2e8f0}
+            .report.show{display:block!important}
+            .tab-content{display:block!important}
+            .tab-content:not(.printing){display:none!important}
+            .tab-content.printing{display:block!important}
+            .rpt-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+        }
+        @media(max-width:600px){
+            .form-row,.checkbox-grid,.score-cards{grid-template-columns:1fr}
+            .q-item{grid-template-columns:1fr;gap:10px}
+            .q-options{justify-content:center}
+            .tab-btn{min-width:auto;font-size:0.7rem;padding:8px 6px}
+        }
+    </style>
+</head>
+<body>
+<div class="ud-update" style="margin:12px auto;max-width:1100px;padding:10px 14px;border-left:4px solid #0a7;background:#effaf6;font:13px/1.45 system-ui,sans-serif;color:#124"><strong>Updated 23 Nov 2026 – what changed</strong><ul style="margin:6px 0 0 18px;padding:0"><li>Guideline references updated to EAU 2026</li><li>Replaced unverifiable "NICE CG35" with NICE CKS (Erectile dysfunction)</li><li>Report headers and references now cite EAU 2026</li><li>Clinical thresholds not re-derived; BSSM 2022 UK testosterone guidance still current to our knowledge</li></ul><em>Decision support only; verify against current local and national guidance.</em></div>
+<div class="container">
+    <header>
+        <h1>Male Sexual Health Assessment</h1>
+        <p class="subtitle">Clinical Decision Support Tool</p>
+        <div class="badges"><span class="badge">EAU 2026</span><span class="badge">NICE</span><span class="badge">GIRFT</span><span class="badge">BSSM</span><span class="badge">BNF</span></div>
+    </header>
+    <nav class="tab-nav no-print">
+        <button class="tab-btn active active-ed" onclick="switchTab('ed')">Erectile Dysfunction</button>
+        <button class="tab-btn" onclick="switchTab('ejac')">Ejaculatory Disorders</button>
+        <button class="tab-btn" onclick="switchTab('hypo')">Hypogonadism</button>
+        <button class="tab-btn" onclick="switchTab('shim')">SHIM Calculator</button>
+        <button class="tab-btn" onclick="switchTab('pedt')">PEDT Calculator</button>
+    </nav>
+    <!-- ED Tab -->
+    <div id="edTab" class="tab-content active">
+        <form id="edForm">
+            <div class="section">
+                <h2 class="section-title ed"><span class="num ed">1</span>Demographics & History</h2>
+                <div class="form-row">
+                    <div class="form-group"><label class="req">Age (years)</label><input type="number" id="edAge" required min="18" max="100"></div>
+                    <div class="form-group"><label>BMI</label><input type="number" id="edBmi" step="0.1"></div>
+                    <div class="form-group"><label class="req">Duration</label><select id="edDuration" required><option value="">Select</option><option value="<3m">&lt;3 months</option><option value="3-12m">3-12 months</option><option value=">1y">&gt;1 year</option></select></div>
+                    <div class="form-group"><label class="req">Onset</label><select id="edOnset" required><option value="">Select</option><option value="gradual">Gradual</option><option value="sudden">Sudden</option></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Morning Erections</label><select id="edMorning"><option value="">Select</option><option value="present">Present</option><option value="reduced">Reduced</option><option value="absent">Absent</option></select></div>
+                    <div class="form-group"><label>With Masturbation</label><select id="edMasturbation"><option value="">Select</option><option value="normal">Normal</option><option value="reduced">Reduced</option><option value="absent">Absent</option></select></div>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title ed"><span class="num ed">2</span>Medical History</h2>
+                <label style="font-size:0.8rem;color:#475569;margin-bottom:8px;display:block">CV Risk Factors</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="edCv" value="htn">Hypertension</label>
+                    <label class="cb-item"><input type="checkbox" name="edCv" value="dm">Diabetes</label>
+                    <label class="cb-item"><input type="checkbox" name="edCv" value="dyslip">Dyslipidemia</label>
+                    <label class="cb-item"><input type="checkbox" name="edCv" value="smoking">Smoking</label>
+                    <label class="cb-item"><input type="checkbox" name="edCv" value="cad">Known CAD</label>
+                </div>
+                <label style="font-size:0.8rem;color:#475569;margin:12px 0 8px;display:block">Other Conditions</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="edCond" value="prostatectomy">Prostatectomy</label>
+                    <label class="cb-item"><input type="checkbox" name="edCond" value="spinal">Spinal injury</label>
+                    <label class="cb-item"><input type="checkbox" name="edCond" value="peyronie">Peyronie's</label>
+                    <label class="cb-item"><input type="checkbox" name="edCond" value="depression">Depression</label>
+                    <label class="cb-item"><input type="checkbox" name="edCond" value="anxiety">Anxiety</label>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title ed"><span class="num ed">3</span>Medications</h2>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="edMeds" value="bb">Beta-blockers</label>
+                    <label class="cb-item"><input type="checkbox" name="edMeds" value="thiazide">Thiazides</label>
+                    <label class="cb-item"><input type="checkbox" name="edMeds" value="ssri">SSRIs</label>
+                    <label class="cb-item"><input type="checkbox" name="edMeds" value="antipsych">Antipsychotics</label>
+                    <label class="cb-item"><input type="checkbox" name="edMeds" value="5ari">5-ARIs</label>
+                    <label class="cb-item"><input type="checkbox" name="edMeds" value="opioids">Opioids</label>
+                </div>
+                <div style="margin-top:12px">
+                    <label class="cb-item warn"><input type="checkbox" id="edNitrates"><strong>⚠️ Taking Nitrates (GTN/ISDN/ISMN)</strong></label>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title ed"><span class="num ed">4</span>SHIM Score (IIEF-5)</h2>
+                <div class="shim-questionnaire">
+                    <div class="shim-q">
+                        <div class="shim-q-header">
+                            <span class="shim-q-num">Q1</span>
+                            <span class="shim-q-text">How do you rate your <strong>confidence</strong> that you could get and keep an erection?</span>
+                        </div>
+                        <div class="shim-opts" data-q="edShim1">
+                            <label class="shim-opt"><input type="radio" name="edShim1" value="1"><span class="shim-score">1</span><span class="shim-label">Very Low</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim1" value="2"><span class="shim-score">2</span><span class="shim-label">Low</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim1" value="3"><span class="shim-score">3</span><span class="shim-label">Moderate</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim1" value="4"><span class="shim-score">4</span><span class="shim-label">High</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim1" value="5"><span class="shim-score">5</span><span class="shim-label">Very High</span></label>
+                        </div>
+                    </div>
+                    <div class="shim-q">
+                        <div class="shim-q-header">
+                            <span class="shim-q-num">Q2</span>
+                            <span class="shim-q-text">When you had erections with sexual stimulation, how often were your erections <strong>hard enough for penetration</strong>?</span>
+                        </div>
+                        <div class="shim-opts" data-q="edShim2">
+                            <label class="shim-opt"><input type="radio" name="edShim2" value="0"><span class="shim-score">0</span><span class="shim-label">No Activity</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim2" value="1"><span class="shim-score">1</span><span class="shim-label">Never</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim2" value="2"><span class="shim-score">2</span><span class="shim-label">Few Times</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim2" value="3"><span class="shim-score">3</span><span class="shim-label">Sometimes</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim2" value="4"><span class="shim-score">4</span><span class="shim-label">Most Times</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim2" value="5"><span class="shim-score">5</span><span class="shim-label">Always</span></label>
+                        </div>
+                    </div>
+                    <div class="shim-q">
+                        <div class="shim-q-header">
+                            <span class="shim-q-num">Q3</span>
+                            <span class="shim-q-text">During sexual intercourse, how often were you able to <strong>maintain your erection</strong> after penetration?</span>
+                        </div>
+                        <div class="shim-opts" data-q="edShim3">
+                            <label class="shim-opt"><input type="radio" name="edShim3" value="0"><span class="shim-score">0</span><span class="shim-label">No Attempt</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim3" value="1"><span class="shim-score">1</span><span class="shim-label">Never</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim3" value="2"><span class="shim-score">2</span><span class="shim-label">Few Times</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim3" value="3"><span class="shim-score">3</span><span class="shim-label">Sometimes</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim3" value="4"><span class="shim-score">4</span><span class="shim-label">Most Times</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim3" value="5"><span class="shim-score">5</span><span class="shim-label">Always</span></label>
+                        </div>
+                    </div>
+                    <div class="shim-q">
+                        <div class="shim-q-header">
+                            <span class="shim-q-num">Q4</span>
+                            <span class="shim-q-text">During sexual intercourse, how <strong>difficult</strong> was it to maintain your erection to completion?</span>
+                        </div>
+                        <div class="shim-opts" data-q="edShim4">
+                            <label class="shim-opt"><input type="radio" name="edShim4" value="0"><span class="shim-score">0</span><span class="shim-label">No Attempt</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim4" value="1"><span class="shim-score">1</span><span class="shim-label">Extremely</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim4" value="2"><span class="shim-score">2</span><span class="shim-label">Very</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim4" value="3"><span class="shim-score">3</span><span class="shim-label">Difficult</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim4" value="4"><span class="shim-score">4</span><span class="shim-label">Slightly</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim4" value="5"><span class="shim-score">5</span><span class="shim-label">Not Difficult</span></label>
+                        </div>
+                    </div>
+                    <div class="shim-q">
+                        <div class="shim-q-header">
+                            <span class="shim-q-num">Q5</span>
+                            <span class="shim-q-text">When you attempted sexual intercourse, how often was it <strong>satisfactory</strong> for you?</span>
+                        </div>
+                        <div class="shim-opts" data-q="edShim5">
+                            <label class="shim-opt"><input type="radio" name="edShim5" value="0"><span class="shim-score">0</span><span class="shim-label">No Attempt</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim5" value="1"><span class="shim-score">1</span><span class="shim-label">Never</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim5" value="2"><span class="shim-score">2</span><span class="shim-label">Few Times</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim5" value="3"><span class="shim-score">3</span><span class="shim-label">Sometimes</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim5" value="4"><span class="shim-score">4</span><span class="shim-label">Most Times</span></label>
+                            <label class="shim-opt"><input type="radio" name="edShim5" value="5"><span class="shim-score">5</span><span class="shim-label">Always</span></label>
+                        </div>
+                    </div>
+                    <div class="shim-result-box">
+                        <div class="shim-result-label">Total SHIM Score</div>
+                        <div class="shim-result-score" id="edShimTotal">--</div>
+                        <div class="shim-result-max">/ 25</div>
+                        <div class="shim-result-interp" id="edShimInterp"></div>
+                    </div>
+                </div>
+                <input type="hidden" id="edShim">
+            </div>
+            <div class="section">
+                <h2 class="section-title ed"><span class="num ed">5</span>CV Risk & Labs</h2>
+                <div class="score-cards">
+                    <div class="score-card">
+                        <label>Princeton III CV Risk</label>
+                        <select id="edCvRisk"><option value="">Select</option><option value="low">Low Risk</option><option value="intermediate">Intermediate</option><option value="high">High Risk</option></select>
+                        <p class="hint">Cardiac risk stratification</p>
+                    </div>
+                </div>
+                <div class="form-row" style="margin-top:15px">
+                    <div class="form-group"><label>Testosterone (nmol/L)</label><input type="number" id="edTesto" step="0.1" placeholder="12-31"></div>
+                    <div class="form-group"><label>HbA1c (%)</label><input type="number" id="edHba1c" step="0.1"></div>
+                    <div class="form-group"><label>Fasting Glucose</label><input type="number" id="edGlucose" step="0.1"></div>
+                </div>
+            </div>
+            <div class="btn-group no-print">
+                <button type="submit" class="btn btn-blue">Generate Report</button>
+                <button type="button" class="btn btn-gray" onclick="resetForm('ed')">Clear</button>
+            </div>
+        </form>
+        <div id="edReport" class="report"></div>
+    </div>
+    <!-- Ejac Tab -->
+    <div id="ejacTab" class="tab-content">
+        <form id="ejacForm">
+            <div class="section">
+                <h2 class="section-title ejac"><span class="num ejac">1</span>Demographics</h2>
+                <div class="form-row">
+                    <div class="form-group"><label class="req">Age</label><input type="number" id="ejacAge" required min="18" max="100"></div>
+                    <div class="form-group"><label class="req">Duration</label><select id="ejacDuration" required><option value="">Select</option><option value="<1m">&lt;1 month</option><option value="1-6m">1-6 months</option><option value="6-12m">6-12 months</option><option value=">1y">&gt;1 year</option><option value="lifelong">Lifelong</option></select></div>
+                    <div class="form-group"><label>Fertility Concern?</label><select id="ejacFertility"><option value="no">No</option><option value="yes">Yes</option></select></div>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title ejac"><span class="num ejac">2</span>Sexual History</h2>
+                <div class="form-row">
+                    <div class="form-group"><label>Relationship</label><select id="ejacRel"><option value="">Select</option><option value="single">Single</option><option value="relationship">In relationship</option><option value="married">Married</option></select></div>
+                    <div class="form-group"><label>Problem Occurs</label><select id="ejacContext"><option value="">Select</option><option value="always">Always</option><option value="partner">With partner only</option><option value="masturbation">Masturbation only</option><option value="situational">Situational</option></select></div>
+                    <div class="form-group"><label>Distress Level</label><select id="ejacDistress"><option value="">Select</option><option value="none">None</option><option value="mild">Mild</option><option value="moderate">Moderate</option><option value="severe">Severe</option></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Libido</label><select id="ejacLibido"><option value="">Select</option><option value="normal">Normal</option><option value="reduced">Reduced</option><option value="absent">Absent</option></select></div>
+                    <div class="form-group"><label>Erection Quality</label><select id="ejacErection"><option value="">Select</option><option value="normal">Normal</option><option value="reduced">Reduced</option><option value="poor">Poor</option></select></div>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title ejac"><span class="num ejac">3</span>Select Disorder</h2>
+                <div class="disorder-grid">
+                    <div class="disorder-btn" data-d="pe" onclick="selectDisorder('pe')"><h4>Premature</h4><p>IELT &lt;3 min</p></div>
+                    <div class="disorder-btn" data-d="de" onclick="selectDisorder('de')"><h4>Delayed</h4><p>&gt;25-30 min</p></div>
+                    <div class="disorder-btn" data-d="retrograde" onclick="selectDisorder('retrograde')"><h4>Retrograde</h4><p>Dry orgasm</p></div>
+                    <div class="disorder-btn" data-d="anejac" onclick="selectDisorder('anejac')"><h4>Anejaculation</h4><p>No emission</p></div>
+                    <div class="disorder-btn" data-d="painful" onclick="selectDisorder('painful')"><h4>Painful</h4><p>Dysorgasmia</p></div>
+                    <div class="disorder-btn" data-d="anorgasmia" onclick="selectDisorder('anorgasmia')"><h4>Anorgasmia</h4><p>No orgasm</p></div>
+                    <div class="disorder-btn" data-d="haemospermia" onclick="selectDisorder('haemospermia')"><h4>Haemospermia</h4><p>Blood in semen</p></div>
+                </div>
+                <input type="hidden" id="selectedDisorder">
+            </div>
+            <!-- PE Section -->
+            <div class="section hidden" id="peSection">
+                <h2 class="section-title ejac"><span class="num ejac">4</span>PE Details</h2>
+                <div class="form-row">
+                    <div class="form-group"><label class="req">Type</label><select id="peType"><option value="">Select</option><option value="lifelong">Lifelong (Primary)</option><option value="acquired">Acquired (Secondary)</option><option value="variable">Variable</option><option value="subjective">Subjective PE</option></select></div>
+                    <div class="form-group"><label class="req">IELT</label><select id="peIELT"><option value="">Select</option><option value="<1min">&lt;1 min</option><option value="1-2min">1-2 min</option><option value="2-3min">2-3 min</option><option value=">3min">&gt;3 min</option></select></div>
+                    <div class="form-group"><label>Control</label><select id="peControl"><option value="">Select</option><option value="none">None</option><option value="minimal">Minimal</option><option value="some">Some</option></select></div>
+                </div>
+                <label style="font-size:0.8rem;color:#475569;margin-bottom:8px;display:block">Associated</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="peAssoc" value="ed">Concurrent ED</label>
+                    <label class="cb-item"><input type="checkbox" name="peAssoc" value="anxiety">Performance anxiety</label>
+                    <label class="cb-item"><input type="checkbox" name="peAssoc" value="prostatitis">Prostatitis</label>
+                    <label class="cb-item"><input type="checkbox" name="peAssoc" value="thyroid">Thyroid disorder</label>
+                </div>
+            </div>
+            <!-- DE Section -->
+            <div class="section hidden" id="deSection">
+                <h2 class="section-title ejac"><span class="num ejac">4</span>DE Details</h2>
+                <div class="form-row">
+                    <div class="form-group"><label class="req">Type</label><select id="deType"><option value="">Select</option><option value="lifelong">Lifelong</option><option value="acquired">Acquired</option><option value="situational">Situational</option></select></div>
+                    <div class="form-group"><label>Latency</label><select id="deLatency"><option value="">Select</option><option value="25-30min">25-30 min</option><option value=">30min">&gt;30 min</option><option value="unable">Unable</option></select></div>
+                </div>
+                <label style="font-size:0.8rem;color:#475569;margin-bottom:8px;display:block">Contributing Factors</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="deFactors" value="ssri">On SSRI/SNRI</label>
+                    <label class="cb-item"><input type="checkbox" name="deFactors" value="opioids">On opioids</label>
+                    <label class="cb-item"><input type="checkbox" name="deFactors" value="psychological">Psychological</label>
+                    <label class="cb-item"><input type="checkbox" name="deFactors" value="neurological">Neurological</label>
+                </div>
+            </div>
+            <!-- Retrograde Section -->
+            <div class="section hidden" id="retrogradeSection">
+                <h2 class="section-title ejac"><span class="num ejac">4</span>Retrograde/Anejaculation Details</h2>
+                <div class="form-row">
+                    <div class="form-group"><label class="req">Orgasm</label><select id="retOrgasm"><option value="">Select</option><option value="yes">Present</option><option value="reduced">Reduced</option><option value="no">Absent</option></select></div>
+                    <div class="form-group"><label class="req">Volume</label><select id="retVolume"><option value="">Select</option><option value="none">None (dry)</option><option value="reduced">Reduced</option><option value="dribble">Dribbling</option></select></div>
+                    <div class="form-group"><label>Cloudy Urine?</label><select id="retUrine"><option value="">Select</option><option value="yes">Yes</option><option value="no">No</option><option value="unsure">Unsure</option></select></div>
+                </div>
+                <label style="font-size:0.8rem;color:#475569;margin-bottom:8px;display:block">Causes</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="retCause" value="turp">Post-TURP</label>
+                    <label class="cb-item"><input type="checkbox" name="retCause" value="dm">Diabetes</label>
+                    <label class="cb-item"><input type="checkbox" name="retCause" value="spinal">Spinal injury</label>
+                    <label class="cb-item"><input type="checkbox" name="retCause" value="alphablocker">Alpha-blocker</label>
+                </div>
+            </div>
+            <!-- Painful Section -->
+            <div class="section hidden" id="painfulSection">
+                <h2 class="section-title ejac"><span class="num ejac">4</span>Painful Ejaculation Details</h2>
+                <div class="form-row">
+                    <div class="form-group"><label class="req">Location</label><select id="painLoc"><option value="">Select</option><option value="perineal">Perineal</option><option value="penile">Penile</option><option value="testicular">Testicular</option><option value="suprapubic">Suprapubic</option></select></div>
+                    <div class="form-group"><label class="req">Severity (0-10)</label><input type="number" id="painSev" min="0" max="10"></div>
+                    <div class="form-group"><label>Timing</label><select id="painTiming"><option value="">Select</option><option value="during">During</option><option value="after">After</option><option value="both">Both</option></select></div>
+                </div>
+                <label style="font-size:0.8rem;color:#475569;margin-bottom:8px;display:block">Associated</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="painAssoc" value="dysuria">Dysuria</label>
+                    <label class="cb-item"><input type="checkbox" name="painAssoc" value="frequency">Frequency</label>
+                    <label class="cb-item"><input type="checkbox" name="painAssoc" value="discharge">Discharge</label>
+                    <label class="cb-item"><input type="checkbox" name="painAssoc" value="fever">Fever</label>
+                </div>
+                <label style="font-size:0.8rem;color:#475569;margin:12px 0 8px;display:block">Suspected Cause</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="painCause" value="prostatitis">Prostatitis</label>
+                    <label class="cb-item"><input type="checkbox" name="painCause" value="epididymitis">Epididymitis</label>
+                    <label class="cb-item"><input type="checkbox" name="painCause" value="urethritis">Urethritis/STI</label>
+                    <label class="cb-item"><input type="checkbox" name="painCause" value="obstruction">Duct obstruction</label>
+                </div>
+            </div>
+            <!-- Anorgasmia Section -->
+            <div class="section hidden" id="anorgasmiaSection">
+                <h2 class="section-title ejac"><span class="num ejac">4</span>Anorgasmia Details</h2>
+                <div class="form-row">
+                    <div class="form-group"><label class="req">Type</label><select id="anorgType"><option value="">Select</option><option value="lifelong">Lifelong</option><option value="acquired">Acquired</option><option value="situational">Situational</option></select></div>
+                    <div class="form-group"><label>Ejaculation</label><select id="anorgEjac"><option value="">Select</option><option value="present">Present without pleasure</option><option value="absent">Absent</option></select></div>
+                </div>
+                <label style="font-size:0.8rem;color:#475569;margin-bottom:8px;display:block">Factors</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="anorgFactors" value="ssri">SSRI/SNRI</label>
+                    <label class="cb-item"><input type="checkbox" name="anorgFactors" value="opioids">Opioids</label>
+                    <label class="cb-item"><input type="checkbox" name="anorgFactors" value="neuro">Neurological</label>
+                    <label class="cb-item"><input type="checkbox" name="anorgFactors" value="psych">Psychological</label>
+                </div>
+            </div>
+            <!-- Haemospermia Section -->
+            <div class="section hidden" id="haemospermiaSection">
+                <h2 class="section-title ejac"><span class="num ejac">4</span>Haemospermia Details</h2>
+                <div class="form-row">
+                    <div class="form-group"><label class="req">Episodes</label><select id="haemoEpisodes"><option value="">Select</option><option value="single">Single</option><option value="2-3">2-3</option><option value="recurrent">Recurrent</option><option value="persistent">Persistent</option></select></div>
+                    <div class="form-group"><label class="req">Blood</label><select id="haemoColor"><option value="">Select</option><option value="bright">Bright red</option><option value="dark">Dark/brown</option><option value="pink">Pink</option></select></div>
+                </div>
+                <label style="font-size:0.8rem;color:#475569;margin-bottom:8px;display:block">Associated</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="haemoAssoc" value="pain">Pain</label>
+                    <label class="cb-item"><input type="checkbox" name="haemoAssoc" value="haematuria">Haematuria</label>
+                    <label class="cb-item"><input type="checkbox" name="haemoAssoc" value="luts">LUTS</label>
+                    <label class="cb-item"><input type="checkbox" name="haemoAssoc" value="weightloss">Weight loss</label>
+                </div>
+                <label style="font-size:0.8rem;color:#475569;margin:12px 0 8px;display:block">Risk Factors</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="haemoRisk" value="age40">Age &gt;40</label>
+                    <label class="cb-item"><input type="checkbox" name="haemoRisk" value="biopsy">Recent biopsy</label>
+                    <label class="cb-item"><input type="checkbox" name="haemoRisk" value="sti">STI risk</label>
+                    <label class="cb-item"><input type="checkbox" name="haemoRisk" value="anticoag">Anticoagulants</label>
+                    <label class="cb-item"><input type="checkbox" name="haemoRisk" value="familyhx">Family Hx Ca</label>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title ejac"><span class="num ejac">5</span>Scores</h2>
+                <div class="score-cards">
+                    <div class="score-card purple">
+                        <label>PEDT Score</label>
+                        <input type="number" id="ejacPedt" min="0" max="20" placeholder="0-20">
+                        <p class="hint">≥11 PE likely | 9-10 Suggestive | &lt;9 Unlikely</p>
+                    </div>
+                    <div class="score-card blue">
+                        <label>SHIM Score</label>
+                        <input type="number" id="ejacShim" min="1" max="25" placeholder="1-25">
+                        <p class="hint">Screen for concurrent ED</p>
+                    </div>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title ejac"><span class="num ejac">6</span>Medical History</h2>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="ejacHx" value="dm">Diabetes</label>
+                    <label class="cb-item"><input type="checkbox" name="ejacHx" value="htn">Hypertension</label>
+                    <label class="cb-item"><input type="checkbox" name="ejacHx" value="prostate">Prostate surgery</label>
+                    <label class="cb-item"><input type="checkbox" name="ejacHx" value="neuro">Neurological</label>
+                </div>
+                <label style="font-size:0.8rem;color:#475569;margin:12px 0 8px;display:block">Current Medications</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="ejacMeds" value="ssri">SSRIs</label>
+                    <label class="cb-item"><input type="checkbox" name="ejacMeds" value="alphablocker">Alpha-blockers</label>
+                    <label class="cb-item"><input type="checkbox" name="ejacMeds" value="opioids">Opioids</label>
+                    <label class="cb-item"><input type="checkbox" name="ejacMeds" value="antipsych">Antipsychotics</label>
+                </div>
+            </div>
+            <div class="btn-group no-print">
+                <button type="submit" class="btn btn-purple">Generate Report</button>
+                <button type="button" class="btn btn-gray" onclick="resetForm('ejac')">Clear</button>
+            </div>
+        </form>
+        <div id="ejacReport" class="report"></div>
+    </div>
+    <!-- Hypo Tab -->
+    <div id="hypoTab" class="tab-content">
+        <form id="hypoForm">
+            <div class="section">
+                <h2 class="section-title hypo"><span class="num hypo">1</span>Demographics</h2>
+                <div class="form-row">
+                    <div class="form-group"><label class="req">Age</label><input type="number" id="hypoAge" required min="18" max="100"></div>
+                    <div class="form-group"><label>BMI</label><input type="number" id="hypoBmi" step="0.1"></div>
+                    <div class="form-group"><label class="req">Duration</label><select id="hypoDuration" required><option value="">Select</option><option value="<3m">&lt;3 months</option><option value="3-6m">3-6 months</option><option value="6-12m">6-12 months</option><option value=">1y">&gt;1 year</option></select></div>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title hypo"><span class="num hypo">2</span>Symptoms</h2>
+                <label style="font-size:0.8rem;color:#475569;margin-bottom:8px;display:block">Sexual</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="hypoSex" value="libido">Low libido</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoSex" value="ed">ED</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoSex" value="morning">Reduced morning erections</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoSex" value="ejaculate">Reduced ejaculate</label>
+                </div>
+                <label style="font-size:0.8rem;color:#475569;margin:12px 0 8px;display:block">Physical</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="hypoPhys" value="fatigue">Fatigue</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoPhys" value="muscle">Muscle loss</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoPhys" value="fat">Increased fat</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoPhys" value="gynae">Gynaecomastia</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoPhys" value="flushes">Hot flushes</label>
+                </div>
+                <label style="font-size:0.8rem;color:#475569;margin:12px 0 8px;display:block">Psychological</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="hypoPsych" value="mood">Low mood</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoPsych" value="concentration">Poor concentration</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoPsych" value="irritability">Irritability</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoPsych" value="sleep">Sleep disturbance</label>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title hypo"><span class="num hypo">3</span>Causes / Risk Factors</h2>
+                <label style="font-size:0.8rem;color:#475569;margin-bottom:8px;display:block">Primary (Testicular)</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="hypoPri" value="klinefelter">Klinefelter</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoPri" value="crypto">Cryptorchidism</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoPri" value="orchitis">Orchitis</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoPri" value="chemo">Chemo/RT</label>
+                </div>
+                <label style="font-size:0.8rem;color:#475569;margin:12px 0 8px;display:block">Secondary (Pituitary)</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="hypoSec" value="pituitary">Pituitary tumour</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoSec" value="prolactin">Hyperprolactinemia</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoSec" value="kallmann">Kallmann</label>
+                </div>
+                <label style="font-size:0.8rem;color:#475569;margin:12px 0 8px;display:block">Functional</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item"><input type="checkbox" name="hypoFunc" value="obesity">Obesity</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoFunc" value="t2dm">T2DM</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoFunc" value="opioids">Opioids</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoFunc" value="alcohol">Alcohol</label>
+                    <label class="cb-item"><input type="checkbox" name="hypoFunc" value="osa">OSA</label>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title hypo"><span class="num hypo">4</span>Laboratory Results</h2>
+                <div style="background:#ecfdf5;border:1px solid #6ee7b7;padding:10px;border-radius:6px;margin-bottom:12px;font-size:0.8rem;color:#065f46">
+                    ⏰ <strong>Important:</strong> Total testosterone must be measured 0700-1100hrs on TWO separate occasions (EAU/BSSM)
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label class="req">Total Testosterone (nmol/L)</label><input type="number" id="hypoTesto" required step="0.1" placeholder="Normal: 12-31"></div>
+                    <div class="form-group"><label>LH (IU/L)</label><input type="number" id="hypoLH" step="0.1" placeholder="1.7-8.6"></div>
+                    <div class="form-group"><label>FSH (IU/L)</label><input type="number" id="hypoFSH" step="0.1"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Prolactin (mU/L)</label><input type="number" id="hypoProlactin" step="1" placeholder="&lt;400"></div>
+                    <div class="form-group"><label>PSA (ng/mL)</label><input type="number" id="hypoPSA" step="0.01"></div>
+                    <div class="form-group"><label>Haematocrit (%)</label><input type="number" id="hypoHct" step="0.1" placeholder="40-54"></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Confirmed on 2 occasions?</label><select id="hypoConfirmed"><option value="">Select</option><option value="yes">Yes</option><option value="no">No - single sample</option></select></div>
+                </div>
+            </div>
+            <div class="section">
+                <h2 class="section-title hypo"><span class="num hypo">5</span>Score & Contraindications</h2>
+                <div class="score-cards">
+                    <div class="score-card teal">
+                        <label>SHIM Score (if ED)</label>
+                        <input type="number" id="hypoShim" min="1" max="25" placeholder="1-25">
+                        <p class="hint">Optional - assess ED severity</p>
+                    </div>
+                </div>
+                <label style="font-size:0.8rem;color:#475569;margin:15px 0 8px;display:block">Contraindications to TRT</label>
+                <div class="checkbox-grid">
+                    <label class="cb-item warn"><input type="checkbox" name="hypoContra" value="prostate">Prostate cancer</label>
+                    <label class="cb-item warn"><input type="checkbox" name="hypoContra" value="breast">Breast cancer</label>
+                    <label class="cb-item warn"><input type="checkbox" name="hypoContra" value="polycythaemia">Polycythaemia (Hct&gt;54%)</label>
+                    <label class="cb-item warn"><input type="checkbox" name="hypoContra" value="fertility">Fertility desire</label>
+                    <label class="cb-item warn"><input type="checkbox" name="hypoContra" value="hf">Severe heart failure</label>
+                    <label class="cb-item warn"><input type="checkbox" name="hypoContra" value="osa">Untreated severe OSA</label>
+                </div>
+            </div>
+            <div class="btn-group no-print">
+                <button type="submit" class="btn btn-teal">Generate Report</button>
+                <button type="button" class="btn btn-gray" onclick="resetForm('hypo')">Clear</button>
+            </div>
+        </form>
+        <div id="hypoReport" class="report"></div>
+    </div>
+    <!-- SHIM Calculator -->
+    <div id="shimTab" class="tab-content">
+        <div class="q-container">
+            <div class="q-header">
+                <h2>SHIM Score Calculator (IIEF-5)</h2>
+                <p>Sexual Health Inventory for Men - Validated ED Screening Tool</p>
+            </div>
+            <div class="q-item">
+                <div class="q-num">1</div>
+                <div class="q-text">How do you rate your confidence that you could get and keep an erection?</div>
+                <div class="q-options" data-q="shim1">
+                    <div class="q-opt" data-v="1" onclick="selectOpt(this)"><div class="q-score">1</div><div class="q-label">Very low</div></div>
+                    <div class="q-opt" data-v="2" onclick="selectOpt(this)"><div class="q-score">2</div><div class="q-label">Low</div></div>
+                    <div class="q-opt" data-v="3" onclick="selectOpt(this)"><div class="q-score">3</div><div class="q-label">Moderate</div></div>
+                    <div class="q-opt" data-v="4" onclick="selectOpt(this)"><div class="q-score">4</div><div class="q-label">High</div></div>
+                    <div class="q-opt" data-v="5" onclick="selectOpt(this)"><div class="q-score">5</div><div class="q-label">Very high</div></div>
+                </div>
+            </div>
+            <div class="q-item">
+                <div class="q-num">2</div>
+                <div class="q-text">When you had erections with sexual stimulation, how often were your erections hard enough for penetration?</div>
+                <div class="q-options" data-q="shim2">
+                    <div class="q-opt" data-v="0" onclick="selectOpt(this)"><div class="q-score">0</div><div class="q-label">No activity</div></div>
+                    <div class="q-opt" data-v="1" onclick="selectOpt(this)"><div class="q-score">1</div><div class="q-label">Never</div></div>
+                    <div class="q-opt" data-v="2" onclick="selectOpt(this)"><div class="q-score">2</div><div class="q-label">Few times</div></div>
+                    <div class="q-opt" data-v="3" onclick="selectOpt(this)"><div class="q-score">3</div><div class="q-label">Sometimes</div></div>
+                    <div class="q-opt" data-v="4" onclick="selectOpt(this)"><div class="q-score">4</div><div class="q-label">Most times</div></div>
+                    <div class="q-opt" data-v="5" onclick="selectOpt(this)"><div class="q-score">5</div><div class="q-label">Always</div></div>
+                </div>
+            </div>
+            <div class="q-item">
+                <div class="q-num">3</div>
+                <div class="q-text">During sexual intercourse, how often were you able to maintain your erection after penetration?</div>
+                <div class="q-options" data-q="shim3">
+                    <div class="q-opt" data-v="0" onclick="selectOpt(this)"><div class="q-score">0</div><div class="q-label">No attempt</div></div>
+                    <div class="q-opt" data-v="1" onclick="selectOpt(this)"><div class="q-score">1</div><div class="q-label">Never</div></div>
+                    <div class="q-opt" data-v="2" onclick="selectOpt(this)"><div class="q-score">2</div><div class="q-label">Few times</div></div>
+                    <div class="q-opt" data-v="3" onclick="selectOpt(this)"><div class="q-score">3</div><div class="q-label">Sometimes</div></div>
+                    <div class="q-opt" data-v="4" onclick="selectOpt(this)"><div class="q-score">4</div><div class="q-label">Most times</div></div>
+                    <div class="q-opt" data-v="5" onclick="selectOpt(this)"><div class="q-score">5</div><div class="q-label">Always</div></div>
+                </div>
+            </div>
+            <div class="q-item">
+                <div class="q-num">4</div>
+                <div class="q-text">During sexual intercourse, how difficult was it to maintain your erection to completion?</div>
+                <div class="q-options" data-q="shim4">
+                    <div class="q-opt" data-v="0" onclick="selectOpt(this)"><div class="q-score">0</div><div class="q-label">No attempt</div></div>
+                    <div class="q-opt" data-v="1" onclick="selectOpt(this)"><div class="q-score">1</div><div class="q-label">Extremely</div></div>
+                    <div class="q-opt" data-v="2" onclick="selectOpt(this)"><div class="q-score">2</div><div class="q-label">Very</div></div>
+                    <div class="q-opt" data-v="3" onclick="selectOpt(this)"><div class="q-score">3</div><div class="q-label">Difficult</div></div>
+                    <div class="q-opt" data-v="4" onclick="selectOpt(this)"><div class="q-score">4</div><div class="q-label">Slightly</div></div>
+                    <div class="q-opt" data-v="5" onclick="selectOpt(this)"><div class="q-score">5</div><div class="q-label">Not difficult</div></div>
+                </div>
+            </div>
+            <div class="q-item">
+                <div class="q-num">5</div>
+                <div class="q-text">When you attempted sexual intercourse, how often was it satisfactory for you?</div>
+                <div class="q-options" data-q="shim5">
+                    <div class="q-opt" data-v="0" onclick="selectOpt(this)"><div class="q-score">0</div><div class="q-label">No attempt</div></div>
+                    <div class="q-opt" data-v="1" onclick="selectOpt(this)"><div class="q-score">1</div><div class="q-label">Never</div></div>
+                    <div class="q-opt" data-v="2" onclick="selectOpt(this)"><div class="q-score">2</div><div class="q-label">Few times</div></div>
+                    <div class="q-opt" data-v="3" onclick="selectOpt(this)"><div class="q-score">3</div><div class="q-label">Sometimes</div></div>
+                    <div class="q-opt" data-v="4" onclick="selectOpt(this)"><div class="q-score">4</div><div class="q-label">Most times</div></div>
+                    <div class="q-opt" data-v="5" onclick="selectOpt(this)"><div class="q-score">5</div><div class="q-label">Always</div></div>
+                </div>
+            </div>
+            <div class="q-result" id="shimResult">
+                <h3>Total SHIM Score</h3>
+                <div class="score-val" id="shimScore">--</div>
+                <div class="score-max">/ 25</div>
+                <div class="interp" id="shimInterp" style="display:none"></div>
+            </div>
+        </div>
+        <div class="btn-group no-print">
+            <button class="btn btn-blue" onclick="calcShim()">Calculate Score</button>
+            <button class="btn btn-gray" onclick="resetShim()">Reset</button>
+            <button class="btn btn-green" onclick="printQuestionnaire('shim')">🖨️ Print</button>
+        </div>
+        <div class="ref-box" style="margin-top:15px">
+            <strong>Interpretation:</strong> 22-25 No ED | 17-21 Mild | 12-16 Mild-Moderate | 8-11 Moderate | 1-7 Severe ED
+        </div>
+    </div>
+    <!-- PEDT Calculator -->
+    <div id="pedtTab" class="tab-content">
+        <div class="q-container">
+            <div class="q-header purple">
+                <h2>PEDT - Premature Ejaculation Diagnostic Tool</h2>
+                <p>Validated 5-question screening tool for PE</p>
+            </div>
+            <div class="q-item purple">
+                <div class="q-num">1</div>
+                <div class="q-text">How difficult is it for you to delay ejaculation?</div>
+                <div class="q-options" data-q="pedt1">
+                    <div class="q-opt purple" data-v="0" onclick="selectOpt(this)"><div class="q-score">0</div><div class="q-label">Not difficult</div></div>
+                    <div class="q-opt purple" data-v="1" onclick="selectOpt(this)"><div class="q-score">1</div><div class="q-label">Somewhat</div></div>
+                    <div class="q-opt purple" data-v="2" onclick="selectOpt(this)"><div class="q-score">2</div><div class="q-label">Moderately</div></div>
+                    <div class="q-opt purple" data-v="3" onclick="selectOpt(this)"><div class="q-score">3</div><div class="q-label">Very</div></div>
+                    <div class="q-opt purple" data-v="4" onclick="selectOpt(this)"><div class="q-score">4</div><div class="q-label">Extremely</div></div>
+                </div>
+            </div>
+            <div class="q-item purple">
+                <div class="q-num">2</div>
+                <div class="q-text">Do you ejaculate before you want to?</div>
+                <div class="q-options" data-q="pedt2">
+                    <div class="q-opt purple" data-v="0" onclick="selectOpt(this)"><div class="q-score">0</div><div class="q-label">Never (0%)</div></div>
+                    <div class="q-opt purple" data-v="1" onclick="selectOpt(this)"><div class="q-score">1</div><div class="q-label">&lt;25%</div></div>
+                    <div class="q-opt purple" data-v="2" onclick="selectOpt(this)"><div class="q-score">2</div><div class="q-label">~50%</div></div>
+                    <div class="q-opt purple" data-v="3" onclick="selectOpt(this)"><div class="q-score">3</div><div class="q-label">&gt;75%</div></div>
+                    <div class="q-opt purple" data-v="4" onclick="selectOpt(this)"><div class="q-score">4</div><div class="q-label">Always</div></div>
+                </div>
+            </div>
+            <div class="q-item purple">
+                <div class="q-num">3</div>
+                <div class="q-text">Do you ejaculate with very little stimulation?</div>
+                <div class="q-options" data-q="pedt3">
+                    <div class="q-opt purple" data-v="0" onclick="selectOpt(this)"><div class="q-score">0</div><div class="q-label">Never</div></div>
+                    <div class="q-opt purple" data-v="1" onclick="selectOpt(this)"><div class="q-score">1</div><div class="q-label">&lt;Half</div></div>
+                    <div class="q-opt purple" data-v="2" onclick="selectOpt(this)"><div class="q-score">2</div><div class="q-label">Half</div></div>
+                    <div class="q-opt purple" data-v="3" onclick="selectOpt(this)"><div class="q-score">3</div><div class="q-label">&gt;Half</div></div>
+                    <div class="q-opt purple" data-v="4" onclick="selectOpt(this)"><div class="q-score">4</div><div class="q-label">Always</div></div>
+                </div>
+            </div>
+            <div class="q-item purple">
+                <div class="q-num">4</div>
+                <div class="q-text">Do you feel frustrated because of ejaculating before you want to?</div>
+                <div class="q-options" data-q="pedt4">
+                    <div class="q-opt purple" data-v="0" onclick="selectOpt(this)"><div class="q-score">0</div><div class="q-label">Not at all</div></div>
+                    <div class="q-opt purple" data-v="1" onclick="selectOpt(this)"><div class="q-score">1</div><div class="q-label">Slightly</div></div>
+                    <div class="q-opt purple" data-v="2" onclick="selectOpt(this)"><div class="q-score">2</div><div class="q-label">Moderately</div></div>
+                    <div class="q-opt purple" data-v="3" onclick="selectOpt(this)"><div class="q-score">3</div><div class="q-label">Very</div></div>
+                    <div class="q-opt purple" data-v="4" onclick="selectOpt(this)"><div class="q-score">4</div><div class="q-label">Extremely</div></div>
+                </div>
+            </div>
+            <div class="q-item purple">
+                <div class="q-num">5</div>
+                <div class="q-text">How concerned are you that your time to ejaculation leaves your partner unfulfilled?</div>
+                <div class="q-options" data-q="pedt5">
+                    <div class="q-opt purple" data-v="0" onclick="selectOpt(this)"><div class="q-score">0</div><div class="q-label">Not at all</div></div>
+                    <div class="q-opt purple" data-v="1" onclick="selectOpt(this)"><div class="q-score">1</div><div class="q-label">Slightly</div></div>
+                    <div class="q-opt purple" data-v="2" onclick="selectOpt(this)"><div class="q-score">2</div><div class="q-label">Moderately</div></div>
+                    <div class="q-opt purple" data-v="3" onclick="selectOpt(this)"><div class="q-score">3</div><div class="q-label">Very</div></div>
+                    <div class="q-opt purple" data-v="4" onclick="selectOpt(this)"><div class="q-score">4</div><div class="q-label">Extremely</div></div>
+                </div>
+            </div>
+            <div class="q-result purple" id="pedtResult">
+                <h3>Total PEDT Score</h3>
+                <div class="score-val" id="pedtScore">--</div>
+                <div class="score-max">/ 20</div>
+                <div class="interp" id="pedtInterp" style="display:none"></div>
+            </div>
+        </div>
+        <div class="btn-group no-print">
+            <button class="btn btn-purple" onclick="calcPedt()">Calculate Score</button>
+            <button class="btn btn-gray" onclick="resetPedt()">Reset</button>
+            <button class="btn btn-green" onclick="printQuestionnaire('pedt')">🖨️ Print</button>
+        </div>
+        <div class="ref-box" style="margin-top:15px">
+            <strong>Interpretation:</strong> ≥11 PE Likely | 9-10 Suggestive | ≤8 PE Unlikely
+        </div>
+    </div>
+</div>
+<script>
+let selectedDisorder='';
+const shimScores={},pedtScores={};
+
+function switchTab(t){
+    document.querySelectorAll('.tab-btn').forEach(b=>{b.classList.remove('active','active-ed','active-ejac','active-hypo','active-shim','active-pedt')});
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    document.querySelectorAll('.report').forEach(r=>r.classList.remove('show'));
+    const map={ed:0,ejac:1,hypo:2,shim:3,pedt:4};
+    const cls={ed:'active-ed',ejac:'active-ejac',hypo:'active-hypo',shim:'active-shim',pedt:'active-pedt'};
+    document.querySelectorAll('.tab-btn')[map[t]].classList.add('active',cls[t]);
+    document.getElementById(t+'Tab').classList.add('active');
+}
+
+function selectDisorder(d){
+    selectedDisorder=d;
+    document.getElementById('selectedDisorder').value=d;
+    document.querySelectorAll('.disorder-btn').forEach(b=>b.classList.remove('selected'));
+    document.querySelector(`[data-d="${d}"]`).classList.add('selected');
+    ['peSection','deSection','retrogradeSection','painfulSection','anorgasmiaSection','haemospermiaSection'].forEach(s=>document.getElementById(s).classList.add('hidden'));
+    const m={pe:'peSection',de:'deSection',retrograde:'retrogradeSection',anejac:'retrogradeSection',painful:'painfulSection',anorgasmia:'anorgasmiaSection',haemospermia:'haemospermiaSection'};
+    if(m[d])document.getElementById(m[d]).classList.remove('hidden');
+}
+
+function selectOpt(el){
+    const opts=el.parentElement;
+    opts.querySelectorAll('.q-opt').forEach(o=>o.classList.remove('selected'));
+    el.classList.add('selected');
+    const q=opts.dataset.q;
+    const v=parseInt(el.dataset.v);
+    if(q.startsWith('shim'))shimScores[q]=v;
+    else pedtScores[q]=v;
+}
+
+function calcShim(){
+    let total=0,count=0;
+    for(let i=1;i<=5;i++){if(shimScores['shim'+i]!==undefined){total+=shimScores['shim'+i];count++}}
+    if(count<5){alert('Please answer all 5 questions');return}
+    document.getElementById('shimScore').textContent=total;
+    const interp=document.getElementById('shimInterp');
+    let cls='none',txt='No ED';
+    if(total<=7){cls='sev';txt='Severe ED'}
+    else if(total<=11){cls='mod';txt='Moderate ED'}
+    else if(total<=16){cls='mild';txt='Mild-Moderate ED'}
+    else if(total<=21){cls='mild';txt='Mild ED'}
+    interp.className='interp '+cls;
+    interp.textContent=txt;
+    interp.style.display='inline-block';
+}
+
+function resetShim(){
+    for(let i=1;i<=5;i++)delete shimScores['shim'+i];
+    document.querySelectorAll('#shimTab .q-opt').forEach(o=>o.classList.remove('selected'));
+    document.getElementById('shimScore').textContent='--';
+    document.getElementById('shimInterp').style.display='none';
+}
+
+function calcPedt(){
+    let total=0,count=0;
+    for(let i=1;i<=5;i++){if(pedtScores['pedt'+i]!==undefined){total+=pedtScores['pedt'+i];count++}}
+    if(count<5){alert('Please answer all 5 questions');return}
+    document.getElementById('pedtScore').textContent=total;
+    const interp=document.getElementById('pedtInterp');
+    let cls='none',txt='PE Unlikely';
+    if(total>=11){cls='sev';txt='PE Likely'}
+    else if(total>=9){cls='mod';txt='Suggestive'}
+    interp.className='interp '+cls;
+    interp.textContent=txt;
+    interp.style.display='inline-block';
+}
+
+function resetPedt(){
+    for(let i=1;i<=5;i++)delete pedtScores['pedt'+i];
+    document.querySelectorAll('#pedtTab .q-opt').forEach(o=>o.classList.remove('selected'));
+    document.getElementById('pedtScore').textContent='--';
+    document.getElementById('pedtInterp').style.display='none';
+}
+
+function resetForm(type){
+    document.getElementById(type+'Form').reset();
+    document.getElementById(type+'Report').classList.remove('show');
+    if(type==='ejac'){
+        selectedDisorder='';
+        document.querySelectorAll('.disorder-btn').forEach(b=>b.classList.remove('selected'));
+        ['peSection','deSection','retrogradeSection','painfulSection','anorgasmiaSection','haemospermiaSection'].forEach(s=>document.getElementById(s).classList.add('hidden'));
+    }
+    if(type==='ed'){
+        document.getElementById('edShimTotal').textContent='--';
+        document.getElementById('edShimInterp').style.display='none';
+        document.getElementById('edShim').value='';
+    }
+    window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function getChecked(n){return Array.from(document.querySelectorAll(`input[name="${n}"]:checked`)).map(c=>c.value)}
+function getVal(id){return document.getElementById(id)?.value||''}
+function getNum(id){const v=document.getElementById(id)?.value;return v?parseFloat(v):null}
+
+function shimSev(s){if(s>=22)return{t:'No ED',c:'none'};if(s>=17)return{t:'Mild ED',c:'mild'};if(s>=12)return{t:'Mild-Mod ED',c:'mild'};if(s>=8)return{t:'Moderate ED',c:'mod'};return{t:'Severe ED',c:'sev'}}
+function pedtRes(s){if(s>=11)return{t:'PE Likely',c:'sev'};if(s>=9)return{t:'Suggestive',c:'mod'};return{t:'PE Unlikely',c:'none'}}
+
+// ED SHIM questionnaire auto-calculation
+document.querySelectorAll('input[name^="edShim"]').forEach(input => {
+    input.addEventListener('change', calculateEdShim);
+});
+
+function calculateEdShim() {
+    let total = 0;
+    let answered = 0;
+    for (let i = 1; i <= 5; i++) {
+        const selected = document.querySelector('input[name="edShim'+i+'"]:checked');
+        if (selected) {
+            total += parseInt(selected.value);
+            answered++;
+        }
+    }
+    
+    const scoreEl = document.getElementById('edShimTotal');
+    const interpEl = document.getElementById('edShimInterp');
+    const hiddenInput = document.getElementById('edShim');
+    
+    if (answered > 0) {
+        scoreEl.textContent = total;
+        hiddenInput.value = total;
+        
+        if (answered === 5) {
+            const sev = shimSev(total);
+            interpEl.textContent = sev.t;
+            interpEl.className = 'shim-result-interp ' + sev.c;
+            interpEl.style.display = 'inline-block';
+        } else {
+            interpEl.textContent = answered + '/5 answered';
+            interpEl.className = 'shim-result-interp';
+            interpEl.style.display = 'inline-block';
+        }
+    } else {
+        scoreEl.textContent = '--';
+        hiddenInput.value = '';
+        interpEl.style.display = 'none';
+    }
+}
+
+function printReport(type){
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('printing'));
+    document.getElementById(type+'Tab').classList.add('printing');
+    window.print();
+    document.getElementById(type+'Tab').classList.remove('printing');
+}
+
+function printQuestionnaire(type){
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('printing'));
+    document.getElementById(type+'Tab').classList.add('printing');
+    window.print();
+    document.getElementById(type+'Tab').classList.remove('printing');
+}
+
+function exportPDF(type){
+    alert('To save as PDF:\n1. Click Print\n2. Select "Save as PDF" as destination\n3. Click Save');
+    printReport(type);
+}
+
+// Form submissions
+document.getElementById('edForm').addEventListener('submit',function(e){e.preventDefault();generateED()});
+document.getElementById('ejacForm').addEventListener('submit',function(e){e.preventDefault();if(!selectedDisorder){alert('Please select a disorder');return}generateEjac()});
+document.getElementById('hypoForm').addEventListener('submit',function(e){e.preventDefault();generateHypo()});
+function generateED(){
+    const age=getVal('edAge'),onset=getVal('edOnset'),morning=getVal('edMorning'),mast=getVal('edMasturbation');
+    const cvRisk=getVal('edCvRisk'),testo=getNum('edTesto'),nitrates=document.getElementById('edNitrates').checked;
+    const shim=getNum('edShim'),meds=getChecked('edMeds');
+    const sev=shim?shimSev(shim):{t:'Not assessed',c:''};
+    
+    let h=`<div class="rpt-header ed"><h2>Erectile Dysfunction Assessment</h2><p class="date">${new Date().toLocaleDateString()} | EAU 2026 / NICE / BSSM / BNF</p>`;
+    if(shim){h+=`<div class="score-big">${shim}/25</div><p>SHIM Score</p><span class="sev-badge ${sev.c}">${sev.t}</span>`}
+    h+=`</div>`;
+    
+    h+=`<div class="summary-row"><div class="summary-item"><div class="l">Age</div><div class="v">${age}y</div></div><div class="summary-item"><div class="l">Onset</div><div class="v">${onset}</div></div><div class="summary-item"><div class="l">CV Risk</div><div class="v">${cvRisk||'N/A'}</div></div><div class="summary-item"><div class="l">Morning</div><div class="v">${morning||'N/A'}</div></div>${shim?`<div class="summary-item"><div class="l">SHIM</div><div class="v">${shim}</div></div>`:''}</div>`;
+    
+    if(nitrates)h+=`<div class="rpt-section alert"><h3>⛔ ABSOLUTE CONTRAINDICATION</h3><p>Nitrates present. <strong>PDE5 inhibitors contraindicated.</strong> Consider ICI, MUSE, or VED.</p></div>`;
+    if(cvRisk==='high')h+=`<div class="rpt-section alert"><h3>⚠️ HIGH CV RISK</h3><p>Defer ED treatment. Refer cardiology first (Princeton III).</p></div>`;
+    else if(cvRisk==='intermediate')h+=`<div class="rpt-section warn"><h3>⚡ INTERMEDIATE RISK</h3><p>Consider exercise stress testing before initiating therapy.</p></div>`;
+    if(testo&&testo<8)h+=`<div class="rpt-section info"><h3>ℹ️ Low Testosterone</h3><p>T &lt;8 nmol/L. Consider TRT (see Hypogonadism tab).</p></div>`;
+    if(meds.length)h+=`<div class="rpt-section info"><h3>💊 Medication Review</h3><p>Potentially contributing: ${meds.join(', ')}</p></div>`;
+    
+    h+=`<div class="rpt-section"><h3>🔬 Investigations (EAU/NICE)</h3><table><tr><th>Test</th><th>Indication</th></tr><tr><td><strong>Fasting glucose/HbA1c</strong></td><td>All</td></tr><tr><td><strong>Lipid profile</strong></td><td>All</td></tr><tr><td><strong>Testosterone (0800-1100)</strong></td><td>All</td></tr></table></div>`;
+    
+    h+=`<div class="rpt-section green"><h3>💊 First-Line: PDE5 Inhibitors (BNF)</h3>`;
+    if(nitrates)h+=`<p style="color:#dc2626;font-weight:600">⛔ CONTRAINDICATED</p>`;
+    else if(cvRisk==='high')h+=`<p style="color:#dc2626;font-weight:600">⚠️ Defer pending cardiology</p>`;
+    else h+=`<table><tr><th>Drug</th><th>Start</th><th>Max</th><th>Timing</th></tr><tr><td><strong>Sildenafil</strong></td><td><span class="dose">50mg</span></td><td><span class="dose">100mg</span></td><td><span class="freq">1hr before</span></td></tr><tr><td><strong>Tadalafil PRN</strong></td><td><span class="dose">10mg</span></td><td><span class="dose">20mg</span></td><td><span class="freq">30min before</span></td></tr><tr><td><strong>Tadalafil Daily</strong></td><td><span class="dose">2.5mg</span></td><td><span class="dose">5mg OD</span></td><td><span class="freq">Daily</span></td></tr><tr><td><strong>Vardenafil</strong></td><td><span class="dose">10mg</span></td><td><span class="dose">20mg</span></td><td><span class="freq">25-60min</span></td></tr><tr><td><strong>Avanafil</strong></td><td><span class="dose">100mg</span></td><td><span class="dose">200mg</span></td><td><span class="freq">15-30min</span></td></tr></table>`;
+    h+=`</div>`;
+    
+    h+=`<div class="rpt-section"><h3>💉 Second-Line</h3><table><tr><th>Treatment</th><th>Dose</th><th>Frequency</th></tr><tr><td><strong>Alprostadil ICI</strong></td><td><span class="dose">10-40μg</span></td><td><span class="freq">Max 3x/week</span></td></tr><tr><td><strong>MUSE</strong></td><td><span class="dose">250-1000μg</span></td><td><span class="freq">Max 2x/day</span></td></tr><tr><td><strong>VED</strong></td><td>N/A</td><td><span class="freq">PRN</span></td></tr></table></div>`;
+    
+    h+=`<div class="rpt-section" style="border-color:#f59e0b"><h3>📅 Follow-up</h3><ul><li><strong>4-6 weeks:</strong> Review response</li><li>Trial 4-8 attempts before declaring failure</li><li>Annual CV risk monitoring</li></ul></div>`;
+    
+    h+=`<div class="btn-group no-print"><button onclick="printReport('ed')" class="btn btn-green">🖨️ Print</button><button onclick="exportPDF('ed')" class="btn btn-blue">📄 Save PDF</button><button onclick="resetForm('ed')" class="btn btn-gray">New</button></div>`;
+    h+=`<div class="disclaimer">Clinical decision support only. Individualise treatment.</div>`;
+    h+=`<div class="ref-box"><strong>References:</strong> EAU 2026, NICE CKS (Erectile dysfunction), BSSM, Princeton III, BNF</div>`;
+    
+    document.getElementById('edReport').innerHTML=h;
+    document.getElementById('edReport').classList.add('show');
+    document.getElementById('edReport').scrollIntoView({behavior:'smooth'});
+}
+
+function generateEjac(){
+    const age=getVal('ejacAge'),duration=getVal('ejacDuration'),fertility=getVal('ejacFertility');
+    const context=getVal('ejacContext'),distress=getVal('ejacDistress');
+    const pedt=getNum('ejacPedt'),shim=getNum('ejacShim');
+    const medHx=getChecked('ejacHx'),meds=getChecked('ejacMeds');
+    const names={pe:'Premature Ejaculation',de:'Delayed Ejaculation',retrograde:'Retrograde Ejaculation',anejac:'Anejaculation',painful:'Painful Ejaculation',anorgasmia:'Anorgasmia',haemospermia:'Haemospermia'};
+    
+    let h=`<div class="rpt-header ejac"><h2>${names[selectedDisorder]}</h2><p class="date">${new Date().toLocaleDateString()} | EAU 2026 / NICE / BSSM / BNF</p>`;
+    if(pedt!==null||shim!==null){
+        h+=`<div class="score-row">`;
+        if(pedt!==null)h+=`<div class="score-box"><div class="v">${pedt}</div><div class="l">PEDT</div></div>`;
+        if(shim!==null)h+=`<div class="score-box"><div class="v">${shim}</div><div class="l">SHIM</div></div>`;
+        h+=`</div>`;
+    }
+    h+=`</div>`;
+    
+    h+=`<div class="summary-row"><div class="summary-item"><div class="l">Age</div><div class="v">${age}y</div></div><div class="summary-item"><div class="l">Duration</div><div class="v">${duration}</div></div><div class="summary-item"><div class="l">Fertility</div><div class="v">${fertility==='yes'?'Yes':'No'}</div></div><div class="summary-item"><div class="l">Context</div><div class="v">${context||'N/A'}</div></div><div class="summary-item"><div class="l">Distress</div><div class="v">${distress||'N/A'}</div></div></div>`;
+
+    if(pedt!==null&&pedt>=11)h+=`<div class="rpt-section alert"><h3>📊 PEDT ${pedt}/20 - PE Likely</h3><p>Score ≥11 indicates premature ejaculation.</p></div>`;
+    else if(pedt!==null&&pedt>=9)h+=`<div class="rpt-section warn"><h3>📊 PEDT ${pedt}/20 - Suggestive</h3><p>Score 9-10 is suggestive of PE.</p></div>`;
+    if(shim!==null&&shim<=21)h+=`<div class="rpt-section warn"><h3>⚠️ Concurrent ED (SHIM ${shim})</h3><p>Treat ED first - ejaculatory function often improves.</p></div>`;
+
+    if(selectedDisorder==='pe'){
+        const peType=getVal('peType'),ielt=getVal('peIELT'),peAssoc=getChecked('peAssoc');
+        h+=`<div class="rpt-section purple"><h3>🔍 PE Classification</h3><ul><li><strong>Type:</strong> ${peType||'N/A'}</li><li><strong>IELT:</strong> ${ielt||'N/A'}</li>${peAssoc.length?`<li><strong>Associated:</strong> ${peAssoc.join(', ')}</li>`:''}</ul></div>`;
+        h+=`<div class="rpt-section"><h3>🔬 Investigations</h3><table><tr><th>Test</th><th>Indication</th></tr><tr><td>Sexual history + IELT</td><td>All - essential</td></tr><tr><td>PEDT questionnaire</td><td>All</td></tr><tr><td>SHIM/IIEF-5</td><td>Screen ED</td></tr>${peAssoc.includes('thyroid')?'<tr><td>TFTs</td><td>Thyroid symptoms</td></tr>':''}</table></div>`;
+        h+=`<div class="rpt-section green"><h3>💊 Pharmacotherapy (BNF)</h3><table><tr><th>Drug</th><th>Dose</th><th>Frequency</th><th>Notes</th></tr><tr style="background:#dcfce7"><td><strong>Dapoxetine</strong> ✓</td><td><span class="dose">30-60mg</span></td><td><span class="freq">PRN 1-3hr before</span></td><td>Licensed first-line</td></tr><tr><td>Paroxetine</td><td><span class="dose">10-40mg</span></td><td><span class="freq">Daily</span></td><td>Off-label</td></tr><tr><td>Sertraline</td><td><span class="dose">25-100mg</span></td><td><span class="freq">Daily/PRN</span></td><td>Off-label</td></tr></table><h4 style="margin-top:12px">Topical</h4><table><tr><td><strong>Fortacin spray</strong> ✓</td><td><span class="dose">3 sprays</span></td><td><span class="freq">5min before</span></td><td>Licensed</td></tr><tr><td>EMLA 5%</td><td><span class="dose">2.5g</span></td><td><span class="freq">20-30min before</span></td><td>Wipe off</td></tr></table></div>`;
+        h+=`<div class="rpt-section"><h3>🧠 Behavioural (EAU Grade B)</h3><ul><li><strong>Stop-Start:</strong> Stop near ejaculation, wait 30-60s, resume</li><li><strong>Squeeze:</strong> Partner squeezes glans 10-20s</li><li>Combined pharma + behavioural most effective</li></ul></div>`;
+    }
+    else if(selectedDisorder==='de'){
+        const deType=getVal('deType'),deFactors=getChecked('deFactors');
+        h+=`<div class="rpt-section purple"><h3>🔍 DE Classification</h3><ul><li><strong>Type:</strong> ${deType||'N/A'}</li>${deFactors.includes('ssri')?'<li style="color:#dc2626"><strong>⚠️ SSRI-induced suspected</strong></li>':''}</ul></div>`;
+        h+=`<div class="rpt-section"><h3>🔬 Investigations</h3><table><tr><th>Test</th><th>Indication</th></tr><tr><td>Medication review</td><td>All - SSRIs common</td></tr><tr><td>Testosterone</td><td>All</td></tr><tr><td>Prolactin</td><td>All</td></tr></table></div>`;
+        h+=`<div class="rpt-section green"><h3>💊 Treatment</h3><table><tr><th>Scenario</th><th>Treatment</th><th>Dose</th></tr>${deFactors.includes('ssri')?'<tr style="background:#fef3c7"><td>SSRI-induced</td><td>Switch to Bupropion/Mirtazapine</td><td><span class="dose">150-300mg/15-45mg</span></td></tr>':''}<tr><td>Hyperprolactinemia</td><td>Cabergoline</td><td><span class="dose">0.25-0.5mg 2x/wk</span></td></tr></table><p style="margin-top:10px;font-size:0.8rem">Psychosexual therapy often primary treatment</p></div>`;
+    }
+    else if(selectedDisorder==='retrograde'||selectedDisorder==='anejac'){
+        const orgasm=getVal('retOrgasm'),volume=getVal('retVolume'),urine=getVal('retUrine'),causes=getChecked('retCause');
+        h+=`<div class="rpt-section purple"><h3>🔍 Assessment</h3><ul><li><strong>Orgasm:</strong> ${orgasm||'N/A'}</li><li><strong>Volume:</strong> ${volume||'N/A'}</li><li><strong>Cloudy urine:</strong> ${urine||'N/A'} ${urine==='yes'?'✓ Supports diagnosis':''}</li></ul></div>`;
+        h+=`<div class="rpt-section"><h3>🔬 Investigations</h3><table><tr><th>Test</th><th>Indication</th></tr><tr style="background:#ecfdf5"><td><strong>Post-orgasm urinalysis</strong></td><td>Essential - confirms diagnosis</td></tr><tr><td>Glucose/HbA1c</td><td>DM screening</td></tr><tr><td>Medication review</td><td>Alpha-blockers</td></tr>${fertility==='yes'?'<tr><td>Semen analysis</td><td>Fertility concern</td></tr>':''}</table></div>`;
+        h+=`<div class="rpt-section green"><h3>💊 Treatment (BNF)</h3><table><tr><th>Drug</th><th>Dose</th><th>Notes</th></tr><tr><td><strong>Imipramine</strong></td><td><span class="dose">25-75mg</span></td><td>First-line</td></tr><tr><td>Pseudoephedrine</td><td><span class="dose">60mg QDS</span></td><td>Caution HTN</td></tr><tr><td>Midodrine</td><td><span class="dose">5-15mg TDS</span></td><td>Monitor BP</td></tr></table>${causes.includes('alphablocker')?'<p style="background:#fef3c7;padding:8px;border-radius:4px;margin-top:10px;font-size:0.8rem">Consider switch tamsulosin → alfuzosin</p>':''}</div>`;
+        if(fertility==='yes')h+=`<div class="rpt-section" style="border-color:#f59e0b"><h3>🔬 Fertility Options</h3><ul><li>Sperm retrieval from alkalinized urine</li><li>Electroejaculation</li><li>Surgical retrieval (TESE/PESA)</li><li><strong>Refer fertility specialist</strong></li></ul></div>`;
+    }
+    else if(selectedDisorder==='painful'){
+        const loc=getVal('painLoc'),sev=getVal('painSev'),symptoms=getChecked('painAssoc'),causes=getChecked('painCause');
+        h+=`<div class="rpt-section purple"><h3>🔍 Pain Assessment</h3><ul><li><strong>Location:</strong> ${loc||'N/A'}</li><li><strong>Severity:</strong> ${sev||'N/A'}/10</li>${symptoms.length?`<li><strong>Associated:</strong> ${symptoms.join(', ')}</li>`:''}</ul></div>`;
+        if(symptoms.includes('discharge')||symptoms.includes('fever'))h+=`<div class="rpt-section alert"><h3>⚠️ Infection Signs</h3><p>Prioritize STI screening and empirical antibiotics.</p></div>`;
+        h+=`<div class="rpt-section"><h3>🔬 Investigations</h3><table><tr><th>Test</th><th>Indication</th></tr><tr><td>Urinalysis + MSU</td><td>All</td></tr><tr><td>STI screen (NAAT)</td><td>All</td></tr><tr><td>DRE</td><td>All</td></tr></table></div>`;
+        h+=`<div class="rpt-section green"><h3>💊 Treatment (BNF/BASHH)</h3><table><tr><th>Diagnosis</th><th>Treatment</th><th>Duration</th></tr><tr><td>Prostatitis</td><td><span class="dose">Cipro 500mg BD</span> + <span class="dose">Tamsulosin 400mcg</span></td><td><span class="freq">4-6 weeks</span></td></tr><tr><td>Epididymitis (STI)</td><td><span class="dose">Doxy 100mg BD</span> + <span class="dose">Ceftriaxone 500mg IM</span></td><td><span class="freq">14 days</span></td></tr><tr><td>Neuropathic</td><td><span class="dose">Amitriptyline 10-25mg ON</span></td><td><span class="freq">Long-term</span></td></tr></table></div>`;
+    }
+    else if(selectedDisorder==='anorgasmia'){
+        const type=getVal('anorgType'),factors=getChecked('anorgFactors');
+        h+=`<div class="rpt-section purple"><h3>🔍 Classification</h3><ul><li><strong>Type:</strong> ${type||'N/A'}</li>${factors.includes('ssri')?'<li style="color:#dc2626"><strong>⚠️ SSRI-induced suspected</strong></li>':''}</ul></div>`;
+        h+=`<div class="rpt-section"><h3>🔬 Investigations</h3><table><tr><th>Test</th><th>Indication</th></tr><tr><td>Medication review</td><td>SSRIs, opioids</td></tr><tr><td>Testosterone</td><td>All</td></tr><tr><td>Prolactin</td><td>All</td></tr></table></div>`;
+        h+=`<div class="rpt-section green"><h3>💊 Treatment</h3><table><tr><th>Scenario</th><th>Treatment</th></tr>${factors.includes('ssri')?'<tr><td>SSRI-induced</td><td>Switch Bupropion/Mirtazapine or add <span class="dose">Cyproheptadine 4-12mg PRN</span></td></tr>':''}<tr><td>Hyperprolactinemia</td><td><span class="dose">Cabergoline 0.25-0.5mg 2x/wk</span></td></tr></table><p style="margin-top:10px;font-size:0.8rem">Psychosexual therapy often primary</p></div>`;
+    }
+    else if(selectedDisorder==='haemospermia'){
+        const episodes=getVal('haemoEpisodes'),symptoms=getChecked('haemoAssoc'),risks=getChecked('haemoRisk');
+        const highRisk=risks.includes('age40')||parseInt(age)>40||episodes==='recurrent'||episodes==='persistent'||symptoms.includes('weightloss');
+        h+=`<div class="rpt-section purple"><h3>🔍 Assessment</h3><ul><li><strong>Episodes:</strong> ${episodes||'N/A'}</li>${symptoms.length?`<li><strong>Associated:</strong> ${symptoms.join(', ')}</li>`:''}</ul></div>`;
+        h+=`<div class="rpt-section ${highRisk?'alert':'info'}"><h3>${highRisk?'⚠️ Higher Risk':'✓ Lower Risk'}</h3><p>${highRisk?'Age >40, recurrent, or red flags. Must investigate.':'Usually self-limiting in younger patients.'}</p></div>`;
+        h+=`<div class="rpt-section"><h3>🔬 Investigations</h3><table><tr><th>Test</th><th>Indication</th></tr><tr><td>Urinalysis + MSU</td><td>All</td></tr><tr><td>STI screen</td><td>Risk factors</td></tr><tr><td>PSA</td><td>Age >40</td></tr>${highRisk?'<tr style="background:#fef3c7"><td>TRUS / MRI</td><td>Higher risk</td></tr>':''}</table></div>`;
+        h+=`<div class="rpt-section green"><h3>💊 Management</h3><table><tr><th>Scenario</th><th>Management</th></tr><tr><td>Single, age &lt;40</td><td>Reassurance</td></tr><tr><td>Infection</td><td><span class="dose">Cipro 500mg BD x14d</span></td></tr><tr><td>Persistent/age >40</td><td><strong>Urology referral</strong></td></tr></table></div>`;
+    }
+
+    if(medHx.length||meds.length)h+=`<div class="rpt-section"><h3>📋 Medical History</h3><ul>${medHx.length?`<li><strong>Conditions:</strong> ${medHx.join(', ')}</li>`:''}${meds.length?`<li><strong>Medications:</strong> ${meds.join(', ')}</li>`:''}</ul></div>`;
+    h+=`<div class="rpt-section" style="border-color:#f59e0b"><h3>📅 Follow-up</h3><ul><li><strong>4-6 weeks:</strong> Review response</li><li>Adjust or escalate as needed</li></ul></div>`;
+    h+=`<div class="btn-group no-print"><button onclick="printReport('ejac')" class="btn btn-green">🖨️ Print</button><button onclick="exportPDF('ejac')" class="btn btn-blue">📄 Save PDF</button><button onclick="resetForm('ejac')" class="btn btn-gray">New</button></div>`;
+    h+=`<div class="disclaimer">Clinical decision support only.</div>`;
+    h+=`<div class="ref-box"><strong>References:</strong> EAU 2026, ISSM, NICE, GIRFT, BSSM, BASHH, BNF</div>`;
+
+    document.getElementById('ejacReport').innerHTML=h;
+    document.getElementById('ejacReport').classList.add('show');
+    document.getElementById('ejacReport').scrollIntoView({behavior:'smooth'});
+}
+function generateHypo(){
+    const age=getVal('hypoAge'),bmi=getVal('hypoBmi'),duration=getVal('hypoDuration');
+    const testo=getNum('hypoTesto'),lh=getNum('hypoLH'),prolactin=getNum('hypoProlactin');
+    const psa=getNum('hypoPSA'),hct=getNum('hypoHct'),confirmed=getVal('hypoConfirmed');
+    const shim=getNum('hypoShim');
+    const sexSx=getChecked('hypoSex'),physSx=getChecked('hypoPhys'),psychSx=getChecked('hypoPsych');
+    const funcCauses=getChecked('hypoFunc'),contra=getChecked('hypoContra');
+    const totalSx=sexSx.length+physSx.length+psychSx.length;
+    
+    let tStatus,tClass;
+    if(testo<8){tStatus='Low (<8) - Hypogonadism';tClass='sev'}
+    else if(testo<12){tStatus='Borderline (8-12)';tClass='mod'}
+    else{tStatus='Normal (≥12)';tClass='none'}
+    
+    const isPrimary=lh&&lh>8;
+    const isSecondary=lh&&lh<2;
+    const hasContra=contra.includes('prostate')||contra.includes('breast')||contra.includes('polycythaemia')||contra.includes('fertility');
+    
+    let h=`<div class="rpt-header hypo"><h2>Male Hypogonadism Assessment</h2><p class="date">${new Date().toLocaleDateString()} | EAU 2026 / BSSM / BNF</p>`;
+    h+=`<div class="score-row"><div class="score-box"><div class="v">${testo}</div><div class="l">Testosterone (nmol/L)</div></div>`;
+    if(shim)h+=`<div class="score-box"><div class="v">${shim}</div><div class="l">SHIM</div></div>`;
+    h+=`</div><span class="sev-badge ${tClass}">${tStatus}</span></div>`;
+    
+    h+=`<div class="summary-row"><div class="summary-item"><div class="l">Age</div><div class="v">${age}y</div></div><div class="summary-item"><div class="l">BMI</div><div class="v">${bmi||'N/A'}</div></div><div class="summary-item"><div class="l">Duration</div><div class="v">${duration}</div></div><div class="summary-item"><div class="l">Symptoms</div><div class="v">${totalSx}</div></div><div class="summary-item"><div class="l">Confirmed</div><div class="v">${confirmed==='yes'?'Yes':'No'}</div></div></div>`;
+    
+    h+=`<div class="rpt-section teal"><h3>📋 Diagnosis (EAU/BSSM)</h3><ul><li><strong>Total T:</strong> ${testo} nmol/L - <span style="color:${testo<8?'#dc2626':testo<12?'#d97706':'#16a34a'}">${tStatus}</span></li>`;
+    if(lh)h+=`<li><strong>LH:</strong> ${lh} IU/L ${isPrimary?'- High (Primary)':isSecondary?'- Low (Secondary)':''}</li>`;
+    if(prolactin&&prolactin>400)h+=`<li><strong>Prolactin:</strong> ${prolactin} mU/L - <span style="color:#dc2626">Elevated</span></li>`;
+    h+=`</ul>`;
+    if(testo<12){
+        h+=`<p style="margin-top:10px"><strong>Classification:</strong> `;
+        if(isPrimary)h+=`<span style="background:#fef3c7;padding:3px 10px;border-radius:4px">Primary (testicular)</span>`;
+        else if(isSecondary)h+=`<span style="background:#ecfdf5;padding:3px 10px;border-radius:4px">Secondary (pituitary)</span>`;
+        else h+=`Check LH/FSH to classify`;
+        h+=`</p>`;
+    }
+    h+=`</div>`;
+    
+    if(confirmed!=='yes'&&testo<12)h+=`<div class="rpt-section warn"><h3>⚠️ Confirm Diagnosis</h3><p>Repeat morning testosterone (0700-1100) required. Single sample insufficient.</p></div>`;
+    
+    if(hasContra){
+        h+=`<div class="rpt-section alert"><h3>⛔ CONTRAINDICATIONS TO TRT</h3><ul>`;
+        if(contra.includes('prostate'))h+=`<li>Prostate cancer</li>`;
+        if(contra.includes('breast'))h+=`<li>Male breast cancer</li>`;
+        if(contra.includes('polycythaemia'))h+=`<li>Polycythaemia (Hct>54%)</li>`;
+        if(contra.includes('fertility'))h+=`<li>Fertility desire - use hCG/clomiphene</li>`;
+        h+=`</ul></div>`;
+    }
+    
+    h+=`<div class="rpt-section"><h3>🔬 Investigations (EAU/BSSM)</h3><table><tr><th>Test</th><th>When</th></tr><tr><td>Total testosterone x2 (AM)</td><td>All - confirm</td></tr><tr><td>LH, FSH</td><td>If T low</td></tr><tr><td>Prolactin</td><td>If secondary</td></tr><tr><td>PSA</td><td>Age >40 / pre-TRT</td></tr><tr><td>FBC (Hct)</td><td>Pre-TRT</td></tr><tr><td>Lipids, HbA1c</td><td>All</td></tr></table></div>`;
+    
+    if(!hasContra&&testo<12){
+        h+=`<div class="rpt-section green"><h3>💊 TRT Options (BNF)</h3><table><tr><th>Preparation</th><th>Dose</th><th>Frequency</th><th>Notes</th></tr><tr style="background:#dcfce7"><td><strong>Testogel 1%</strong></td><td><span class="dose">50mg (5g)</span></td><td><span class="freq">Daily AM</span></td><td>First-line. Shoulders/arms.</td></tr><tr style="background:#dcfce7"><td><strong>Nebido</strong></td><td><span class="dose">1000mg IM</span></td><td><span class="freq">Every 10-14wk</span></td><td>Long-acting. First 2 at 6wk.</td></tr><tr><td>Sustanon 250</td><td><span class="dose">250mg IM</span></td><td><span class="freq">Every 2-4wk</span></td><td>Peaks/troughs</td></tr></table><p style="margin-top:10px;font-size:0.8rem"><strong>Target:</strong> Mid-normal (15-20 nmol/L). Measure trough.</p></div>`;
+        
+        if(contra.includes('fertility')){
+            h+=`<div class="rpt-section" style="border-color:#f59e0b"><h3>🔬 Fertility-Preserving</h3><p><strong>TRT causes infertility</strong></p><table><tr><th>Drug</th><th>Dose</th><th>Frequency</th></tr><tr><td><strong>hCG</strong></td><td><span class="dose">1500-2000 IU</span></td><td><span class="freq">2-3x/wk SC/IM</span></td></tr><tr><td>Clomiphene</td><td><span class="dose">25-50mg</span></td><td><span class="freq">Daily/alt days</span></td></tr></table></div>`;
+        }
+    }
+    else if(testo>=12)h+=`<div class="rpt-section info"><h3>ℹ️ Normal Testosterone</h3><p>TRT not indicated. Investigate other causes.</p></div>`;
+    
+    if(funcCauses.length){
+        h+=`<div class="rpt-section"><h3>🏃 Lifestyle (EAU/BSSM)</h3><ul>`;
+        if(funcCauses.includes('obesity'))h+=`<li><strong>Weight loss:</strong> 5-10% can ↑ T by 2-3 nmol/L</li>`;
+        if(funcCauses.includes('opioids'))h+=`<li><strong>Opioid review:</strong> Suppress HPG axis</li>`;
+        if(funcCauses.includes('alcohol'))h+=`<li><strong>Reduce alcohol</strong></li>`;
+        if(funcCauses.includes('osa'))h+=`<li><strong>Treat OSA:</strong> CPAP improves T</li>`;
+        h+=`</ul></div>`;
+    }
+    
+    h+=`<div class="rpt-section" style="border-color:#f59e0b"><h3>📅 Monitoring on TRT</h3><table><tr><th>Timing</th><th>Tests</th></tr><tr><td>3 months</td><td>T (trough), Hct, PSA</td></tr><tr><td>6 months</td><td>T, Hct, PSA, symptoms</td></tr><tr><td>12 months+</td><td>Full review annually</td></tr></table><div style="margin-top:10px;padding:10px;background:#fef2f2;border-radius:6px;font-size:0.8rem"><strong>Stop/reduce if:</strong> Hct >54%, PSA ↑>1.4/yr, severe LUTS, gynaecomastia</div></div>`;
+    
+    h+=`<div class="btn-group no-print"><button onclick="printReport('hypo')" class="btn btn-green">🖨️ Print</button><button onclick="exportPDF('hypo')" class="btn btn-blue">📄 Save PDF</button><button onclick="resetForm('hypo')" class="btn btn-gray">New</button></div>`;
+    h+=`<div class="disclaimer">Clinical decision support only. TRT is lifelong. Consider specialist referral.</div>`;
+    h+=`<div class="ref-box"><strong>References:</strong> EAU 2026, BSSM 2022, NICE, GIRFT, BNF</div>`;
+    
+    document.getElementById('hypoReport').innerHTML=h;
+    document.getElementById('hypoReport').classList.add('show');
+    document.getElementById('hypoReport').scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>

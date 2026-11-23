@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Urology Digital – Clinical Tools Hub</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font:14px/1.45 system-ui,sans-serif;color:#18303a;background:#f4f7f8;display:flex;flex-direction:column;height:100vh}
+header{background:#0b4f6c;color:#fff;padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+header h1{font-size:17px;margin:0;flex:1;min-width:180px}header input{padding:7px 10px;border-radius:6px;border:0;min-width:160px;flex:1;max-width:280px}
+.wrap{display:flex;flex:1;min-height:0}nav{width:240px;background:#fff;border-right:1px solid #d5dee2;overflow:auto;flex-shrink:0}
+nav a{display:block;padding:9px 14px;color:#18303a;text-decoration:none;border-bottom:1px solid #eef2f3;cursor:pointer}
+nav a small{display:block;color:#678;font-size:11px}nav a.on{background:#e2f1f6;border-left:4px solid #0b4f6c;padding-left:10px}nav a.hide{display:none}
+main{flex:1;min-width:0;display:flex;flex-direction:column}iframe{flex:1;border:0;width:100%;background:#fff}
+#home{padding:18px;overflow:auto}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{background:#fff;border:1px solid #d5dee2;border-radius:8px;padding:12px;cursor:pointer}.card:hover{border-color:#0b4f6c}.card b{display:block}.card span{font-size:12px;color:#567}
+table{border-collapse:collapse;background:#fff;width:100%}td,th{border:1px solid #d5dee2;padding:6px 8px;text-align:left;vertical-align:top;font-size:13px}
+footer{background:#fff3e0;border-top:1px solid #e6c9a0;padding:6px 14px;font-size:12px}
+@media(max-width:700px){.wrap{flex-direction:column}nav{width:100%;max-height:34vh}}
+</style></head><body>
+<header><h1>🔬 Urology Digital – Clinical Tools Hub</h1><input id="q" placeholder="Search tools (e.g. LUTS, PSA, UTI)…" aria-label="Search tools"></header>
+<div class="wrap"><nav id="nav"></nav><main id="main"></main></div>
+<footer>Clinical decision support only – not a substitute for clinical judgement. Verify against current national and local guidance. Do not enter patient-identifiable data into tools that transmit by email unless via approved NHS routes. Content reviewed 23 Nov 2026.</footer>
+<script>
+var T=[
+["home","Home","Overview and guideline currency"],
+["prostate-cancer","Prostate cancer pathway","PSA, MRI, CPG, management","oncology psa mri biopsy gleason"],
+["mdt-referral","MDT referral form","QEH urology MDT","mdt cancer referral"],
+["bph-luts","Male LUTS decision support","BPH treatment","bph luts alpha blocker 5-ari"],
+["luts-questionnaire","LUTS / IPSS / IIEF-5","Symptom questionnaires","ipss iief questionnaire"],
+["bph-surgery-survey","Post-BPH-surgery survey","Patient follow-up","turp holep survey"],
+["recurrent-uti","Recurrent UTI","Prevention pathway","uti cystitis antibiotic prophylaxis"],
+["prostatitis","Prostatitis","Diagnosis and antibiotics","prostatitis nih-cpsi"],
+["sti","STI assessment","Management and follow-up","chlamydia gonorrhoea syphilis hiv"],
+["male-sexual-health","Male sexual health","ED, ejaculation, hypogonadism","erectile testosterone"],
+["male-infertility","Male infertility","Assessment and treatment","semen sperm fertility"],
+["changes","What changed (Nov 2026)","Guideline currency log"]];
+var CH=[
+["Prostatitis","EAU 2026 refs; MHRA fluoroquinolone restriction added; NG110 mis-citation removed"],
+["STI","BASHH 2025–26: chlamydia TOC not routine; gonorrhoea TOC by indication; M. genitalium regimen; PEP raltegravir 1200 mg OD; follow-up testing"],
+["Recurrent UTI","EAU 2026/NG112; D-mannose downgraded (MERIT 2024)"],
+["Prostate cancer","EAU 2026 refs; NG131 flagged under update; logic unchanged"],
+["Infertility","EAU 2026; NICE NG257 replaces CG156"],
+["Sexual health","EAU 2026; NICE CG35 replaced with CKS"],
+["Male LUTS","EAU 2026; CG97/NG112; vibegron claims softened"],
+["LUTS questionnaire","EAU 2026 reference added; scoring unchanged"],
+["MDT form","NG12 (Apr 2026) reference; IG note on mailto identifiers"],
+["Survey","Citation corrected to CG97; IG flags (hard-coded email, DOB in subject)"]];
+var nav=document.getElementById('nav'),main=document.getElementById('main');
+T.forEach(function(t){var a=document.createElement('a');a.dataset.id=t[0];a.dataset.s=(t[1]+' '+t[2]+' '+(t[3]||'')).toLowerCase();a.innerHTML=t[1]+'<small>'+t[2]+'</small>';a.onclick=function(){location.hash=t[0]};nav.appendChild(a)});
+function show(){var id=location.hash.slice(1)||'home';if(!T.some(function(t){return t[0]==id}))id='home';
+[].forEach.call(nav.children,function(a){a.classList.toggle('on',a.dataset.id==id)});main.innerHTML='';
+if(id=='home'||id=='changes'){var d=document.createElement('div');d.id='home';
+if(id=='home'){d.innerHTML='<h2>Tools</h2><div class="grid">'+T.slice(1,-1).map(function(t){return '<div class="card" onclick="location.hash=\''+t[0]+'\'"><b>'+t[1]+'</b><span>'+t[2]+'</span></div>'}).join('')+'</div>'}
+else d.innerHTML='<h2>What changed – 23 Nov 2026</h2><table><tr><th>Tool</th><th>Update</th></tr>'+CH.map(function(c){return '<tr><td>'+c[0]+'</td><td>'+c[1]+'</td></tr>'}).join('')+'</table><p>Each tool also shows its own "what changed" notice at the top.</p>';
+main.appendChild(d)}else{var f=document.createElement('iframe');f.src='tools/'+id+'.html';f.title=id;main.appendChild(f)}}
+document.getElementById('q').oninput=function(e){var v=e.target.value.toLowerCase();[].forEach.call(nav.children,function(a){a.classList.toggle('hide',!!v&&a.dataset.s.indexOf(v)<0)})};
+window.onhashchange=show;show();
+</script></body></html>
